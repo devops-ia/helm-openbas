@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ include "openbas.fullname" . }}-caldera-config
-  labels:
-    {{- include "openbas.labels" . | nindent 4 }}
-data:
-  local.yml: |
-    {{- .Values.caldera.config | toYaml | nindent 4 }}
