@@ -1,0 +1,112 @@
+{{- if .Values.caldera.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "openbas.fullname" . }}-caldera
+  labels:
+    openbas.component: caldera
+    {{- include "openbas.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.caldera.autoscaling.enabled }}
+  replicas: {{ .Values.caldera.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      openbas.component: caldera
+      {{- include "openbas.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/caldera/configmap.yaml") . | sha256sum }}
+      {{- with .Values.caldera.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        openbas.component: caldera
+        {{- include "openbas.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- if .Values.caldera.imagePullSecrets }}
+      {{- with .Values.caldera.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- else if .Values.global.imagePullSecrets }}
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- end }}
+      serviceAccountName: {{ include "openbas.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.caldera.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}-caldera
+          securityContext:
+            {{- toYaml .Values.caldera.securityContext | nindent 12 }}
+          {{- if $.Values.global.imageRegistry }}
+          image: "{{ $.Values.global.imageRegistry }}/{{ .Values.caldera.image.repository }}:{{ .Values.caldera.image.tag | default .Chart.AppVersion }}"
+          {{- else }}
+          image: "{{ .Values.caldera.image.repository }}:{{ .Values.caldera.image.tag | default .Chart.AppVersion }}"
+          {{- end }}
+          imagePullPolicy: {{ .Values.caldera.image.pullPolicy }}
+          ports:
+            {{- if .Values.caldera.env.WORKER_TELEMETRY_ENABLED }}
+            - name: metrics
+              containerPort: {{ .Values.caldera.env.WORKER_PROMETHEUS_TELEMETRY_PORT | default 14269 }}
+              protocol: TCP
+            {{- end }}
+          env:
+          # Variables from secrets have precedence
+          {{- $envList := dict -}}
+
+          {{- if .Values.caldera.envFromSecrets }}
+          {{- range $key, $value := .Values.caldera.envFromSecrets }}
+          - name: {{ $key | upper }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $value.name }}
+                key: {{ $value.key | default $key }}
+          {{- $_ := set $envList $key true }}
+          {{- end }}
+          {{- end }}
+
+          # Special handling for OPENBAS_ADMIN_TOKEN which is constructed from other values
+          {{- if and (not (hasKey $envList "OPENBAS_ADMIN_TOKEN")) (.Values.env.APP__ADMIN__TOKEN) }}
+          - name: OPENBAS_ADMIN_TOKEN
+            value: "{{ .Values.env.APP__ADMIN__TOKEN }}"
+          {{- end }}
+
+          # Add Variables in plain text from .Values.caldera.env if they were not already added from secrets
+          {{- if .Values.caldera.env }}
+          {{- range $key, $value := .Values.caldera.env }}
+          {{- if not (hasKey $envList $key) }}
+          - name: {{ $key | upper }}
+            value: {{ $value | quote }}
+          {{- $_ := set $envList $key true }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
+
+          resources:
+            {{- toYaml .Values.caldera.resources | nindent 12 }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /usr/src/app/conf/local.yml
+              subPath: local.yml
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "openbas.fullname" . }}-caldera-config
+      {{- with .Values.caldera.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.caldera.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.caldera.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

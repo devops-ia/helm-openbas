@@ -1,0 +1,28 @@
+apiVersion: v2
+name: openbas
+description: A Helm chart to deploy Open Breach and Attack Simulation platform
+type: application
+maintainers:
+  - name: ialejandro
+    email: hello@ialejandro.rocks
+    url: https://ialejandro.rocks
+sources:
+  - https://github.com/OpenBAS-Platform/openbas
+version: 1.0.0
+appVersion: 1.4.0
+home: https://www.filigran.io/en/solutions/products/openbas/
+keywords:
+  - openbas
+dependencies:
+  - name: minio
+    version: 14.6.32
+    repository: oci://registry-1.docker.io/bitnamicharts
+    condition: minio.enabled
+  - name: postgresql
+    version: 15.5.21
+    repository: oci://registry-1.docker.io/bitnamicharts
+    condition: postgresql.enabled
+  - name: rabbitmq
+    version: 14.6.6
+    repository: oci://registry-1.docker.io/bitnamicharts
+    condition: rabbitmq.enabled
