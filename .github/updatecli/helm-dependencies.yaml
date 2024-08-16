@@ -1,0 +1,66 @@
+sources:
+  caldera:
+    kind: dockerimage
+    spec:
+      image: openbas/caldera-server
+      architecture: linux/amd64
+      versionFilter:
+        kind: semver
+        pattern: '*'
+  minio:
+    kind: helmchart
+    spec:
+      url: https://charts.bitnami.com/bitnami
+      name: minio
+      versionFilter:
+        kind: semver
+        pattern: '*' # replace with CI/CD updatecli
+    sourceid: minio
+  postgresql:
+    kind: helmchart
+    spec:
+      url: https://charts.bitnami.com/bitnami
+      name: postgresql
+      versionFilter:
+        kind: semver
+        pattern: '*' # replace with CI/CD updatecli
+    sourceid: postgresql
+  rabbitmq:
+    kind: helmchart
+    spec:
+      url: https://charts.bitnami.com/bitnami
+      name: rabbitmq
+      versionFilter:
+        kind: semver
+        pattern: '*' # replace with CI/CD updatecli
+    sourceid: rabbitmq
+conditions: {}
+targets:
+  caldera:
+    name: bump chart caldera tag
+    kind: yaml
+    spec:
+      file: charts/openbas/values.yaml
+      key: $.caldera.image.tag
+    sourceid: caldera
+  minio:
+    name: bump chart dependencies
+    kind: yaml
+    spec:
+      file: charts/openbas/Chart.yaml
+      key: $.dependencies[0].version
+    sourceid: minio
+  postgresql:
+    name: bump chart dependencies
+    kind: yaml
+    spec:
+      file: charts/openbas/Chart.yaml
+      key: $.dependencies[1].version
+    sourceid: postgresql
+  rabbitmq:
+    name: bump chart dependencies
+    kind: yaml
+    spec:
+      file: charts/openbas/Chart.yaml
+      key: $.dependencies[2].version
+    sourceid: rabbitmq
