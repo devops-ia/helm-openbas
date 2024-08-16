@@ -1,0 +1,21 @@
+{{ if .Values.testConnection }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "openbas.fullname" . }}-test-connection"
+  labels:
+    {{- include "openbas.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      {{- if .Values.global.imageRegistry }}
+      image: "{{ .Values.global.imageRegistry }}/busybox"
+      {{- else }}
+      image: busybox
+      {{- end }}
+      command: ['wget']
+      args: ['{{ include "openbas.fullname" . }}:{{ .Values.service.targetPort | default .Values.service.port }}']
+  restartPolicy: Never
+{{ end }}

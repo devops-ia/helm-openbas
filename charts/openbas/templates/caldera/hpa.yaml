@@ -1,0 +1,32 @@
+{{- if and (.Values.caldera.autoscaling.enabled) (.Values.caldera.enabled) }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "openbas.fullname" . }}-caldera
+  labels:
+    {{- include "openbas.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "openbas.fullname" . }}-caldera
+  minReplicas: {{ .Values.caldera.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.caldera.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.caldera.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.caldera.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.caldera.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.caldera.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}

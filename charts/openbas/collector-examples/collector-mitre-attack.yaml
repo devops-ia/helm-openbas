@@ -1,0 +1,12 @@
+# mitre-attack
+# ref: https://github.com/OpenBAS-Platform/collectors/tree/main/mitre-attack
+- name: mitre-attack
+  enabled: true
+  replicas: 1
+  image: {}
+  env:
+    OPENBAS_URL: http://localhost
+    OPENBAS_TOKEN: ChangeMe
+    COLLECTOR_ID: ChangeMe
+    COLLECTOR_NAME: "MITRE ATT&CK"
+    COLLECTOR_LOG_LEVEL: error
