@@ -225,7 +225,7 @@ tolerations: []
 # -- Affinity for pod assignment
 affinity: {}
 
-# -- Connector Global environment
+# -- Collector Global environment
 collectorGlobalEnv:
   # Plain vars
   # foo: bar
@@ -234,6 +234,56 @@ collectorGlobalEnv:
 # -- Collectors
 # Ref: https://github.com/OpenBAS-Platform/collectors
 collectors: []
+# - name: connector-name
+#   enabled: true
+#   replicas: 1
+#   # -- Image registry
+#   image: {}
+#     repository:
+#     pullPolicy:
+#     tag:
+#   # -- Environment variables to configure application
+#   env: {}
+#   # Plain vars
+#   # foo: bar
+#   # my_env: my_value
+#   # -- Pod annotations
+#   podAnnotations: {}
+#   # -- Secrets from variables
+#   envFromSecrets: {}
+#     # Cipher vars
+#     # my_env:
+#     #  name: release-name-credentials
+#     #  key: secret_key
+#   # -- The resources limits and requested
+#   resources: {}
+#     limits:
+#       memory: 256Mi
+#       cpu: "250m"
+#     requests:
+#       memory: 56Mi
+#       cpu: "50m"
+#   # -- Node labels for pod assignment
+#   nodeSelector: {}
+#     project: "openbas"
+#   # -- Tolerations for pod assignment
+#   tolerations: []
+#     - key: "project"
+#       operator: "Equal"
+#       value: "openbas"
+#       effect: "NoSchedule"
+#   # -- Affinity for pod assignment
+#   affinity: {}
+
+# -- Injector Global environment
+injectorGlobalEnv:
+  # Plain vars
+  # foo: bar
+  # my_env: my_value
+
+# -- Injectors
+# Ref: https://github.com/OpenBAS-Platform/injectors
+injectors: []
 # - name: connector-name
 #   enabled: true
 #   replicas: 1

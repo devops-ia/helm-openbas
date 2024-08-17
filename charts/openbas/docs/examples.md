@@ -98,7 +98,7 @@ Output:
           - 'RETRY=0; until [ $RETRY -eq 30 ]; do nc -zv openbas-ci-rabbitmq 5672 && break; echo "[$RETRY/30] waiting service openbas-ci-rabbitmq:5672 is ready"; sleep 5; RETRY=$(($RETRY + 1)); done'
 ```
 
-## Connector: sample complete
+## Collector: sample complete
 
 ```yaml
 collectors:
@@ -158,5 +158,65 @@ Or you can use affinity to run the collector in different node if you increase r
                 operator: In
                 values:
                   - microsoft-entra
+          topologyKey: kubernetes.io/hostname
+```
+
+## Injector: sample complete
+
+```yaml
+injectors:
+# https://github.com/OpenBAS-Platform/injectors/tree/main/http-query
+- name: http-query
+  enabled: true
+  replicas: 1
+  image:
+    repository: openbas/injector-http-query
+  env:
+    OPENBAS_URL: "XXXX"
+    OPENBAS_TOKEN: "XXXX"
+    INJECTOR_ID: ChangeMe
+    INJECTOR_NAME: "HTTP query"
+    INJECTOR_LOG_LEVEL: error
+  envFromSecrets:
+    MICROSOFT_ENTRA_CLIENT_SECRET:
+      name:  my-secret-credentials
+      key: MICROSOFT_ENTRA_CLIENT_SECRET
+  resources:
+    requests:
+      memory: 128Mi
+      cpu: 100m
+    limits:
+      memory: 128Mi
+```
+
+You can config which node to run the injector using nodeSelector and tolerations.
+
+```yaml
+injector:
+- name: http-query
+  ...
+  nodeSelector:
+    project: "openbas"
+  tolerations:
+    - key: "project"
+      operator: "Equal"
+      value: "openbas"
+      effect: "NoSchedule"
+```
+
+Or you can use affinity to run the injector in different node if you increase replicas.
+
+```yaml
+- name: http-query
+  ...
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: openbas.injector
+                operator: In
+                values:
+                  - http-query
           topologyKey: kubernetes.io/hostname
 ```

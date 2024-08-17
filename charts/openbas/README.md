@@ -58,7 +58,7 @@ _See [helm uninstall](https://helm.sh/docs/helm/helm_uninstall/) for command doc
 ## OpenBAS
 
 * [Environment configuration](https://docs.openbas.io/latest/deployment/configuration/#platform)
-* [Connectors](https://github.com/OpenBAS-Platform/collectors/tree/main). Review `docker-compose.yaml` with the properly config
+* [Collectors](https://github.com/OpenBAS-Platform/collectors/tree/main). Review `docker-compose.yaml` with the properly config
 * Check collectors samples on `collector-examples` folder
 
 ## Basic installation and examples
@@ -95,7 +95,7 @@ helm show values openbas/openbas
 | caldera.service.targetPort | int | `8888` | Pod expose port |
 | caldera.service.type | string | `"ClusterIP"` | Kubernetes Service type. Allowed values: NodePort, LoadBalancer or ClusterIP |
 | caldera.tolerations | list | `[]` | Tolerations for pod assignment |
-| collectorGlobalEnv | string | `nil` | Connector Global environment |
+| collectorGlobalEnv | string | `nil` | Collector Global environment |
 | collectors | list | `[]` | Collectors Ref: https://github.com/OpenBAS-Platform/collectors |
 | env | object | `{"INJECTOR_CALDERA_API_KEY":"ChangeMe","INJECTOR_CALDERA_PUBLIC_URL":"http://release-name-caldera:8888","INJECTOR_CALDERA_URL":"http://release-name-caldera:8888","MINIO_ENDPOINT":"release-name-minio:9000","OPENBAS_ADMIN_EMAIL":"admin@openbas.io","OPENBAS_ADMIN_PASSWORD":"ChangeMe","OPENBAS_ADMIN_TOKEN":"ChangeMe","OPENBAS_AUTH-LOCAL-ENABLE":true,"OPENBAS_BASE-URL":"http://localhost:8080","OPENBAS_RABBITMQ_HOSTNAME":"release-name-rabbitmq","OPENBAS_RABBITMQ_MANAGEMENT-PORT":15672,"OPENBAS_RABBITMQ_PASS":"ChangeMe","OPENBAS_RABBITMQ_PORT":5672,"OPENBAS_RABBITMQ_USER":"user","SERVER_ADDRESS":"0.0.0.0","SERVER_PORT":8080,"SPRING_DATASOURCE_PASSWORD":"ChangeMe","SPRING_DATASOURCE_URL":"jdbc:postgresql://release-name-postgresql:5432/openbas","SPRING_DATASOURCE_USERNAME":"user"}` | Environment variables to configure application Ref: https://docs.openbas.io/latest/deployment/configuration/#platform |
 | envFromSecrets | object | `{}` | Secrets from variables |
@@ -104,6 +104,8 @@ helm show values openbas/openbas
 | image | object | `{"pullPolicy":"IfNotPresent","repository":"openbas/platform","tag":""}` | Image registry |
 | imagePullSecrets | list | `[]` | Global Docker registry secret names as an array |
 | ingress | object | `{"annotations":{},"className":"","enabled":false,"hosts":[{"host":"chart-example.local","paths":[{"path":"/","pathType":"ImplementationSpecific"}]}],"tls":[]}` | Ingress configuration to expose app |
+| injectorGlobalEnv | string | `nil` | Injector Global environment |
+| injectors | list | `[]` | Injectors Ref: https://github.com/OpenBAS-Platform/injectors |
 | livenessProbe | object | `{"enabled":true,"failureThreshold":3,"initialDelaySeconds":180,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":5}` | Configure liveness checker Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-startup-probes |
 | livenessProbeCustom | object | `{}` | Custom livenessProbe |
 | minio | object | `{"auth":{"rootPassword":"ChangeMe","rootUser":"ChangeMe"},"enabled":true,"mode":"standalone","persistence":{"enabled":false}}` | MinIO subchart deployment Ref: https://github.com/bitnami/charts/blob/main/bitnami/minio/values.yaml  |
