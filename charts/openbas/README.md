@@ -16,8 +16,8 @@ A Helm chart to deploy Open Breach and Attack Simulation platform
 
 | Repository | Name | Version |
 |------------|------|---------|
-| oci://registry-1.docker.io/bitnamicharts | minio | 14.6.32 |
-| oci://registry-1.docker.io/bitnamicharts | postgresql | 15.5.21 |
+| oci://registry-1.docker.io/bitnamicharts | minio | 14.7.1 |
+| oci://registry-1.docker.io/bitnamicharts | postgresql | 15.5.22 |
 | oci://registry-1.docker.io/bitnamicharts | rabbitmq | 14.6.6 |
 
 ## Add repository
@@ -58,8 +58,8 @@ _See [helm uninstall](https://helm.sh/docs/helm/helm_uninstall/) for command doc
 ## OpenBAS
 
 * [Environment configuration](https://docs.openbas.io/latest/deployment/configuration/#platform)
-* [Collectors](https://github.com/OpenBAS-Platform/collectors/tree/main). Review `docker-compose.yaml` with the properly config
-* Check collectors samples on `collector-examples` folder
+* [Collectors](https://github.com/OpenBAS-Platform/collectors/tree/main). Review `docker-compose.yaml` with the properly config or check collectors samples on `collector-examples` folder.
+* [Injectors](https://github.com/OpenBAS-Platform/injectors/tree/main). Review `docker-compose.yaml` with the properly config or check injectors samples on `injector-examples` folder.
 
 ## Basic installation and examples
 
