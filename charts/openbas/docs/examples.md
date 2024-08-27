@@ -1,6 +1,8 @@
 # Examples
 
-## Global: create secrets
+## Global
+
+### Manage secrets
 
 Use `secrets` to create secrets to reference with `envFromSecrets`. By default the secret is created in the same namespace of the release.
 
@@ -29,7 +31,9 @@ Can reference the secret using `envFromSecrets` in any (is the same `Secret` for
 > [!NOTE]
 > A suggestion to facilitate the management of secrets is to use prefixes. For example, for collector secrets save `CONNECTOR_MISP_MY_SECRET` to reference `MISP` collector.
 
-## Server: health checks
+## Server
+
+## Enable health checks
 
 Enable `testConnection` to check if the service is reachable.
 
@@ -98,7 +102,9 @@ Output:
           - 'RETRY=0; until [ $RETRY -eq 30 ]; do nc -zv openbas-ci-rabbitmq 5672 && break; echo "[$RETRY/30] waiting service openbas-ci-rabbitmq:5672 is ready"; sleep 5; RETRY=$(($RETRY + 1)); done'
 ```
 
-## Collector: sample complete
+## Collector
+
+### Sample complete
 
 ```yaml
 collectors:
@@ -161,7 +167,9 @@ Or you can use affinity to run the collector in different node if you increase r
           topologyKey: kubernetes.io/hostname
 ```
 
-## Injector: sample complete
+## Injector
+
+## Sample complete
 
 ```yaml
 injectors:
@@ -219,4 +227,119 @@ Or you can use affinity to run the injector in different node if you increase re
                 values:
                   - http-query
           topologyKey: kubernetes.io/hostname
+```
+
+## Connector and Injector
+
+### Configure image
+
+You can configure default `image` to run the collector or use default `image`.
+
+If you don't set `image` block, by default use `openbas/<name-collector>:<Chart.AppVersion>`.
+
+```yaml
+collectors:
+- name: http-query
+  enabled: true
+  replicas: 1
+  ...
+```
+
+This config use default image: `openbas/http-query:1.1.0`
+
+You can configure `repository` and `tag` to use a custom image.
+
+```yaml
+collectors:
+- name: http-query
+  enabled: true
+  replicas: 1
+  image:
+    repository: my-private-repo/collector-http-query
+    tag: "1.1.0"
+  ...
+```
+
+Now, this config set an image: `my-private-repo/collector-http-query:1.1.0`
+
+### Configure serviceAccount
+
+You can configure default `serviceAccount` to run the collector or use a custom `serviceAccount`. Following code, create a `serviceAccount` named `test` to run the collector.
+
+```yaml
+...
+collectors:
+- name: http-query
+  enabled: true
+  replicas: 1
+  serviceAccount:
+    create: true
+    name: test
+    automountServiceAccountToken: true # false by default
+```
+
+Result:
+
+```yaml
+# Source: openbas/templates/collector/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: test
+  labels:
+    openbas.collector: http-query
+    ...
+automountServiceAccountToken: true
+--
+# Source: openbas/templates/collector/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-http-query-openbas
+  ...
+spec:
+  ...
+  template:
+    ...
+    spec:
+      serviceAccountName: test
+```
+
+If you want use default `name` (`<name-collector>-collector-<release-name>`) you can use `create: true` only.
+
+```yaml
+...
+collectors:
+- name: http-query
+  enabled: true
+  replicas: 1
+  serviceAccount:
+    create: true
+```
+
+Result:
+
+```yaml
+# Source: openbas/templates/collector/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sample-http-query-openbas
+  labels:
+    openbas.collector: splunk
+    ...
+automountServiceAccountToken: true
+--
+# Source: openbas/templates/collector/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-http-query-openbas
+  ...
+spec:
+  ...
+  template:
+    ...
+    spec:
+      serviceAccountName: sample-http-query-openbas
 ```

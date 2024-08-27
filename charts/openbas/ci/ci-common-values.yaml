@@ -1,6 +1,9 @@
 replicaCount: 1
 fullnameOverride: openbas-ci
 
+secrets:
+  OPENCTI_TOKEN: my-ci-cd
+
 env:
   INJECTOR_CALDERA_API_KEY: 0ce2182d-3e1a-4117-a1d4-8100a7b01d82
   INJECTOR_CALDERA_PUBLIC_URL: http://openbas-ci-caldera:8888
@@ -84,6 +87,8 @@ collectors:
   enabled: true
   replicas: 1
   image: {}
+  serviceAccount:
+    name: openbas-collector-ci
   deploymentAnnotations:
     ci: "true"
   podAnnotations:
@@ -99,7 +104,8 @@ injectors:
 - name: http-query
   enabled: true
   replicas: 1
-  image: {}
+  serviceAccount:
+    name: openbas-injector-ci
   deploymentAnnotations:
     ci: "true"
   podAnnotations:
