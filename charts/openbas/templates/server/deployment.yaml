@@ -22,17 +22,16 @@ spec:
       labels:
         openbas.component: server
         {{- include "openbas.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       {{- if .Values.imagePullSecrets }}
-      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- toYaml .Values.imagePullSecrets | nindent 8 }}
       {{- else if .Values.global.imagePullSecrets }}
-      {{- with .Values.global.imagePullSecrets }}
       imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- toYaml .Values.global.imagePullSecrets | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "openbas.serviceAccountName" . }}
       securityContext:
@@ -49,7 +48,15 @@ spec:
         command:
           - 'sh'
           - '-c'
-          - 'RETRY=0; until [ $RETRY -eq {{ $.Values.readyChecker.retries }} ]; do nc -zv {{ $.Values.fullnameOverride | default $.Release.Name }}-{{ $service.name }} {{ $service.port }} && break; echo "[$RETRY/{{ $.Values.readyChecker.retries }}] waiting service {{ $.Values.fullnameOverride | default $.Release.Name }}-{{ $service.name }}:{{ $service.port }} is ready"; sleep {{ $.Values.readyChecker.timeout }}; RETRY=$(($RETRY + 1)); done'
+          - >
+            RETRY=0;
+            until [ $RETRY -eq {{ $.Values.readyChecker.retries }} ];
+            do
+              nc -zv {{ $.Values.fullnameOverride | default $.Release.Name }}-{{ $service.name }} {{ $service.port }} && break;
+              echo "[$RETRY/{{ $.Values.readyChecker.retries }}] waiting service {{ $.Values.fullnameOverride | default $.Release.Name }}-{{ $service.name }}:{{ $service.port }} is ready";
+              sleep {{ $.Values.readyChecker.timeout }};
+              RETRY=$(($RETRY + 1));
+            done
       {{- end }}
       {{- end }}
       containers:
@@ -131,7 +138,6 @@ spec:
           {{- end }}
           {{- end }}
           {{- end }}
-
           # Add Variables in plain text if they were not already added from secrets
           {{- if .Values.env }}
           {{- range $key, $value := .Values.env }}
@@ -142,9 +148,16 @@ spec:
           {{- end }}
           {{- end }}
           {{- end }}
-
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+         {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
