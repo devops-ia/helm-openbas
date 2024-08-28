@@ -18,12 +18,15 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/caldera/configmap.yaml") . | sha256sum }}
-      {{- with .Values.caldera.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- with .Values.caldera.podAnnotations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
       labels:
         openbas.component: caldera
         {{- include "openbas.selectorLabels" . | nindent 8 }}
+        {{- with .Values.caldera.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       {{- if .Values.caldera.imagePullSecrets }}
       {{- with .Values.caldera.imagePullSecrets }}
@@ -58,7 +61,6 @@ spec:
           env:
           # Variables from secrets have precedence
           {{- $envList := dict -}}
-
           {{- if .Values.caldera.envFromSecrets }}
           {{- range $key, $value := .Values.caldera.envFromSecrets }}
           - name: {{ $key | upper }}
@@ -69,14 +71,12 @@ spec:
           {{- $_ := set $envList $key true }}
           {{- end }}
           {{- end }}
-
           # Special handling for OPENBAS_ADMIN_TOKEN which is constructed from other values
           {{- if and (not (hasKey $envList "OPENBAS_ADMIN_TOKEN")) (.Values.env.APP__ADMIN__TOKEN) }}
           - name: OPENBAS_ADMIN_TOKEN
             value: "{{ .Values.env.APP__ADMIN__TOKEN }}"
           {{- end }}
-
-          # Add Variables in plain text from .Values.caldera.env if they were not already added from secrets
+          # Add variables in plain text from .Values.caldera.env if they were not already added from secrets
           {{- if .Values.caldera.env }}
           {{- range $key, $value := .Values.caldera.env }}
           {{- if not (hasKey $envList $key) }}
@@ -86,17 +86,22 @@ spec:
           {{- end }}
           {{- end }}
           {{- end }}
-
           resources:
             {{- toYaml .Values.caldera.resources | nindent 12 }}
           volumeMounts:
             - name: config-volume
               mountPath: /usr/src/app/conf/local.yml
               subPath: local.yml
+          {{- with .Values.caldera.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
       volumes:
         - name: config-volume
           configMap:
             name: {{ include "openbas.fullname" . }}-caldera-config
+      {{- with .Values.caldera.volumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.caldera.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

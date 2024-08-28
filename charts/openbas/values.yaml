@@ -1,6 +1,13 @@
 # -- Global configuration
+# The global section contains configuration options that are applied to all services
+# @default - See below
+#
 global:
+  # Specifies the registry to pull images from. Leave empty for the default registry
+  #
   imageRegistry: ""
+  # Specifies the secrets to use for pulling images from private registries
+  # Leave empty if no secrets are required
   # E.g.
   # imagePullSecrets:
   #   - name: myRegistryKeySecretName
@@ -8,31 +15,46 @@ global:
   imagePullSecrets: []
 
 # -- Number of replicas
+# Specifies the number of replicas for the service
+#
 replicaCount: 1
 
 # -- Image registry
+# The image configuration for the base service
+# @default -- See below
+#
 image:
+  # The repository of the image
+  #
   repository: openbas/platform
+  # The pull policy for the image
+  #
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
+  # Overrides the image tag whose default is the chart appVersion
+  #
   tag: ""
 
 # -- String to partially override openbas.fullname template (will maintain the release name)
+#
 nameOverride: ""
 
 # -- String to fully override openbas.fullname template
+#
 fullnameOverride: ""
 
 # -- Global Docker registry secret names as an array
+#
 imagePullSecrets: []
 
 # -- Enable creation of ServiceAccount
+# @default - See below
+#
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
   # Annotations to add to the service account
   annotations: {}
-  # The name of the service account to use.
+  # The name of the service account to use
   # If not set and create is true, a name is generated using the fullname template
   name: ""
   # Specifies if you don't want the kubelet to automatically mount
@@ -40,14 +62,13 @@ serviceAccount:
   automountServiceAccountToken: false
 
 # -- Enable or disable test connection
+#
 testConnection: false
 
 # -- Environment variables to configure application
 # </br> Ref: https://docs.openbas.io/latest/deployment/configuration/#platform
+#
 env:
-  # Plain vars
-  # foo: bar
-  # my_env: my_value
   # APP OPENBAS
   OPENBAS_ADMIN_EMAIL: admin@openbas.io
   OPENBAS_ADMIN_PASSWORD: ChangeMe
@@ -74,26 +95,34 @@ env:
   OPENBAS_RABBITMQ_PASS: ChangeMe
 
 # -- Secrets from variables
+#
 envFromSecrets: {}
-  # Cipher vars
-  # my_env:
-  #  name: release-name-credentials
+  # MY_VARIABLE:
+  #  name: <release-name>-credentials
   #  key: secret_key
 
 # -- Secrets values to create credentials and reference by envFromSecrets
+# Generate Secret with following name: <release-name>-credentials
+#
 secrets: {}
 
 # -- Kubernetes service to expose Pod
+# </br> Ref: https://kubernetes.io/docs/concepts/services-networking/service/
+#
 service:
   # -- Kubernetes Service type. Allowed values: NodePort, LoadBalancer or ClusterIP
+  #
   type: ClusterIP
   # -- Kubernetes Service port
+  #
   port: 80
   # -- NodePort port (only when type is NodePort)
   # nodePort: 32000
   # -- Pod expose port
+  #
   targetPort: 8080
   # -- Pod extra ports
+  #
   # extraPorts:
   # - name: metrics
   #   port: 9080
@@ -101,6 +130,7 @@ service:
 
 # -- Configure liveness checker
 # </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-startup-probes
+#
 livenessProbe:
   enabled: true
   failureThreshold: 3
@@ -110,6 +140,7 @@ livenessProbe:
   timeoutSeconds: 5
 
 # -- Custom livenessProbe
+#
 livenessProbeCustom: {}
   # httpGet:
   #   path: /dashboard
@@ -122,6 +153,7 @@ livenessProbeCustom: {}
 
 # -- Configure readinessProbe checker
 # </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-startup-probes
+#
 readinessProbe:
   enabled: true
   failureThreshold: 3
@@ -131,6 +163,7 @@ readinessProbe:
   timeoutSeconds: 1
 
 # -- Custom readinessProbe
+#
 readinessProbeCustom: {}
   # httpGet:
   #   path: /dashboard
@@ -143,6 +176,7 @@ readinessProbeCustom: {}
 
 # -- Configure startupProbe checker
 # </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-startup-probes
+#
 startupProbe:
   enabled: true
   failureThreshold: 30
@@ -152,6 +186,7 @@ startupProbe:
   timeoutSeconds: 5
 
 # -- Custom startupProbe
+#
 startupProbeCustom: {}
   # httpGet:
   #   path: /dashboard
@@ -163,7 +198,9 @@ startupProbeCustom: {}
   # timeoutSeconds: 5
 
 # -- Enable or disable ready-checker
+#
 readyChecker:
+  # -- Enable or disable ready-checker
   enabled: true
   # -- Number of retries before giving up
   retries: 30
@@ -178,15 +215,25 @@ readyChecker:
   - name: rabbitmq
     port: 5672
 
-# -- Defines privilege and access control settings for a Pod.
+# -- Configure annotations on Pods
+#
+podAnnotations: {}
+
+# -- Configure labels on Pods
+#
+podLabels: {}
+
+# -- Defines privilege and access control settings for a Pod
 # </br> Ref: https://kubernetes.io/docs/concepts/security/pod-security-standards/
 # </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+#
 podSecurityContext: {}
   # fsGroup: 2000
 
-# -- Defines privilege and access control settings for a Container.
+# -- Defines privilege and access control settings for a Container
 # </br> Ref: https://kubernetes.io/docs/concepts/security/pod-security-standards/
 # </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+#
 securityContext: {}
   # capabilities:
   #   drop:
@@ -196,6 +243,8 @@ securityContext: {}
   # runAsUser: 1000
 
 # -- Ingress configuration to expose app
+# </br> Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
+#
 ingress:
   enabled: false
   className: ""
@@ -213,11 +262,13 @@ ingress:
   #      - chart-example.local
 
 # -- The resources limits and requested
+# </br> Ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+#
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'
   # limits:
   #   cpu: "1500m"
   #   memory: 2048Mi
@@ -226,6 +277,8 @@ resources: {}
   #   memory: 256Mi
 
 # -- Autoscaling with CPU or memory utilization percentage
+# </br> Ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
+#
 autoscaling:
   enabled: false
   minReplicas: 1
@@ -233,23 +286,43 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
+# -- Additional volumes on the output Deployment definition
+#
+volumes: []
+# - name: foo
+#   secret:
+#     secretName: mysecret
+#     optional: false
+
+# -- Additional volumeMounts on the output Deployment definition
+#
+volumeMounts: []
+# - name: foo
+#   mountPath: "/etc/foo"
+#   readOnly: true
+
 # -- Node labels for pod assignment
+# </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
+#
 nodeSelector: {}
 
 # -- Tolerations for pod assignment
+# </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+#
 tolerations: []
 
 # -- Affinity for pod assignment
+# </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity
+#
 affinity: {}
 
 # -- Collector Global environment
-collectorGlobalEnv:
-  # Plain vars
-  # foo: bar
-  # my_env: my_value
+collectorGlobalEnv: {}
+  # MY_VARIABLE: my_value
 
 # -- Collectors
 # </br> Ref: https://github.com/OpenBAS-Platform/collectors
+#
 collectors: []
 # - name: connector-name
 #   enabled: true
@@ -295,13 +368,13 @@ collectors: []
 #   affinity: {}
 
 # -- Injector Global environment
-injectorGlobalEnv:
-  # Plain vars
-  # foo: bar
-  # my_env: my_value
+#
+injectorGlobalEnv: {}
+  # MY_VARIABLE: my_value
 
 # -- Injectors
 # </br> Ref: https://github.com/OpenBAS-Platform/injectors
+#
 injectors: []
 # - name: connector-name
 #   enabled: true
@@ -347,20 +420,36 @@ injectors: []
 #   affinity: {}
 
 # -- OpenBAS caldera-server deployment configuration
+#
 caldera:
+  # -- Enable or disable Caldera server
+  #
   enabled: true
 
   # -- Number of replicas
+  # Specifies the number of replicas for the service
+  #
   replicaCount: 1
 
   # -- Image registry
+  # The image configuration for the base service
+  # @default -- See below
+  #
   image:
+    # The repository of the image
+    #
     repository: openbas/caldera-server
+    # The pull policy for the image
+    #
     pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion
     # Fixed with CI/CD updatecli
+    #
     tag: 5.0.0
 
   # -- Ingress configuration to expose app
+  # </br> Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
+  #
   ingress:
     enabled: false
     className: ""
@@ -378,30 +467,37 @@ caldera:
     #      - chart-example.local
 
   # -- Kubernetes service to expose Pod
+  # </br> Ref: https://kubernetes.io/docs/concepts/services-networking/service/
+  #
   service:
     # -- Kubernetes Service type. Allowed values: NodePort, LoadBalancer or ClusterIP
+    #
     type: ClusterIP
     # -- Kubernetes Service port
+    #
     port: 8888
     # -- NodePort port (only when type is NodePort)
     # nodePort: 32000
     # -- Pod expose port
+    #
     targetPort: 8888
 
   # -- Environment variables to configure application
   # </br> Ref: https://docs.openbas.io/latest/deployment/configuration/#platform
+  #
   env: {}
     # CALDERA_URL: "http://localhost:8080"
 
   # -- Secrets from variables
+  #
   envFromSecrets: {}
-    # Cipher vars
-    # my_env:
+    # MY_VARIABLE:
     #  name: release-name-credentials
     #  key: secret_key
 
   # -- Caldera configuration
   # </br> Ref: https://github.com/OpenBAS-Platform/docker/blob/master/caldera.yml
+  #
   config: {}
     # users:
     #   red:
@@ -456,15 +552,25 @@ caldera:
     #   - stockpile
     #   - training
 
-  # -- Defines privilege and access control settings for a Pod.
+  # -- Configure annotations on Pods
+  #
+  podAnnotations: {}
+
+  # -- Configure labels on Pods
+  #
+  podLabels: {}
+
+  # -- Defines privilege and access control settings for a Pod
   # </br> Ref: https://kubernetes.io/docs/concepts/security/pod-security-standards/
   # </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  #
   podSecurityContext: {}
     # fsGroup: 2000
 
-  # -- Defines privilege and access control settings for a Container.
+  # -- Defines privilege and access control settings for a Container
   # </br> Ref: https://kubernetes.io/docs/concepts/security/pod-security-standards/
   # </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  #
   securityContext: {}
     # capabilities:
     #   drop:
@@ -474,11 +580,13 @@ caldera:
     # runAsUser: 1000
 
   # -- The resources limits and requested
+  # </br> Ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+  #
   resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
     # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'
     # limits:
     #   cpu: "250m"
     #   memory: 256Mi
@@ -487,6 +595,8 @@ caldera:
     #   memory: 56Mi
 
   # -- Autoscaling with CPU or memory utilization percentage
+  # </br> Ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
+  #
   autoscaling:
     enabled: false
     minReplicas: 1
@@ -494,13 +604,34 @@ caldera:
     targetCPUUtilizationPercentage: 80
     # targetMemoryUtilizationPercentage: 80
 
+  # -- Additional volumes on the output Deployment definition
+  #
+  volumes: []
+  # - name: foo
+  #   secret:
+  #     secretName: mysecret
+  #     optional: false
+
+  # -- Additional volumeMounts on the output Deployment definition
+  #
+  volumeMounts: []
+  # - name: foo
+  #   mountPath: "/etc/foo"
+  #   readOnly: true
+
   # -- Node labels for pod assignment
+  # </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
+  #
   nodeSelector: {}
 
   # -- Tolerations for pod assignment
+  # </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+  #
   tolerations: []
 
   # -- Affinity for pod assignment
+  # </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity
+  #
   affinity: {}
 
 # -- MinIO subchart deployment
@@ -528,6 +659,7 @@ minio:
 
 # -- PostgreSQL subchart deployment
 # </br> Ref: https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml
+#
 postgresql:
     # -- Enable or disable PostgreSQL subchart
   enabled: true
@@ -554,6 +686,7 @@ postgresql:
 
 # -- RabbitMQ subchart deployment
 # </br> Ref: https://github.com/bitnami/charts/blob/main/bitnami/rabbitmq/values.yaml
+#
 rabbitmq:
     # -- Enable or disable RabbitMQ subchart
   enabled: true
