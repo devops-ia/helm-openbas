@@ -43,7 +43,7 @@ serviceAccount:
 testConnection: false
 
 # -- Environment variables to configure application
-# Ref: https://docs.openbas.io/latest/deployment/configuration/#platform
+# </br> Ref: https://docs.openbas.io/latest/deployment/configuration/#platform
 env:
   # Plain vars
   # foo: bar
@@ -100,7 +100,7 @@ service:
   #   targetPort: 9080
 
 # -- Configure liveness checker
-# Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-startup-probes
+# </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-startup-probes
 livenessProbe:
   enabled: true
   failureThreshold: 3
@@ -121,7 +121,7 @@ livenessProbeCustom: {}
   # timeoutSeconds: 5
 
 # -- Configure readinessProbe checker
-# Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-startup-probes
+# </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-startup-probes
 readinessProbe:
   enabled: true
   failureThreshold: 3
@@ -142,7 +142,7 @@ readinessProbeCustom: {}
   # timeoutSeconds: 5
 
 # -- Configure startupProbe checker
-# Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-startup-probes
+# </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-startup-probes
 startupProbe:
   enabled: true
   failureThreshold: 30
@@ -177,6 +177,23 @@ readyChecker:
     port: 5432
   - name: rabbitmq
     port: 5672
+
+# -- Defines privilege and access control settings for a Pod.
+# </br> Ref: https://kubernetes.io/docs/concepts/security/pod-security-standards/
+# </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+podSecurityContext: {}
+  # fsGroup: 2000
+
+# -- Defines privilege and access control settings for a Container.
+# </br> Ref: https://kubernetes.io/docs/concepts/security/pod-security-standards/
+# </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
 
 # -- Ingress configuration to expose app
 ingress:
@@ -232,7 +249,7 @@ collectorGlobalEnv:
   # my_env: my_value
 
 # -- Collectors
-# Ref: https://github.com/OpenBAS-Platform/collectors
+# </br> Ref: https://github.com/OpenBAS-Platform/collectors
 collectors: []
 # - name: connector-name
 #   enabled: true
@@ -284,7 +301,7 @@ injectorGlobalEnv:
   # my_env: my_value
 
 # -- Injectors
-# Ref: https://github.com/OpenBAS-Platform/injectors
+# </br> Ref: https://github.com/OpenBAS-Platform/injectors
 injectors: []
 # - name: connector-name
 #   enabled: true
@@ -372,7 +389,7 @@ caldera:
     targetPort: 8888
 
   # -- Environment variables to configure application
-  # Ref: https://docs.openbas.io/latest/deployment/configuration/#platform
+  # </br> Ref: https://docs.openbas.io/latest/deployment/configuration/#platform
   env: {}
     # CALDERA_URL: "http://localhost:8080"
 
@@ -384,7 +401,7 @@ caldera:
     #  key: secret_key
 
   # -- Caldera configuration
-  # Ref: https://github.com/OpenBAS-Platform/docker/blob/master/caldera.yml
+  # </br> Ref: https://github.com/OpenBAS-Platform/docker/blob/master/caldera.yml
   config: {}
     # users:
     #   red:
@@ -439,6 +456,23 @@ caldera:
     #   - stockpile
     #   - training
 
+  # -- Defines privilege and access control settings for a Pod.
+  # </br> Ref: https://kubernetes.io/docs/concepts/security/pod-security-standards/
+  # </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  podSecurityContext: {}
+    # fsGroup: 2000
+
+  # -- Defines privilege and access control settings for a Container.
+  # </br> Ref: https://kubernetes.io/docs/concepts/security/pod-security-standards/
+  # </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  securityContext: {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+
   # -- The resources limits and requested
   resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
@@ -470,14 +504,14 @@ caldera:
   affinity: {}
 
 # -- MinIO subchart deployment
-# Ref: https://github.com/bitnami/charts/blob/main/bitnami/minio/values.yaml
+# </br> Ref: https://github.com/bitnami/charts/blob/main/bitnami/minio/values.yaml
 #
 minio:
   # -- Enable or disable MinIO subchart
   enabled: true
 
   # -- mode Minio server mode (`standalone` or `distributed`)
-  # Ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
+  # </br> Ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
   mode: standalone
   # Minio authentication parameters
   auth:
@@ -487,13 +521,13 @@ minio:
     rootPassword: ChangeMe
 
   # -- Enable persistence using Persistent Volume Claims
-  # Ref: https://kubernetes.io/docs/user-guide/persistent-volumes/
+  # </br> Ref: https://kubernetes.io/docs/user-guide/persistent-volumes/
   persistence:
     # -- Enable MinIO data persistence using PVC. If false, use emptyDir
     enabled: false
 
 # -- PostgreSQL subchart deployment
-# Ref: https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml
+# </br> Ref: https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml
 postgresql:
     # -- Enable or disable PostgreSQL subchart
   enabled: true
@@ -504,13 +538,13 @@ postgresql:
   # -- PostgreSQL Authentication parameters
   auth:
     # -- PostgreSQL application username
-    # Ref: https://github.com/bitnami/containers/tree/main/bitnami/postgresql#environment-variables
+    # </br> Ref: https://github.com/bitnami/containers/tree/main/bitnami/postgresql#environment-variables
     username: user
     # -- PostgreSQL application password
-    # Ref: https://github.com/bitnami/containers/tree/main/bitnami/postgresql#environment-variables
+    # </br> Ref: https://github.com/bitnami/containers/tree/main/bitnami/postgresql#environment-variables
     password: ChangeMe
     # -- PostgreSQL application database
-    # Ref: https://github.com/bitnami/containers/tree/main/bitnami/postgresql#environment-variables
+    # </br> Ref: https://github.com/bitnami/containers/tree/main/bitnami/postgresql#environment-variables
     database: "openbas"
 
   # -- Persistence parameters
@@ -519,7 +553,7 @@ postgresql:
     enabled: false
 
 # -- RabbitMQ subchart deployment
-# Ref: https://github.com/bitnami/charts/blob/main/bitnami/rabbitmq/values.yaml
+# </br> Ref: https://github.com/bitnami/charts/blob/main/bitnami/rabbitmq/values.yaml
 rabbitmq:
     # -- Enable or disable RabbitMQ subchart
   enabled: true
@@ -535,10 +569,10 @@ rabbitmq:
   # -- RabbitMQ Authentication parameters
   auth:
     # -- RabbitMQ application username
-    # Ref: https://github.com/bitnami/containers/tree/main/bitnami/rabbitmq#environment-variables
+    # </br> Ref: https://github.com/bitnami/containers/tree/main/bitnami/rabbitmq#environment-variables
     username: user
     # -- RabbitMQ application password
-    # Ref: https://github.com/bitnami/containers/tree/main/bitnami/rabbitmq#environment-variables
+    # </br> Ref: https://github.com/bitnami/containers/tree/main/bitnami/rabbitmq#environment-variables
     password: ChangeMe
     erlangCookie: ChangeMe
 
