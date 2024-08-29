@@ -1,9 +1,6 @@
 replicaCount: 1
 fullnameOverride: openbas-ci
 
-secrets:
-  OPENCTI_TOKEN: my-ci-cd
-
 env:
   INJECTOR_CALDERA_API_KEY: 0ce2182d-3e1a-4117-a1d4-8100a7b01d82
   INJECTOR_CALDERA_PUBLIC_URL: http://openbas-ci-caldera:8888
@@ -26,7 +23,7 @@ env:
   SPRING_DATASOURCE_URL: jdbc:postgresql://openbas-ci-postgresql:5432/openbas
   SPRING_DATASOURCE_USERNAME: user
 
-testConnection: false
+testConnection: true
 
 autoscaling:
   enabled: true
@@ -86,17 +83,17 @@ collectors:
 - name: atomic-red-team
   enabled: true
   replicas: 1
-  image: {}
   serviceAccount:
+    create: true
     name: openbas-collector-ci
   deploymentAnnotations:
     ci: "true"
   podAnnotations:
     ci: "true"
   env:
-    OPENBAS_URL: http://localhost
-    OPENBAS_TOKEN: ChangeMe
-    COLLECTOR_ID: ChangeMe
+    OPENBAS_URL: http://openbas-ci:8080
+    OPENBAS_TOKEN: b1976749-8a53-4f49-bf04-cafa2a3458c1
+    COLLECTOR_ID: e668aa07-e1a3-41d8-8748-786be5df9dab
     COLLECTOR_NAME: "Atomic Red Team"
     COLLECTOR_LOG_LEVEL: error
 
@@ -111,9 +108,9 @@ injectors:
   podAnnotations:
     ci: "true"
   env:
-    OPENBAS_URL: http://localhost
-    OPENBAS_TOKEN: ChangeMe
-    INJECTOR_ID: ChangeMe
+    OPENBAS_URL: http://openbas-ci:8080
+    OPENBAS_TOKEN: b1976749-8a53-4f49-bf04-cafa2a3458c1
+    INJECTOR_ID: e668aa07-e1a3-41d8-8748-786be5df9dab
     INJECTOR_NAME: "HTTP query"
     INJECTOR_LOG_LEVEL: error
 
