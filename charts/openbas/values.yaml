@@ -1,12 +1,11 @@
-# -- Global configuration
-# The global section contains configuration options that are applied to all services
+# -- Global section contains configuration options that are applied to all services
 # @default - See below
 #
 global:
-  # Specifies the registry to pull images from. Leave empty for the default registry
+  # -- Specifies the registry to pull images from. Leave empty for the default registry
   #
   imageRegistry: ""
-  # Specifies the secrets to use for pulling images from private registries
+  # -- Specifies the secrets to use for pulling images from private registries
   # Leave empty if no secrets are required
   # E.g.
   # imagePullSecrets:
@@ -14,23 +13,21 @@ global:
   #
   imagePullSecrets: []
 
-# -- Number of replicas
-# Specifies the number of replicas for the service
+# -- Number of replicas for the service
 #
 replicaCount: 1
 
-# -- Image registry
-# The image configuration for the base service
+# -- Image registry configuration for the base service
 # @default -- See below
 #
 image:
-  # The repository of the image
+  # -- Repository of the image
   #
   repository: openbas/platform
-  # The pull policy for the image
+  # -- Pull policy for the image
   #
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion
+  # -- Overrides the image tag whose default is the chart appVersion
   #
   tag: ""
 
@@ -50,14 +47,14 @@ imagePullSecrets: []
 # @default - See below
 #
 serviceAccount:
-  # Specifies whether a service account should be created
+  # -- Specifies whether a service account should be created
   create: true
-  # Annotations to add to the service account
+  # -- Annotations to add to the service account
   annotations: {}
-  # The name of the service account to use
+  # -- Name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: ""
-  # Specifies if you don't want the kubelet to automatically mount
+  # -- Specifies if you don't want the kubelet to automatically mount
   # a ServiceAccount's API credentials
   automountServiceAccountToken: false
 
@@ -102,7 +99,7 @@ envFromSecrets: {}
   #  key: secret_key
 
 # -- Secrets values to create credentials and reference by envFromSecrets
-# Generate Secret with following name: <release-name>-credentials
+# Generate Secret with following name: `<release-name>-credentials``
 #
 secrets: {}
 
@@ -317,6 +314,7 @@ tolerations: []
 affinity: {}
 
 # -- Collector Global environment
+#
 collectorGlobalEnv: {}
   # MY_VARIABLE: my_value
 
@@ -426,24 +424,21 @@ caldera:
   #
   enabled: true
 
-  # -- Number of replicas
-  # Specifies the number of replicas for the service
+  # -- Number of replicas for the service
   #
   replicaCount: 1
 
-  # -- Image registry
-  # The image configuration for the base service
+  # -- Image registry configuration for the base service
   # @default -- See below
   #
   image:
-    # The repository of the image
+    # -- Repository of the image
     #
     repository: openbas/caldera-server
-    # The pull policy for the image
+    # -- Pull policy for the image
     #
     pullPolicy: IfNotPresent
-    # Overrides the image tag whose default is the chart appVersion
-    # Fixed with CI/CD updatecli
+    # -- Overrides the image tag whose default is the chart appVersion
     #
     tag: 5.0.0
 
@@ -641,20 +636,26 @@ minio:
   # -- Enable or disable MinIO subchart
   enabled: true
 
-  # -- mode Minio server mode (`standalone` or `distributed`)
+  # mode Minio server mode (`standalone` or `distributed`)
   # </br> Ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
+  #
   mode: standalone
   # Minio authentication parameters
+  #
   auth:
-    # -- Minio root username
+    # Minio root username
+    #
     rootUser: ChangeMe
-    # -- Password for Minio root user
+    # Password for Minio root user
+    #
     rootPassword: ChangeMe
 
-  # -- Enable persistence using Persistent Volume Claims
+  # Enable persistence using Persistent Volume Claims
   # </br> Ref: https://kubernetes.io/docs/user-guide/persistent-volumes/
+  #
   persistence:
-    # -- Enable MinIO data persistence using PVC. If false, use emptyDir
+    # Enable MinIO data persistence using PVC. If false, use emptyDir
+    #
     enabled: false
 
 # -- PostgreSQL subchart deployment
@@ -662,54 +663,71 @@ minio:
 #
 postgresql:
     # -- Enable or disable PostgreSQL subchart
+    #
   enabled: true
 
-  # -- Number of PostgreSQL replicas to deploy
+  # Number of PostgreSQL replicas to deploy
+  #
   replicaCount: 1
 
-  # -- PostgreSQL Authentication parameters
+  # PostgreSQL Authentication parameters
+  #
   auth:
-    # -- PostgreSQL application username
+    # PostgreSQL application username
     # </br> Ref: https://github.com/bitnami/containers/tree/main/bitnami/postgresql#environment-variables
+    #
     username: user
-    # -- PostgreSQL application password
+    # PostgreSQL application password
     # </br> Ref: https://github.com/bitnami/containers/tree/main/bitnami/postgresql#environment-variables
+    #
     password: ChangeMe
-    # -- PostgreSQL application database
+    # PostgreSQL application database
     # </br> Ref: https://github.com/bitnami/containers/tree/main/bitnami/postgresql#environment-variables
+    #
     database: "openbas"
 
-  # -- Persistence parameters
+  # Persistence parameters
+  #
   persistence:
-    # -- Enable PostgreSQL data persistence using PVC
+    # Enable PostgreSQL data persistence using PVC
+    #
     enabled: false
 
 # -- RabbitMQ subchart deployment
 # </br> Ref: https://github.com/bitnami/charts/blob/main/bitnami/rabbitmq/values.yaml
 #
 rabbitmq:
-    # -- Enable or disable RabbitMQ subchart
+  # -- Enable or disable RabbitMQ subchart
+  #
   enabled: true
 
-  # -- Number of RabbitMQ replicas to deploy
+  # Number of RabbitMQ replicas to deploy
+  #
   replicaCount: 1
 
-  # -- Clustering settings
+  # Clustering settings
+  #
   clustering:
-    # -- Enable RabbitMQ clustering
+    # Enable RabbitMQ clustering
+    #
     enabled: false
 
-  # -- RabbitMQ Authentication parameters
+  # RabbitMQ Authentication parameters
+  #
   auth:
-    # -- RabbitMQ application username
+    # RabbitMQ application username
     # </br> Ref: https://github.com/bitnami/containers/tree/main/bitnami/rabbitmq#environment-variables
+    #
     username: user
-    # -- RabbitMQ application password
+    # RabbitMQ application password
     # </br> Ref: https://github.com/bitnami/containers/tree/main/bitnami/rabbitmq#environment-variables
+    #
     password: ChangeMe
     erlangCookie: ChangeMe
 
-  # -- Persistence parameters
+  # Persistence parameters
+  #
   persistence:
-    # -- Enable RabbitMQ data persistence using PVC
+    # Enable RabbitMQ data persistence using PVC
+    #
     enabled: false
