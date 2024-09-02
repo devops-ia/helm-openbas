@@ -83,6 +83,8 @@ collectors:
 - name: atomic-red-team
   enabled: true
   replicas: 1
+  image:
+    repository: openbas/collector-atomic-red-team
   serviceAccount:
     create: true
     name: openbas-collector-ci
@@ -101,7 +103,10 @@ injectors:
 - name: http-query
   enabled: true
   replicas: 1
+  image:
+    repository: openbas/injector-http-query
   serviceAccount:
+    create: true
     name: openbas-injector-ci
   deploymentAnnotations:
     ci: "true"

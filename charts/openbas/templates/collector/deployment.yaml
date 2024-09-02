@@ -84,9 +84,14 @@ spec:
           {{- end }}
           {{- end }}
           # Special handling for OPENBAS_TOKEN which is constructed from other values
-          {{- if and (not (hasKey $envList "OPENBAS_TOKEN")) ($.Values.env.OPENBAS_ADMIN_TOKEN) }}
+          {{- if and (not (hasKey $envList "OPENBAS_TOKEN")) (or ($.Values.secrets.OPENBAS_ADMIN_TOKEN) ($.Values.env.OPENBAS_ADMIN_TOKEN)) }}
+          {{- if $.Values.secrets.OPENBAS_ADMIN_TOKEN }}
           - name: OPENBAS_TOKEN
-            value: "{{ $.Values.env.OPENBAS_ADMIN_TOKEN }}"
+            value: {{ $.Values.secrets.OPENBAS_ADMIN_TOKEN }}
+          {{- else if $.Values.env.OPENBAS_ADMIN_TOKEN }}
+          - name: OPENBAS_TOKEN
+            value: {{ $.Values.env.OPENBAS_ADMIN_TOKEN }}
+          {{- end }}
           {{- end }}
           resources:
             {{- toYaml .resources | nindent 12 }}

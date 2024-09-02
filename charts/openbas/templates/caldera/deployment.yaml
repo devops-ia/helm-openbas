@@ -53,11 +53,9 @@ spec:
           {{- end }}
           imagePullPolicy: {{ .Values.caldera.image.pullPolicy }}
           ports:
-            {{- if .Values.caldera.env.WORKER_TELEMETRY_ENABLED }}
-            - name: metrics
-              containerPort: {{ .Values.caldera.env.WORKER_PROMETHEUS_TELEMETRY_PORT | default 14269 }}
+            - name: http
+              containerPort: {{ .Values.caldera.service.targetPort | default .Values.caldera.service.port }}
               protocol: TCP
-            {{- end }}
           env:
           # Variables from secrets have precedence
           {{- $envList := dict -}}
@@ -80,11 +78,6 @@ spec:
           {{- $_ := set $envList $key true }}
           {{- end }}
           {{- end }}
-          {{- end }}
-          # Special handling for OPENBAS_ADMIN_TOKEN which is constructed from other values
-          {{- if and (not (hasKey $envList "OPENBAS_ADMIN_TOKEN")) (.Values.env.APP__ADMIN__TOKEN) }}
-          - name: OPENBAS_ADMIN_TOKEN
-            value: "{{ .Values.env.APP__ADMIN__TOKEN }}"
           {{- end }}
           resources:
             {{- toYaml .Values.caldera.resources | nindent 12 }}
