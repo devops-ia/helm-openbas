@@ -44,6 +44,29 @@ spec:
       {{- end }}
       securityContext:
         {{- toYaml .podSecurityContext | nindent 8 }}
+      {{ if and .readyChecker (hasKey .readyChecker "enabled") }}
+      {{- if .readyChecker.enabled }}
+      initContainers:
+      - name: ready-checker-server
+        {{- if $.Values.global.imageRegistry }}
+        image: "{{ $.Values.global.imageRegistry }}/busybox"
+        {{- else }}
+        image: busybox
+        {{- end }}
+        command:
+          - 'sh'
+          - '-c'
+          - >
+            RETRY=0;
+            until [ $RETRY -eq {{ .readyChecker.retries }} ];
+            do
+              nc -zv {{ $.Values.fullnameOverride | default (include "openbas.fullname" $) }}-server {{ $.Values.service.port }} && break;
+              echo "[$RETRY/{{ .readyChecker.retries }}] waiting service {{ $.Values.fullnameOverride | default (include "openbas.fullname" $) }}-server:{{ $.Values.service.port }} is ready";
+              sleep {{ .readyChecker.timeout }};
+              RETRY=$(($RETRY + 1));
+            done
+      {{- end }}
+      {{- end }}
       containers:
         - name: {{ $injectorName }}-injector
           securityContext:
