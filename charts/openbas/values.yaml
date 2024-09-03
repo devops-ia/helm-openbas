@@ -339,6 +339,13 @@ collectors: []
 #   deploymentAnnotations: {}
 #   # -- Pod annotations
 #   podAnnotations: {}
+#   # -- Enable or disable ready-checker waiting server is ready
+#   readyChecker:
+#     enabled: true
+#     # -- Number of retries before giving up
+#     retries: 30
+#     # -- Timeout for each check
+#     timeout: 5
 #   # -- Secrets from variables
 #   envFromSecrets: {}
 #     # Cipher vars
@@ -391,6 +398,13 @@ injectors: []
 #   deploymentAnnotations: {}
 #   # -- Pod annotations
 #   podAnnotations: {}
+#   # -- Enable or disable ready-checker waiting server is ready
+#   readyChecker:
+#     enabled: true
+#     # -- Number of retries before giving up
+#     retries: 30
+#     # -- Timeout for each check
+#     timeout: 5
 #   # -- Secrets from variables
 #   envFromSecrets: {}
 #     # Cipher vars
