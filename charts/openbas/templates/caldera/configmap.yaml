@@ -3,6 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ include "openbas.fullname" . }}-caldera-config
   labels:
+    openbas.component: caldera
     {{- include "openbas.labels" . | nindent 4 }}
 data:
   local.yml: |

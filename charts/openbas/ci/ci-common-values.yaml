@@ -25,11 +25,18 @@ env:
 
 testConnection: true
 
+networkPolicy:
+  enabled: true
+
+podDisruptionBudget:
+  enabled: true
+
 autoscaling:
   enabled: true
 
 caldera:
   enabled: true
+
   env:
     CALDERA_URL: http://openbas-ci-caldera:8888
   config:
@@ -78,6 +85,12 @@ caldera:
       - sandcat
       - stockpile
       - training
+
+  networkPolicy:
+    enabled: true
+
+  podDisruptionBudget:
+    enabled: true
 
 collectors:
 - name: atomic-red-team
