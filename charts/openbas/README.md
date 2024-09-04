@@ -77,86 +77,94 @@ helm show values openbas/openbas
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| affinity | object | `{}` | Affinity for pod assignment </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity  |
-| autoscaling | object | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Autoscaling with CPU or memory utilization percentage </br> Ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/  |
-| caldera | object | `{"affinity":{},"autoscaling":{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80},"config":{},"enabled":true,"env":{},"envFromSecrets":{},"image":{"pullPolicy":"IfNotPresent","repository":"openbas/caldera-server","tag":"5.0.0"},"ingress":{"annotations":{},"className":"","enabled":false,"hosts":[{"host":"chart-example.local","paths":[{"path":"/","pathType":"ImplementationSpecific"}]}],"tls":[]},"nodeSelector":{},"podAnnotations":{},"podLabels":{},"podSecurityContext":{},"replicaCount":1,"resources":{},"securityContext":{},"service":{"port":8888,"targetPort":8888,"type":"ClusterIP"},"tolerations":[],"volumeMounts":[],"volumes":[]}` | OpenBAS caldera-server deployment configuration  |
-| caldera.affinity | object | `{}` | Affinity for pod assignment </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity  |
-| caldera.autoscaling | object | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Autoscaling with CPU or memory utilization percentage </br> Ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/  |
-| caldera.config | object | `{}` | Caldera configuration </br> Ref: https://github.com/OpenBAS-Platform/docker/blob/master/caldera.yml  |
-| caldera.enabled | bool | `true` | Enable or disable Caldera server  |
-| caldera.env | object | `{}` | Environment variables to configure application </br> Ref: https://docs.openbas.io/latest/deployment/configuration/#platform  |
-| caldera.envFromSecrets | object | `{}` | Secrets from variables  |
-| caldera.image | object | See below | Image registry configuration for the base service  |
-| caldera.image.pullPolicy | string | `"IfNotPresent"` | Pull policy for the image  |
-| caldera.image.repository | string | `"openbas/caldera-server"` | Repository of the image  |
-| caldera.image.tag | string | `"5.0.0"` | Overrides the image tag whose default is the chart appVersion  |
-| caldera.ingress | object | `{"annotations":{},"className":"","enabled":false,"hosts":[{"host":"chart-example.local","paths":[{"path":"/","pathType":"ImplementationSpecific"}]}],"tls":[]}` | Ingress configuration to expose app </br> Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/  |
-| caldera.nodeSelector | object | `{}` | Node labels for pod assignment </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector  |
-| caldera.podAnnotations | object | `{}` | Configure annotations on Pods  |
-| caldera.podLabels | object | `{}` | Configure labels on Pods  |
-| caldera.podSecurityContext | object | `{}` | Defines privilege and access control settings for a Pod </br> Ref: https://kubernetes.io/docs/concepts/security/pod-security-standards/ </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/  |
-| caldera.replicaCount | int | `1` | Number of replicas for the service  |
-| caldera.resources | object | `{}` | The resources limits and requested </br> Ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/  |
-| caldera.securityContext | object | `{}` | Defines privilege and access control settings for a Container </br> Ref: https://kubernetes.io/docs/concepts/security/pod-security-standards/ </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/  |
-| caldera.service | object | `{"port":8888,"targetPort":8888,"type":"ClusterIP"}` | Kubernetes service to expose Pod </br> Ref: https://kubernetes.io/docs/concepts/services-networking/service/  |
-| caldera.service.port | int | `8888` | Kubernetes Service port  |
-| caldera.service.targetPort | int | `8888` | Pod expose port  |
-| caldera.service.type | string | `"ClusterIP"` | Kubernetes Service type. Allowed values: NodePort, LoadBalancer or ClusterIP  |
-| caldera.tolerations | list | `[]` | Tolerations for pod assignment </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/  |
-| caldera.volumeMounts | list | `[]` | Additional volumeMounts on the output Deployment definition  |
-| caldera.volumes | list | `[]` | Additional volumes on the output Deployment definition  |
-| collectorGlobalEnv | object | `{}` | Collector Global environment  |
-| collectors | list | `[]` | Collectors </br> Ref: https://github.com/OpenBAS-Platform/collectors  |
-| env | object | `{"INJECTOR_CALDERA_API_KEY":"ChangeMe","INJECTOR_CALDERA_PUBLIC_URL":"http://release-name-caldera:8888","INJECTOR_CALDERA_URL":"http://release-name-caldera:8888","MINIO_ENDPOINT":"release-name-minio:9000","OPENBAS_ADMIN_EMAIL":"admin@openbas.io","OPENBAS_ADMIN_PASSWORD":"ChangeMe","OPENBAS_ADMIN_TOKEN":"ChangeMe","OPENBAS_AUTH-LOCAL-ENABLE":true,"OPENBAS_BASE-URL":"http://localhost:8080","OPENBAS_RABBITMQ_HOSTNAME":"release-name-rabbitmq","OPENBAS_RABBITMQ_MANAGEMENT-PORT":15672,"OPENBAS_RABBITMQ_PASS":"ChangeMe","OPENBAS_RABBITMQ_PORT":5672,"OPENBAS_RABBITMQ_USER":"user","SERVER_ADDRESS":"0.0.0.0","SERVER_PORT":8080,"SPRING_DATASOURCE_PASSWORD":"ChangeMe","SPRING_DATASOURCE_URL":"jdbc:postgresql://release-name-postgresql:5432/openbas","SPRING_DATASOURCE_USERNAME":"user"}` | Environment variables to configure application </br> Ref: https://docs.openbas.io/latest/deployment/configuration/#platform  |
-| envFromSecrets | object | `{}` | Secrets from variables  |
-| fullnameOverride | string | `""` | String to fully override openbas.fullname template  |
-| global | object | `{"imagePullSecrets":[],"imageRegistry":""}` | Global section contains configuration options that are applied to all services @default - See below  |
-| global.imagePullSecrets | list | `[]` | Specifies the secrets to use for pulling images from private registries Leave empty if no secrets are required E.g. imagePullSecrets:   - name: myRegistryKeySecretName  |
-| global.imageRegistry | string | `""` | Specifies the registry to pull images from. Leave empty for the default registry  |
-| image | object | See below | Image registry configuration for the base service  |
-| image.pullPolicy | string | `"IfNotPresent"` | Pull policy for the image  |
-| image.repository | string | `"openbas/platform"` | Repository of the image  |
-| image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion  |
-| imagePullSecrets | list | `[]` | Global Docker registry secret names as an array  |
-| ingress | object | `{"annotations":{},"className":"","enabled":false,"hosts":[{"host":"chart-example.local","paths":[{"path":"/","pathType":"ImplementationSpecific"}]}],"tls":[]}` | Ingress configuration to expose app </br> Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/  |
-| injectorGlobalEnv | object | `{}` | Injector Global environment  |
-| injectors | list | `[]` | Injectors </br> Ref: https://github.com/OpenBAS-Platform/injectors  |
-| livenessProbe | object | `{"enabled":true,"failureThreshold":3,"initialDelaySeconds":180,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":5}` | Configure liveness checker </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-startup-probes  |
-| livenessProbeCustom | object | `{}` | Custom livenessProbe  |
-| minio | object | `{"auth":{"rootPassword":"ChangeMe","rootUser":"ChangeMe"},"enabled":true,"mode":"standalone","persistence":{"enabled":false}}` | MinIO subchart deployment </br> Ref: https://github.com/bitnami/charts/blob/main/bitnami/minio/values.yaml  |
+| affinity | object | `{}` | Affinity for pod assignment </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity |
+| autoscaling | object | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Autoscaling with CPU or memory utilization percentage </br> Ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/ |
+| caldera | object | `{"affinity":{},"autoscaling":{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80},"config":{},"enabled":true,"env":{},"envFromSecrets":{},"image":{"pullPolicy":"IfNotPresent","repository":"openbas/caldera-server","tag":"5.0.0"},"ingress":{"annotations":{},"className":"","enabled":false,"hosts":[{"host":"chart-example.local","paths":[{"path":"/","pathType":"ImplementationSpecific"}]}],"tls":[]},"networkPolicy":{"egress":[],"enabled":false,"ingress":[],"policyTypes":[]},"nodeSelector":{},"podAnnotations":{},"podDisruptionBudget":{"enabled":false,"maxUnavailable":1,"minAvailable":null},"podLabels":{},"podSecurityContext":{},"replicaCount":1,"resources":{},"securityContext":{},"service":{"port":8888,"targetPort":8888,"type":"ClusterIP"},"tolerations":[],"volumeMounts":[],"volumes":[]}` | OpenBAS caldera-server deployment configuration |
+| caldera.affinity | object | `{}` | Affinity for pod assignment </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity |
+| caldera.autoscaling | object | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Autoscaling with CPU or memory utilization percentage </br> Ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/ |
+| caldera.config | object | `{}` | Caldera configuration </br> Ref: https://github.com/OpenBAS-Platform/docker/blob/master/caldera.yml |
+| caldera.enabled | bool | `true` | Enable or disable Caldera server |
+| caldera.env | object | `{}` | Environment variables to configure application </br> Ref: https://docs.openbas.io/latest/deployment/configuration/#platform |
+| caldera.envFromSecrets | object | `{}` | Secrets from variables |
+| caldera.image | object | `{"pullPolicy":"IfNotPresent","repository":"openbas/caldera-server","tag":"5.0.0"}` | Image registry configuration for the base service |
+| caldera.image.pullPolicy | string | `"IfNotPresent"` | Pull policy for the image |
+| caldera.image.repository | string | `"openbas/caldera-server"` | Repository of the image |
+| caldera.image.tag | string | `"5.0.0"` | Overrides the image tag whose default is the chart appVersion |
+| caldera.ingress | object | `{"annotations":{},"className":"","enabled":false,"hosts":[{"host":"chart-example.local","paths":[{"path":"/","pathType":"ImplementationSpecific"}]}],"tls":[]}` | Ingress configuration to expose app </br> Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/ |
+| caldera.networkPolicy | object | `{"egress":[],"enabled":false,"ingress":[],"policyTypes":[]}` | NetworkPolicy configuration </br> Ref: https://kubernetes.io/docs/concepts/services-networking/network-policies/ |
+| caldera.networkPolicy.enabled | bool | `false` | Enable or disable NetworkPolicy |
+| caldera.networkPolicy.policyTypes | list | `[]` | Policy types |
+| caldera.nodeSelector | object | `{}` | Node labels for pod assignment </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector |
+| caldera.podAnnotations | object | `{}` | Configure annotations on Pods |
+| caldera.podDisruptionBudget | object | `{"enabled":false,"maxUnavailable":1,"minAvailable":null}` | Pod Disruption Budget </br> Ref: https://kubernetes.io/docs/reference/kubernetes-api/policy-resources/pod-disruption-budget-v1/ |
+| caldera.podLabels | object | `{}` | Configure labels on Pods |
+| caldera.podSecurityContext | object | `{}` | Defines privilege and access control settings for a Pod </br> Ref: https://kubernetes.io/docs/concepts/security/pod-security-standards/ </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/ |
+| caldera.replicaCount | int | `1` | Number of replicas for the service |
+| caldera.resources | object | `{}` | The resources limits and requested </br> Ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ |
+| caldera.securityContext | object | `{}` | Defines privilege and access control settings for a Container </br> Ref: https://kubernetes.io/docs/concepts/security/pod-security-standards/ </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/ |
+| caldera.service | object | `{"port":8888,"targetPort":8888,"type":"ClusterIP"}` | Kubernetes service to expose Pod </br> Ref: https://kubernetes.io/docs/concepts/services-networking/service/ |
+| caldera.service.port | int | `8888` | Kubernetes Service port |
+| caldera.service.targetPort | int | `8888` | Pod expose port |
+| caldera.service.type | string | `"ClusterIP"` | Kubernetes Service type. Allowed values: NodePort, LoadBalancer or ClusterIP |
+| caldera.tolerations | list | `[]` | Tolerations for pod assignment </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/ |
+| caldera.volumeMounts | list | `[]` | Additional volumeMounts on the output Deployment definition |
+| caldera.volumes | list | `[]` | Additional volumes on the output Deployment definition |
+| collectorGlobalEnv | object | `{}` | Collector Global environment |
+| collectors | list | `[]` | Collectors </br> Ref: https://github.com/OpenBAS-Platform/collectors |
+| env | object | `{"INJECTOR_CALDERA_API_KEY":"ChangeMe","INJECTOR_CALDERA_PUBLIC_URL":"http://release-name-caldera:8888","INJECTOR_CALDERA_URL":"http://release-name-caldera:8888","MINIO_ENDPOINT":"release-name-minio:9000","OPENBAS_ADMIN_EMAIL":"admin@openbas.io","OPENBAS_ADMIN_PASSWORD":"ChangeMe","OPENBAS_ADMIN_TOKEN":"ChangeMe","OPENBAS_AUTH-LOCAL-ENABLE":true,"OPENBAS_BASE-URL":"http://localhost:8080","OPENBAS_RABBITMQ_HOSTNAME":"release-name-rabbitmq","OPENBAS_RABBITMQ_MANAGEMENT-PORT":15672,"OPENBAS_RABBITMQ_PASS":"ChangeMe","OPENBAS_RABBITMQ_PORT":5672,"OPENBAS_RABBITMQ_USER":"user","SERVER_ADDRESS":"0.0.0.0","SERVER_PORT":8080,"SPRING_DATASOURCE_PASSWORD":"ChangeMe","SPRING_DATASOURCE_URL":"jdbc:postgresql://release-name-postgresql:5432/openbas","SPRING_DATASOURCE_USERNAME":"user"}` | Environment variables to configure application </br> Ref: https://docs.openbas.io/latest/deployment/configuration/#platform |
+| envFromSecrets | object | `{}` | Secrets from variables |
+| fullnameOverride | string | `""` | String to fully override openbas.fullname template |
+| global | object | `{"imagePullSecrets":[],"imageRegistry":""}` | Global section contains configuration options that are applied to all services |
+| global.imagePullSecrets | list | `[]` | Specifies the secrets to use for pulling images from private registries Leave empty if no secrets are required E.g. imagePullSecrets:   - name: myRegistryKeySecretName |
+| global.imageRegistry | string | `""` | Specifies the registry to pull images from. Leave empty for the default registry |
+| image | object | `{"pullPolicy":"IfNotPresent","repository":"openbas/platform","tag":""}` | Image registry configuration for the base service |
+| image.pullPolicy | string | `"IfNotPresent"` | Pull policy for the image |
+| image.repository | string | `"openbas/platform"` | Repository of the image |
+| image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion |
+| imagePullSecrets | list | `[]` | Global Docker registry secret names as an array |
+| ingress | object | `{"annotations":{},"className":"","enabled":false,"hosts":[{"host":"chart-example.local","paths":[{"path":"/","pathType":"ImplementationSpecific"}]}],"tls":[]}` | Ingress configuration to expose app </br> Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/ |
+| injectorGlobalEnv | object | `{}` | Injector Global environment |
+| injectors | list | `[]` | Injectors </br> Ref: https://github.com/OpenBAS-Platform/injectors |
+| livenessProbe | object | `{"enabled":true,"failureThreshold":3,"initialDelaySeconds":180,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":5}` | Configure liveness checker </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-startup-probes |
+| livenessProbeCustom | object | `{}` | Custom livenessProbe |
+| minio | object | `{"auth":{"rootPassword":"ChangeMe","rootUser":"ChangeMe"},"enabled":true,"mode":"standalone","persistence":{"enabled":false}}` | MinIO subchart deployment </br> Ref: https://github.com/bitnami/charts/blob/main/bitnami/minio/values.yaml |
 | minio.enabled | bool | `true` | Enable or disable MinIO subchart |
-| nameOverride | string | `""` | String to partially override openbas.fullname template (will maintain the release name)  |
-| nodeSelector | object | `{}` | Node labels for pod assignment </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector  |
-| podAnnotations | object | `{}` | Configure annotations on Pods  |
-| podLabels | object | `{}` | Configure labels on Pods  |
-| podSecurityContext | object | `{}` | Defines privilege and access control settings for a Pod </br> Ref: https://kubernetes.io/docs/concepts/security/pod-security-standards/ </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/  |
-| postgresql | object | `{"auth":{"database":"openbas","password":"ChangeMe","username":"user"},"enabled":true,"persistence":{"enabled":false},"replicaCount":1}` | PostgreSQL subchart deployment </br> Ref: https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml  |
-| postgresql.enabled | bool | `true` | Enable or disable PostgreSQL subchart  |
-| rabbitmq | object | `{"auth":{"erlangCookie":"ChangeMe","password":"ChangeMe","username":"user"},"clustering":{"enabled":false},"enabled":true,"persistence":{"enabled":false},"replicaCount":1}` | RabbitMQ subchart deployment </br> Ref: https://github.com/bitnami/charts/blob/main/bitnami/rabbitmq/values.yaml  |
-| rabbitmq.enabled | bool | `true` | Enable or disable RabbitMQ subchart  |
-| readinessProbe | object | `{"enabled":true,"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1}` | Configure readinessProbe checker </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-startup-probes  |
-| readinessProbeCustom | object | `{}` | Custom readinessProbe  |
-| readyChecker | object | `{"enabled":true,"retries":30,"services":[{"name":"minio","port":9000},{"name":"postgresql","port":5432},{"name":"rabbitmq","port":5672}],"timeout":5}` | Enable or disable ready-checker  |
+| nameOverride | string | `""` | String to partially override openbas.fullname template (will maintain the release name) |
+| networkPolicy | object | `{"egress":[],"enabled":false,"ingress":[],"policyTypes":[]}` | NetworkPolicy configuration </br> Ref: https://kubernetes.io/docs/concepts/services-networking/network-policies/ |
+| networkPolicy.enabled | bool | `false` | Enable or disable NetworkPolicy |
+| networkPolicy.policyTypes | list | `[]` | Policy types |
+| nodeSelector | object | `{}` | Node labels for pod assignment </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector |
+| podAnnotations | object | `{}` | Configure annotations on Pods |
+| podDisruptionBudget | object | `{"enabled":false,"maxUnavailable":1,"minAvailable":null}` | Pod Disruption Budget </br> Ref: https://kubernetes.io/docs/reference/kubernetes-api/policy-resources/pod-disruption-budget-v1/ |
+| podLabels | object | `{}` | Configure labels on Pods |
+| podSecurityContext | object | `{}` | Defines privilege and access control settings for a Pod </br> Ref: https://kubernetes.io/docs/concepts/security/pod-security-standards/ </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/ |
+| postgresql | object | `{"auth":{"database":"openbas","password":"ChangeMe","username":"user"},"enabled":true,"persistence":{"enabled":false},"replicaCount":1}` | PostgreSQL subchart deployment </br> Ref: https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml |
+| postgresql.enabled | bool | `true` | Enable or disable PostgreSQL subchart |
+| rabbitmq | object | `{"auth":{"erlangCookie":"ChangeMe","password":"ChangeMe","username":"user"},"clustering":{"enabled":false},"enabled":true,"persistence":{"enabled":false},"replicaCount":1}` | RabbitMQ subchart deployment </br> Ref: https://github.com/bitnami/charts/blob/main/bitnami/rabbitmq/values.yaml |
+| rabbitmq.enabled | bool | `true` | Enable or disable RabbitMQ subchart |
+| readinessProbe | object | `{"enabled":true,"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1}` | Configure readinessProbe checker </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-startup-probes |
+| readinessProbeCustom | object | `{}` | Custom readinessProbe |
+| readyChecker | object | `{"enabled":true,"retries":30,"services":[{"name":"minio","port":9000},{"name":"postgresql","port":5432},{"name":"rabbitmq","port":5672}],"timeout":5}` | Enable or disable ready-checker |
 | readyChecker.enabled | bool | `true` | Enable or disable ready-checker |
 | readyChecker.retries | int | `30` | Number of retries before giving up |
 | readyChecker.services | list | `[{"name":"minio","port":9000},{"name":"postgresql","port":5432},{"name":"rabbitmq","port":5672}]` | List services |
 | readyChecker.timeout | int | `5` | Timeout for each check |
-| replicaCount | int | `1` | Number of replicas for the service  |
-| resources | object | `{}` | The resources limits and requested </br> Ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/  |
-| secrets | object | `{}` | Secrets values to create credentials and reference by envFromSecrets Generate Secret with following name: `<release-name>-credentials``  |
-| securityContext | object | `{}` | Defines privilege and access control settings for a Container </br> Ref: https://kubernetes.io/docs/concepts/security/pod-security-standards/ </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/  |
-| service | object | `{"port":80,"targetPort":8080,"type":"ClusterIP"}` | Kubernetes service to expose Pod </br> Ref: https://kubernetes.io/docs/concepts/services-networking/service/  |
-| service.port | int | `80` | Kubernetes Service port  |
-| service.targetPort | int | `8080` | Pod expose port  |
-| service.type | string | `"ClusterIP"` | Kubernetes Service type. Allowed values: NodePort, LoadBalancer or ClusterIP  |
-| serviceAccount | object | `{"annotations":{},"automountServiceAccountToken":false,"create":true,"name":""}` | Enable creation of ServiceAccount @default - See below  |
+| replicaCount | int | `1` | Number of replicas for the service |
+| resources | object | `{}` | The resources limits and requested </br> Ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ |
+| secrets | object | `{}` | Secrets values to create credentials and reference by envFromSecrets Generate Secret with following name: `<release-name>-credentials`` |
+| securityContext | object | `{}` | Defines privilege and access control settings for a Container </br> Ref: https://kubernetes.io/docs/concepts/security/pod-security-standards/ </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/ |
+| service | object | `{"port":80,"targetPort":8080,"type":"ClusterIP"}` | Kubernetes service to expose Pod </br> Ref: https://kubernetes.io/docs/concepts/services-networking/service/ |
+| service.port | int | `80` | Kubernetes Service port |
+| service.targetPort | int | `8080` | Pod expose port |
+| service.type | string | `"ClusterIP"` | Kubernetes Service type. Allowed values: NodePort, LoadBalancer or ClusterIP |
+| serviceAccount | object | `{"annotations":{},"automountServiceAccountToken":false,"create":true,"name":""}` | Enable creation of ServiceAccount |
 | serviceAccount.annotations | object | `{}` | Annotations to add to the service account |
 | serviceAccount.automountServiceAccountToken | bool | `false` | Specifies if you don't want the kubelet to automatically mount a ServiceAccount's API credentials |
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created |
 | serviceAccount.name | string | `""` | Name of the service account to use. If not set and create is true, a name is generated using the fullname template |
-| startupProbe | object | `{"enabled":true,"failureThreshold":30,"initialDelaySeconds":180,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":5}` | Configure startupProbe checker </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-startup-probes  |
-| startupProbeCustom | object | `{}` | Custom startupProbe  |
-| testConnection | bool | `false` | Enable or disable test connection  |
-| tolerations | list | `[]` | Tolerations for pod assignment </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/  |
-| volumeMounts | list | `[]` | Additional volumeMounts on the output Deployment definition  |
-| volumes | list | `[]` | Additional volumes on the output Deployment definition  |
+| startupProbe | object | `{"enabled":true,"failureThreshold":30,"initialDelaySeconds":180,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":5}` | Configure startupProbe checker </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-startup-probes |
+| startupProbeCustom | object | `{}` | Custom startupProbe |
+| testConnection | bool | `false` | Enable or disable test connection |
+| tolerations | list | `[]` | Tolerations for pod assignment </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/ |
+| volumeMounts | list | `[]` | Additional volumeMounts on the output Deployment definition |
+| volumes | list | `[]` | Additional volumes on the output Deployment definition |
