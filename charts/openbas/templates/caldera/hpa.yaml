@@ -4,6 +4,7 @@ kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "openbas.fullname" . }}-caldera
   labels:
+    openbas.component: caldera
     {{- include "openbas.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
