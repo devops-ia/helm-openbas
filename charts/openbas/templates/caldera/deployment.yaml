@@ -56,6 +56,10 @@ spec:
             - name: http
               containerPort: {{ .Values.caldera.service.targetPort | default .Values.caldera.service.port }}
               protocol: TCP
+          lifecycle:
+            {{- with .Values.caldera.lifecycle }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           env:
           # Variables from secrets have precedence
           {{- $envList := dict -}}
@@ -88,6 +92,7 @@ spec:
           {{- with .Values.caldera.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.caldera.terminationGracePeriodSeconds }}
       volumes:
         - name: config-volume
           configMap:

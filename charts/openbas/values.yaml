@@ -133,6 +133,18 @@ networkPolicy:
     #   - protocol: TCP
     #     port: 5978
 
+# -- Configure lifecycle hooks
+# </br> Ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
+# </br> Ref: https://learnk8s.io/graceful-shutdown
+lifecycle: {}
+  # preStop:
+  #   exec:
+  #     command: ["sh", "-c", "sleep 10"]
+
+# -- Configure Pod termination grace period
+# </br> Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination
+terminationGracePeriodSeconds: 30
+
 # -- Configure liveness checker
 # </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-startup-probes
 livenessProbe:
@@ -316,7 +328,7 @@ collectorGlobalEnv: {}
 # -- Collectors
 # </br> Ref: https://github.com/OpenBAS-Platform/collectors
 collectors: []
-# - name: connector-name
+# - name: collector-name
 #   enabled: true
 #   replicas: 1
 #   # -- Image registry
@@ -340,6 +352,13 @@ collectors: []
 #     retries: 30
 #     # -- Timeout for each check
 #     timeout: 5
+#   # -- Lifecycle configuration
+#   lifecycle: {}
+#     # preStop:
+#     #   exec:
+#     #     command: ["sh", "-c", "sleep 10"]
+#   # -- Configure Pod termination grace period
+#   terminationGracePeriodSeconds: 30
 #   # -- Secrets from variables
 #   envFromSecrets: {}
 #     # Cipher vars
@@ -373,7 +392,7 @@ injectorGlobalEnv: {}
 # -- Injectors
 # </br> Ref: https://github.com/OpenBAS-Platform/injectors
 injectors: []
-# - name: connector-name
+# - name: collector-name
 #   enabled: true
 #   replicas: 1
 #   # -- Image registry
@@ -397,6 +416,13 @@ injectors: []
 #     retries: 30
 #     # -- Timeout for each check
 #     timeout: 5
+#   # -- Lifecycle configuration
+#   lifecycle: {}
+#     # preStop:
+#     #   exec:
+#     #     command: ["sh", "-c", "sleep 10"]
+#   # -- Configure Pod termination grace period
+#   terminationGracePeriodSeconds: 30
 #   # -- Secrets from variables
 #   envFromSecrets: {}
 #     # Cipher vars
@@ -469,6 +495,18 @@ caldera:
     # nodePort: 32000
     # -- Pod expose port
     targetPort: 8888
+
+  # -- Configure lifecycle hooks
+  # </br> Ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
+  # </br> Ref: https://learnk8s.io/graceful-shutdown
+  lifecycle: {}
+    # preStop:
+    #   exec:
+    #     command: ["sh", "-c", "sleep 10"]
+
+  # -- Configure Pod termination grace period
+  # </br> Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination
+  terminationGracePeriodSeconds: 30
 
   # -- NetworkPolicy configuration
   # </br> Ref: https://kubernetes.io/docs/concepts/services-networking/network-policies/
