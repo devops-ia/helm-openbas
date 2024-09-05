@@ -25,6 +25,13 @@ env:
 
 testConnection: true
 
+lifecycle:
+  preStop:
+    exec:
+      command: ["sh", "-c", "sleep 10"]
+
+terminationGracePeriodSeconds: 40
+
 networkPolicy:
   enabled: true
 
@@ -86,10 +93,20 @@ caldera:
       - stockpile
       - training
 
+  lifecycle:
+    preStop:
+      exec:
+        command: ["sh", "-c", "sleep 10"]
+
+  terminationGracePeriodSeconds: 40
+
   networkPolicy:
     enabled: true
 
   podDisruptionBudget:
+    enabled: true
+
+  autoscaling:
     enabled: true
 
 collectors:
@@ -109,6 +126,11 @@ collectors:
     enabled: true
     retries: 30
     timeout: 10
+  lifecycle:
+    preStop:
+      exec:
+        command: ["sh", "-c", "sleep 10"]
+  terminationGracePeriodSeconds: 40
   env:
     OPENBAS_URL: http://openbas-ci-server:80
     OPENBAS_TOKEN: b1976749-8a53-4f49-bf04-cafa2a3458c1
@@ -133,6 +155,11 @@ injectors:
     enabled: true
     retries: 30
     timeout: 10
+  lifecycle:
+    preStop:
+      exec:
+        command: ["sh", "-c", "sleep 10"]
+  terminationGracePeriodSeconds: 40
   env:
     INJECTOR_ID: e668aa07-e1a3-41d8-8748-786be5df9dab
     INJECTOR_NAME: "HTTP query"
