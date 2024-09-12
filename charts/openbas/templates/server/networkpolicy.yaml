@@ -4,16 +4,14 @@ kind: NetworkPolicy
 metadata:
   name: {{ include "openbas.fullname" . }}-server
   labels:
-    openbas.component: server
-    {{- include "openbas.labels" . | nindent 4 }}
+    {{- include "openbas.serverLabels" . | nindent 4 }}
 spec:
   {{- if and (not .Values.networkPolicy.policyTypes) (not .Values.networkPolicy.ingress) (not .Values.networkPolicy.egress) }}
   podSelector: {}
   {{- else }}
   podSelector:
     matchLabels:
-      openbas.component: server
-      {{- include "openbas.selectorLabels" . | nindent 6 }}
+      {{- include "openbas.selectorServerLabels" . | nindent 6 }}
   {{- end }}
 
   {{- if .Values.networkPolicy.policyTypes }}

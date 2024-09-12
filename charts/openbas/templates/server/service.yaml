@@ -3,8 +3,7 @@ kind: Service
 metadata:
   name: {{ include "openbas.fullname" . }}-server
   labels:
-    openbas.component: server
-    {{- include "openbas.labels" . | nindent 4 }}
+    {{- include "openbas.serverLabels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -22,5 +21,4 @@ spec:
       protocol: TCP
     {{- end }}
   selector:
-    openbas.component: server
-    {{- include "openbas.selectorLabels" . | nindent 4 }}
+    {{- include "openbas.selectorServerLabels" . | nindent 4 }}

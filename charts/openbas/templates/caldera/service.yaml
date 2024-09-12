@@ -3,8 +3,7 @@ kind: Service
 metadata:
   name: {{ include "openbas.fullname" . }}-caldera
   labels:
-    openbas.component: caldera
-    {{- include "openbas.labels" . | nindent 4 }}
+    {{- include "openbas.calderaLabels" . | nindent 4 }}
 spec:
   type: {{ .Values.caldera.service.type }}
   ports:
@@ -13,5 +12,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    openbas.component: caldera
-    {{- include "openbas.selectorLabels" . | nindent 4 }}
+    {{- include "openbas.selectorCalderaLabels" . | nindent 4 }}

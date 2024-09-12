@@ -3,16 +3,14 @@ kind: Deployment
 metadata:
   name: {{ include "openbas.fullname" . }}-server
   labels:
-    openbas.component: server
-    {{- include "openbas.labels" . | nindent 4 }}
+    {{- include "openbas.serverLabels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      openbas.component: server
-      {{- include "openbas.selectorLabels" . | nindent 6 }}
+      {{- include "openbas.selectorServerLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -20,8 +18,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        openbas.component: server
-        {{- include "openbas.selectorLabels" . | nindent 8 }}
+        {{- include "openbas.selectorServerLabels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -173,5 +170,10 @@ spec:
       {{- end }}
       {{- with .Values.tolerations }}
       tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.topologySpreadConstraints }}
+      {{- $_ := include "openbas.patchTopologySpreadConstraintsServer" $ }}
+      topologySpreadConstraints:
         {{- toYaml . | nindent 8 }}
       {{- end }}

@@ -58,8 +58,8 @@ _See [helm uninstall](https://helm.sh/docs/helm/helm_uninstall/) for command doc
 ## OpenBAS
 
 * [Environment configuration](https://docs.openbas.io/latest/deployment/configuration/#platform)
-* [Collectors](https://github.com/OpenBAS-Platform/collectors/tree/main). Review `docker-compose.yaml` with the properly config or check collectors samples on [`collector-examples`](./collector-examples) folder.
-* [Injectors](https://github.com/OpenBAS-Platform/injectors/tree/main). Review `docker-compose.yaml` with the properly config or check injectors samples on [`injector-examples`](./injector-examples) folder.
+* [Collectors](https://github.com/OpenBAS-Platform/collectors/tree/main). Review `docker-compose.yaml` with the properly config or check collectors samples on [`collector-examples`](./examples/collector) folder.
+* [Injectors](https://github.com/OpenBAS-Platform/injectors/tree/main). Review `docker-compose.yaml` with the properly config or check injectors samples on [`injector-examples`](./examples/injector) folder.
 
 ## Basic installation and examples
 
