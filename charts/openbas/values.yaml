@@ -321,6 +321,13 @@ tolerations: []
 # </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
 
+# -- Control how Pods are spread across your cluster
+# </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/#example-multiple-topologyspreadconstraints
+topologySpreadConstraints: []
+  # - maxSkew: 1
+  #   topologyKey: zone
+  #   whenUnsatisfiable: DoNotSchedule
+
 # -- Collector Global environment
 collectorGlobalEnv: {}
   # MY_VARIABLE: my_value
@@ -328,62 +335,63 @@ collectorGlobalEnv: {}
 # -- Collectors
 # </br> Ref: https://github.com/OpenBAS-Platform/collectors
 collectors: []
-# - name: collector-name
-#   enabled: true
-#   replicas: 1
-#   # -- Image registry
-#   image: {}
-#     repository:
-#     pullPolicy:
-#     tag:
-#   # -- Environment variables to configure application
-#   env: {}
-#   # Plain vars
-#   # foo: bar
-#   # my_env: my_value
-#   # -- Deployment annotations
-#   deploymentAnnotations: {}
-#   # -- Pod annotations
-#   podAnnotations: {}
-#   # -- Enable or disable ready-checker waiting server is ready
-#   readyChecker:
-#     enabled: true
-#     # -- Number of retries before giving up
-#     retries: 30
-#     # -- Timeout for each check
-#     timeout: 5
-#   # -- Lifecycle configuration
-#   lifecycle: {}
-#     # preStop:
-#     #   exec:
-#     #     command: ["sh", "-c", "sleep 10"]
-#   # -- Configure Pod termination grace period
-#   terminationGracePeriodSeconds: 30
-#   # -- Secrets from variables
-#   envFromSecrets: {}
-#     # Cipher vars
-#     # my_env:
-#     #  name: release-name-credentials
-#     #  key: secret_key
-#   # -- The resources limits and requested
-#   resources: {}
-#     limits:
-#       memory: 256Mi
-#       cpu: "250m"
-#     requests:
-#       memory: 56Mi
-#       cpu: "50m"
-#   # -- Node labels for pod assignment
-#   nodeSelector: {}
-#     project: "openbas"
-#   # -- Tolerations for pod assignment
-#   tolerations: []
-#     - key: "project"
-#       operator: "Equal"
-#       value: "openbas"
-#       effect: "NoSchedule"
-#   # -- Affinity for pod assignment
-#   affinity: {}
+  # - name: collector-name
+  #   enabled: true
+  #   replicas: 1
+  #   # -- Image registry
+  #   image: {}
+  #     # repository:
+  #     # pullPolicy:
+  #     # tag:
+  #   # -- Environment variables to configure application
+  #   env: {}
+  #     # foo: bar
+  #     # my_env: my_value
+  #   # -- Deployment annotations
+  #   deploymentAnnotations: {}
+  #   # -- Pod annotations
+  #   podAnnotations: {}
+  #   # -- Enable or disable ready-checker waiting server is ready
+  #   readyChecker:
+  #     enabled: true
+  #     retries: 30
+  #     timeout: 5
+  #   # -- Lifecycle configuration
+  #   lifecycle: {}
+  #     # preStop:
+  #     #   exec:
+  #     #     command: ["sh", "-c", "sleep 10"]
+  #   # -- Configure Pod termination grace period
+  #   terminationGracePeriodSeconds: 30
+  #   # -- Secrets from variables
+  #   envFromSecrets: {}
+  #     # my_env:
+  #     #  name: release-name-credentials
+  #     #  key: secret_key
+  #   # -- The resources limits and requested
+  #   resources: {}
+  #     # limits:
+  #     #   memory: 256Mi
+  #     #   cpu: "250m"
+  #     # requests:
+  #     #   memory: 56Mi
+  #     #   cpu: "50m"
+  #   # -- Node labels for pod assignment
+  #   nodeSelector: {}
+  #     # project: "openbas"
+  #   # -- Tolerations for pod assignment
+  #   tolerations: []
+  #     # - key: "project"
+  #     #   operator: "Equal"
+  #     #   value: "openbas"
+  #     #   effect: "NoSchedule"
+  #   # -- Affinity for pod assignment
+  #   affinity: {}
+  #   # -- Control how Pods are spread across your cluster
+  #   topologySpreadConstraints: []
+  #     # - maxSkew: 1
+  #     #   topologyKey: zone
+  #     #   whenUnsatisfiable: DoNotSchedule
 
 # -- Injector Global environment
 injectorGlobalEnv: {}
@@ -392,62 +400,63 @@ injectorGlobalEnv: {}
 # -- Injectors
 # </br> Ref: https://github.com/OpenBAS-Platform/injectors
 injectors: []
-# - name: collector-name
-#   enabled: true
-#   replicas: 1
-#   # -- Image registry
-#   image: {}
-#     repository:
-#     pullPolicy:
-#     tag:
-#   # -- Environment variables to configure application
-#   env: {}
-#   # Plain vars
-#   # foo: bar
-#   # my_env: my_value
-#   # -- Deployment annotations
-#   deploymentAnnotations: {}
-#   # -- Pod annotations
-#   podAnnotations: {}
-#   # -- Enable or disable ready-checker waiting server is ready
-#   readyChecker:
-#     enabled: true
-#     # -- Number of retries before giving up
-#     retries: 30
-#     # -- Timeout for each check
-#     timeout: 5
-#   # -- Lifecycle configuration
-#   lifecycle: {}
-#     # preStop:
-#     #   exec:
-#     #     command: ["sh", "-c", "sleep 10"]
-#   # -- Configure Pod termination grace period
-#   terminationGracePeriodSeconds: 30
-#   # -- Secrets from variables
-#   envFromSecrets: {}
-#     # Cipher vars
-#     # my_env:
-#     #  name: release-name-credentials
-#     #  key: secret_key
-#   # -- The resources limits and requested
-#   resources: {}
-#     limits:
-#       memory: 256Mi
-#       cpu: "250m"
-#     requests:
-#       memory: 56Mi
-#       cpu: "50m"
-#   # -- Node labels for pod assignment
-#   nodeSelector: {}
-#     project: "openbas"
-#   # -- Tolerations for pod assignment
-#   tolerations: []
-#     - key: "project"
-#       operator: "Equal"
-#       value: "openbas"
-#       effect: "NoSchedule"
-#   # -- Affinity for pod assignment
-#   affinity: {}
+  # - name: injector-name
+  #   enabled: true
+  #   replicas: 1
+  #   # -- Image registry
+  #   image: {}
+  #     # repository:
+  #     # pullPolicy:
+  #     # tag:
+  #   # -- Environment variables to configure application
+  #   env: {}
+  #     # foo: bar
+  #     # my_env: my_value
+  #   # -- Deployment annotations
+  #   deploymentAnnotations: {}
+  #   # -- Pod annotations
+  #   podAnnotations: {}
+  #   # -- Enable or disable ready-checker waiting server is ready
+  #   readyChecker:
+  #     enabled: true
+  #     retries: 30
+  #     timeout: 5
+  #   # -- Lifecycle configuration
+  #   lifecycle: {}
+  #     # preStop:
+  #     #   exec:
+  #     #     command: ["sh", "-c", "sleep 10"]
+  #   # -- Configure Pod termination grace period
+  #   terminationGracePeriodSeconds: 30
+  #   # -- Secrets from variables
+  #   envFromSecrets: {}
+  #     # my_env:
+  #     #  name: release-name-credentials
+  #     #  key: secret_key
+  #   # -- The resources limits and requested
+  #   resources: {}
+  #     # limits:
+  #     #   memory: 256Mi
+  #     #   cpu: "250m"
+  #     # requests:
+  #     #   memory: 56Mi
+  #     #   cpu: "50m"
+  #   # -- Node labels for pod assignment
+  #   nodeSelector: {}
+  #     # project: "openbas"
+  #   # -- Tolerations for pod assignment
+  #   tolerations: []
+  #     # - key: "project"
+  #     #   operator: "Equal"
+  #     #   value: "openbas"
+  #     #   effect: "NoSchedule"
+  #   # -- Affinity for pod assignment
+  #   affinity: {}
+  #   # -- Control how Pods are spread across your cluster
+  #   topologySpreadConstraints: []
+  #     # - maxSkew: 1
+  #     #   topologyKey: zone
+  #     #   whenUnsatisfiable: DoNotSchedule
 
 # -- OpenBAS caldera-server deployment configuration
 caldera:
@@ -662,16 +671,16 @@ caldera:
 
   # -- Additional volumes on the output Deployment definition
   volumes: []
-  # - name: foo
-  #   secret:
-  #     secretName: mysecret
-  #     optional: false
+    # - name: foo
+    #   secret:
+    #     secretName: mysecret
+    #     optional: false
 
   # -- Additional volumeMounts on the output Deployment definition
   volumeMounts: []
-  # - name: foo
-  #   mountPath: "/etc/foo"
-  #   readOnly: true
+    # - name: foo
+    #   mountPath: "/etc/foo"
+    #   readOnly: true
 
   # -- Node labels for pod assignment
   # </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
@@ -684,6 +693,13 @@ caldera:
   # -- Affinity for pod assignment
   # </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity
   affinity: {}
+
+  # -- Control how Pods are spread across your cluster
+  # </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/#example-multiple-topologyspreadconstraints
+  topologySpreadConstraints: []
+    # - maxSkew: 1
+    #   topologyKey: zone
+    #   whenUnsatisfiable: DoNotSchedule
 
 # -- MinIO subchart deployment
 # </br> Ref: https://github.com/bitnami/charts/blob/main/bitnami/minio/values.yaml

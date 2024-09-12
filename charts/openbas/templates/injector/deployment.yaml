@@ -135,6 +135,16 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- range $constraint := . }}
+        - labelSelector:
+            matchLabels:
+              openbas.injector: {{ $injectorName }}
+              {{- include "openbas.selectorLabels" $ | nindent 14 }}
+          {{- toYaml $constraint | nindent 10 }}
+        {{- end }}
+      {{- end }}
 
 {{- end }}
 {{- end }}

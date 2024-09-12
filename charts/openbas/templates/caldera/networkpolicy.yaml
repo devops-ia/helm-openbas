@@ -4,16 +4,14 @@ kind: NetworkPolicy
 metadata:
   name: {{ include "openbas.fullname" . }}-caldera
   labels:
-    openbas.component: caldera
-    {{- include "openbas.labels" . | nindent 4 }}
+    {{- include "openbas.calderaLabels" . | nindent 4 }}
 spec:
   {{- if and (not .Values.caldera.networkPolicy.policyTypes) (not .Values.caldera.networkPolicy.ingress) (not .Values.caldera.networkPolicy.egress) }}
   podSelector: {}
   {{- else }}
   podSelector:
     matchLabels:
-      openbas.component: caldera
-      {{- include "openbas.selectorLabels" . | nindent 6 }}
+      {{- include "openbas.selectorCalderaLabels" . | nindent 6 }}
   {{- end }}
 
   {{- if .Values.caldera.networkPolicy.policyTypes }}
