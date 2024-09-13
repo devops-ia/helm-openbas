@@ -51,7 +51,7 @@ envFromSecrets:
     key: OPENBAS_ADMIN_TOKEN
   OPENBAS_TOKEN:
     name: openbas-ci-credentials
-    key: OPENBAS_TOKEN
+    key: OPENBAS_ADMIN_TOKEN
   OPENBAS_RABBITMQ_PASS:
     name: openbas-ci-credentials
     key: OPENBAS_RABBITMQ_PASS
@@ -160,7 +160,7 @@ collectors:
   envFromSecrets:
     OPENBAS_TOKEN:
       name: openbas-ci-credentials
-      key: OPENBAS_TOKEN
+      key: OPENBAS_ADMIN_TOKEN
   topologySpreadConstraints:
     - maxSkew: 1
       topologyKey: kubernetes.io/os
@@ -195,7 +195,7 @@ injectors:
   envFromSecrets:
     OPENBAS_TOKEN:
       name: openbas-ci-credentials
-      key: OPENBAS_TOKEN
+      key: OPENBAS_ADMIN_TOKEN
   topologySpreadConstraints:
     - maxSkew: 1
       topologyKey: kubernetes.io/os
