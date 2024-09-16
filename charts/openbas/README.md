@@ -148,10 +148,13 @@ helm show values openbas/openbas
 | rabbitmq.enabled | bool | `true` | Enable or disable RabbitMQ subchart |
 | readinessProbe | object | `{"enabled":true,"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1}` | Configure readinessProbe checker </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-startup-probes |
 | readinessProbeCustom | object | `{}` | Custom readinessProbe |
-| readyChecker | object | `{"enabled":true,"retries":30,"services":[{"name":"minio","port":9000},{"name":"postgresql","port":5432},{"name":"rabbitmq","port":5672}],"timeout":5}` | Enable or disable ready-checker |
+| readyChecker | object | `{"enabled":true,"pullPolicy":"IfNotPresent","repository":"busybox","retries":30,"services":[{"name":"minio","port":9000},{"name":"postgresql","port":5432},{"name":"rabbitmq","port":5672}],"tag":"latest","timeout":5}` | Enable or disable ready-checker |
 | readyChecker.enabled | bool | `true` | Enable or disable ready-checker |
+| readyChecker.pullPolicy | string | `"IfNotPresent"` | Pull policy for the image |
+| readyChecker.repository | string | `"busybox"` | Repository of the image |
 | readyChecker.retries | int | `30` | Number of retries before giving up |
 | readyChecker.services | list | `[{"name":"minio","port":9000},{"name":"postgresql","port":5432},{"name":"rabbitmq","port":5672}]` | List services |
+| readyChecker.tag | string | `"latest"` | Overrides the image tag |
 | readyChecker.timeout | int | `5` | Timeout for each check |
 | replicaCount | int | `1` | Number of replicas for the service |
 | resources | object | `{}` | The resources limits and requested </br> Ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ |
