@@ -16,9 +16,9 @@ A Helm chart to deploy Open Breach and Attack Simulation platform
 
 | Repository | Name | Version |
 |------------|------|---------|
-| oci://registry-1.docker.io/bitnamicharts | minio | 14.7.5 |
-| oci://registry-1.docker.io/bitnamicharts | postgresql | 15.5.28 |
-| oci://registry-1.docker.io/bitnamicharts | rabbitmq | 14.6.9 |
+| oci://registry-1.docker.io/bitnamicharts | minio | 14.7.8 |
+| oci://registry-1.docker.io/bitnamicharts | postgresql | 15.5.31 |
+| oci://registry-1.docker.io/bitnamicharts | rabbitmq | 14.7.0 |
 
 ## Add repository
 
@@ -79,7 +79,7 @@ helm show values openbas/openbas
 |-----|------|---------|-------------|
 | affinity | object | `{}` | Affinity for pod assignment </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity |
 | autoscaling | object | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Autoscaling with CPU or memory utilization percentage </br> Ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/ |
-| caldera | object | `{"affinity":{},"autoscaling":{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80},"config":{},"enabled":true,"env":{},"envFromSecrets":{},"image":{"pullPolicy":"IfNotPresent","repository":"openbas/caldera-server","tag":"5.0.0"},"ingress":{"annotations":{},"className":"","enabled":false,"hosts":[{"host":"chart-example.local","paths":[{"path":"/","pathType":"ImplementationSpecific"}]}],"tls":[]},"lifecycle":{},"networkPolicy":{"egress":[],"enabled":false,"ingress":[],"policyTypes":[]},"nodeSelector":{},"podAnnotations":{},"podDisruptionBudget":{"enabled":false,"maxUnavailable":1,"minAvailable":null},"podLabels":{},"podSecurityContext":{},"replicaCount":1,"resources":{},"securityContext":{},"service":{"port":8888,"targetPort":8888,"type":"ClusterIP"},"terminationGracePeriodSeconds":30,"tolerations":[],"volumeMounts":[],"volumes":[]}` | OpenBAS caldera-server deployment configuration |
+| caldera | object | `{"affinity":{},"autoscaling":{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80},"config":{},"enabled":true,"env":{},"envFromSecrets":{},"image":{"pullPolicy":"IfNotPresent","repository":"openbas/caldera-server","tag":"5.0.0"},"ingress":{"annotations":{},"className":"","enabled":false,"hosts":[{"host":"chart-example.local","paths":[{"path":"/","pathType":"ImplementationSpecific"}]}],"tls":[]},"lifecycle":{},"networkPolicy":{"egress":[],"enabled":false,"ingress":[],"policyTypes":[]},"nodeSelector":{},"podAnnotations":{},"podDisruptionBudget":{"enabled":false,"maxUnavailable":1,"minAvailable":null},"podLabels":{},"podSecurityContext":{},"replicaCount":1,"resources":{},"securityContext":{},"service":{"port":8888,"targetPort":8888,"type":"ClusterIP"},"terminationGracePeriodSeconds":30,"tolerations":[],"topologySpreadConstraints":[],"volumeMounts":[],"volumes":[]}` | OpenBAS caldera-server deployment configuration |
 | caldera.affinity | object | `{}` | Affinity for pod assignment </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity |
 | caldera.autoscaling | object | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Autoscaling with CPU or memory utilization percentage </br> Ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/ |
 | caldera.config | object | `{}` | Caldera configuration </br> Ref: https://github.com/OpenBAS-Platform/docker/blob/master/caldera.yml |
@@ -109,6 +109,7 @@ helm show values openbas/openbas
 | caldera.service.type | string | `"ClusterIP"` | Kubernetes Service type. Allowed values: NodePort, LoadBalancer or ClusterIP |
 | caldera.terminationGracePeriodSeconds | int | `30` | Configure Pod termination grace period </br> Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination |
 | caldera.tolerations | list | `[]` | Tolerations for pod assignment </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/ |
+| caldera.topologySpreadConstraints | list | `[]` | Control how Pods are spread across your cluster </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/#example-multiple-topologyspreadconstraints |
 | caldera.volumeMounts | list | `[]` | Additional volumeMounts on the output Deployment definition |
 | caldera.volumes | list | `[]` | Additional volumes on the output Deployment definition |
 | collectorGlobalEnv | object | `{}` | Collector Global environment |
@@ -170,5 +171,6 @@ helm show values openbas/openbas
 | terminationGracePeriodSeconds | int | `30` | Configure Pod termination grace period </br> Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination |
 | testConnection | bool | `false` | Enable or disable test connection |
 | tolerations | list | `[]` | Tolerations for pod assignment </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/ |
+| topologySpreadConstraints | list | `[]` | Control how Pods are spread across your cluster </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/#example-multiple-topologyspreadconstraints |
 | volumeMounts | list | `[]` | Additional volumeMounts on the output Deployment definition |
 | volumes | list | `[]` | Additional volumes on the output Deployment definition |
