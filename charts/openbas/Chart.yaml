@@ -30,6 +30,6 @@ dependencies:
     repository: oci://registry-1.docker.io/bitnamicharts
     condition: postgresql.enabled
   - name: rabbitmq
-    version: 15.0.1
+    version: 15.0.2
     repository: oci://registry-1.docker.io/bitnamicharts
     condition: rabbitmq.enabled
