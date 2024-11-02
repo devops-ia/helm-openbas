@@ -22,14 +22,14 @@ keywords:
   - analysis
 dependencies:
   - name: minio
-    version: 14.8.0
+    version: 14.8.1
     repository: oci://registry-1.docker.io/bitnamicharts
     condition: minio.enabled
   - name: postgresql
-    version: 15.5.38
+    version: 16.1.0
     repository: oci://registry-1.docker.io/bitnamicharts
     condition: postgresql.enabled
   - name: rabbitmq
-    version: 15.0.3
+    version: 15.0.5
     repository: oci://registry-1.docker.io/bitnamicharts
     condition: rabbitmq.enabled
