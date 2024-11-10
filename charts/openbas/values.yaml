@@ -756,10 +756,12 @@ postgresql:
     # </br> Ref: https://github.com/bitnami/containers/tree/main/bitnami/postgresql#environment-variables
     database: "openbas"
 
-  # Persistence parameters
-  persistence:
-    # Enable PostgreSQL data persistence using PVC
-    enabled: false
+  # PostgreSQL Configuration parameters
+  primary:
+    # Persistence parameters
+    persistence:
+      # Enable PostgreSQL data persistence using PVC
+      enabled: false
 
 # -- RabbitMQ subchart deployment
 # </br> Ref: https://github.com/bitnami/charts/blob/main/bitnami/rabbitmq/values.yaml
