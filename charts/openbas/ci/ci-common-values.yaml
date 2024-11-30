@@ -135,6 +135,7 @@ collectors:
   replicas: 1
   image:
     repository: openbas/collector-atomic-red-team
+    tag: latest
   serviceAccount:
     create: true
     name: openbas-collector-ci
@@ -172,6 +173,7 @@ injectors:
   replicas: 1
   image:
     repository: openbas/injector-http-query
+    tag: latest
   serviceAccount:
     create: true
     name: openbas-injector-ci
