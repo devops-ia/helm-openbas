@@ -39,8 +39,7 @@ serviceAccount:
   # -- Name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: ""
-  # -- Specifies if you don't want the kubelet to automatically mount
-  # a ServiceAccount's API credentials
+  # -- Specifies if you don't want the kubelet to automatically mount a ServiceAccount API credentials
   automountServiceAccountToken: false
 
 # -- Enable or disable test connection
@@ -74,15 +73,59 @@ env:
   OPENBAS_RABBITMQ_USER: user
   OPENBAS_RABBITMQ_PASS: ChangeMe
 
-# -- Secrets from variables
+# -- Variables from configMap
+envFromConfigMap: {}
+  # MY_VARIABLE:
+  #  name: <name-configmap>
+  #  key: key
+
+# -- Variables from secrets
 envFromSecrets: {}
   # MY_VARIABLE:
-  #  name: <release-name>-credentials
+  #  name: <name-secret>
   #  key: secret_key
 
+# -- Load all variables from files
+# </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#configure-all-key-value-pairs-in-a-configmap-as-container-environment-variables
+envFromFiles: []
+  # - secretRef:
+  #     name: <name-secret>
+  # - configMapRef:
+  #     name: <name-configmap>
+
 # -- Secrets values to create credentials and reference by envFromSecrets
-# Generate Secret with following name: `<release-name>-credentials``
+# Generate Secret with following name: `<release-name>-credentials`
+# </br> Ref: https://kubernetes.io/docs/concepts/configuration/secret/
 secrets: {}
+
+# -- ConfigMap values to create configuration files
+# Generate ConfigMap with following name: <release-name>-<name>
+# </br> Ref: https://kubernetes.io/docs/concepts/configuration/configmap/
+configMaps: []
+  # - name: configmap-name
+  #   data:
+  #     my.key: |-
+  #       my-content
+  #     my_var: my-value
+
+# -- Configure additional containers
+# </br> Ref: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
+initContainers: []
+  # - name: my-container
+  #   image: busybox
+  #   command: ['sh', '-c', 'echo "Hello, World!"']
+
+# -- Configure args
+# </br> Ref: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/
+args: []
+  # - -c
+  # - echo "Hello, World!"
+
+# -- Configure command
+# </br> Ref: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/
+command: []
+  # - echo
+  # - "Hello, World!"
 
 # -- Kubernetes service to expose Pod
 # </br> Ref: https://kubernetes.io/docs/concepts/services-networking/service/
@@ -334,141 +377,253 @@ topologySpreadConstraints: []
   #   topologyKey: zone
   #   whenUnsatisfiable: DoNotSchedule
 
-# -- Collector Global environment
-collectorGlobalEnv: {}
-  # MY_VARIABLE: my_value
+# -- Collector global configuration
+collectorsGlobal:
+
+  # -- Additional environment variables on the output connector definition
+  env: {}
+    # MY_VARIABLE: my_value
+
+  # -- Variables from secrets
+  envFromSecrets: {}
+    # MY_VARIABLE:
+    #   name: <name-secret>
+    #   key: secret_key
+
+  # -- Variables from configMap
+  envFromConfigMap: {}
+    # MY_VARIABLE:
+    #   name: <name-configmap>
+    #   key: key
+
+  # -- Load all variables from files
+  envFromFiles: []
+    # - secretRef:
+    #     name: <name-secret>
+    # - configMapRef:
+    #     name: <name-configmap>
+
+  # -- Additional volumes on the output connector Deployment definition
+  volumes: []
+    # - name: foo
+    #   secret:
+    #     secretName: mysecret
+    #     optional: false
+
+  # -- Additional volumeMounts on the output connector Deployment definition
+  volumeMounts: []
+    # - name: foo
+    #   mountPath: "/etc/foo"
+    #   readOnly: true
 
 # -- Collectors
 # </br> Ref: https://github.com/OpenBAS-Platform/collectors
 collectors: []
-  # - name: collector-name
-  #   enabled: true
-  #   replicas: 1
-  #   # -- Image registry
-  #   image: {}
-  #     # repository:
-  #     # pullPolicy:
-  #     # tag:
-  #   # -- Environment variables to configure application
-  #   env: {}
-  #     # foo: bar
-  #     # my_env: my_value
-  #   # -- Deployment annotations
-  #   deploymentAnnotations: {}
-  #   # -- Pod annotations
-  #   podAnnotations: {}
-  #   # -- Enable or disable ready-checker waiting server is ready
-  #   readyChecker: {}
-  #     # enabled: true
-  #     # repository: busybox
-  #     # pullPolicy: IfNotPresent
-  #     # tag: latest
-  #     # retries: 30
-  #     # timeout: 5
-  #   # -- Lifecycle configuration
-  #   lifecycle: {}
-  #     # preStop:
-  #     #   exec:
-  #     #     command: ["sh", "-c", "sleep 10"]
-  #   # -- Configure Pod termination grace period
-  #   terminationGracePeriodSeconds: 30
-  #   # -- Secrets from variables
-  #   envFromSecrets: {}
-  #     # my_env:
-  #     #  name: release-name-credentials
-  #     #  key: secret_key
-  #   # -- The resources limits and requested
-  #   resources: {}
-  #     # limits:
-  #     #   memory: 256Mi
-  #     #   cpu: "250m"
-  #     # requests:
-  #     #   memory: 56Mi
-  #     #   cpu: "50m"
-  #   # -- Node labels for pod assignment
-  #   nodeSelector: {}
-  #     # project: "openbas"
-  #   # -- Tolerations for pod assignment
-  #   tolerations: []
-  #     # - key: "project"
-  #     #   operator: "Equal"
-  #     #   value: "openbas"
-  #     #   effect: "NoSchedule"
-  #   # -- Affinity for pod assignment
-  #   affinity: {}
-  #   # -- Control how Pods are spread across your cluster
-  #   topologySpreadConstraints: []
-  #     # - maxSkew: 1
-  #     #   topologyKey: zone
-  #     #   whenUnsatisfiable: DoNotSchedule
+# - name: collector-name
+#   enabled: true
+#   replicas: 1
+#   # -- Image registry
+#   image: {}
+#     # repository:
+#     # pullPolicy:
+#     # tag:
+#   # -- Deployment annotations
+#   deploymentAnnotations: {}
+#   # -- Pod annotations
+#   podAnnotations: {}
+#   # -- Enable or disable ready-checker waiting server is ready
+#   readyChecker: {}
+#     # enabled: true
+#     # repository: busybox
+#     # pullPolicy: IfNotPresent
+#     # tag: latest
+#     # retries: 30
+#     # timeout: 5
+#   # -- Lifecycle configuration
+#   lifecycle: {}
+#     # preStop:
+#     #   exec:
+#     #     command: ["sh", "-c", "sleep 10"]
+#   # -- Configure Pod termination grace period
+#   terminationGracePeriodSeconds: 30
+#   # -- Environment variables to configure application
+#   env: {}
+#     # my_env: my_value
+#   # -- Variables from secrets
+#   envFromSecrets: {}
+#     # MY_VARIABLE:
+#     #  name: <name-secret>
+#     #  key: secret_key
+#   # -- Variables from configMap
+#   envFromConfigMap: {}
+#     # MY_VARIABLE:
+#     #  name: <name-configmap>
+#     #  key: key
+#   # -- Load all variables from files
+#   envFromFiles: []
+#     # - secretRef:
+#     #     name: <name-secret>
+#     # - configMapRef:
+#     #     name: <name-configmap>
+#   # -- Additional volumes on the output connector Deployment definition
+#   volumes: []
+#     # - name: foo
+#     #   secret:
+#     #     secretName: mysecret
+#     #     optional: false
+#   # -- Additional volumeMounts on the output connector Deployment definition
+#   volumeMounts: []
+#     # - name: foo
+#     #   mountPath: "/etc/foo"
+#     #   readOnly: true
+#   # -- The resources limits and requested
+#   resources: {}
+#     # limits:
+#     #   memory: 256Mi
+#     #   cpu: "250m"
+#     # requests:
+#     #   memory: 56Mi
+#     #   cpu: "50m"
+#   # -- Node labels for pod assignment
+#   nodeSelector: {}
+#     # project: "openbas"
+#   # -- Tolerations for pod assignment
+#   tolerations: []
+#     # - key: "project"
+#     #   operator: "Equal"
+#     #   value: "openbas"
+#     #   effect: "NoSchedule"
+#   # -- Affinity for pod assignment
+#   affinity: {}
+#   # -- Control how Pods are spread across your cluster
+#   topologySpreadConstraints: []
+#     # - maxSkew: 1
+#     #   topologyKey: zone
+#     #   whenUnsatisfiable: DoNotSchedule
 
-# -- Injector Global environment
-injectorGlobalEnv: {}
-  # MY_VARIABLE: my_value
+# -- Injector global configuration
+injectorsGlobal:
+
+  # -- Additional environment variables on the output connector definition
+  env: {}
+    # MY_VARIABLE: my_value
+
+  # -- Variables from secrets
+  envFromSecrets: {}
+    # MY_VARIABLE:
+    #   name: <name-secret>
+    #   key: secret_key
+
+  # -- Variables from configMap
+  envFromConfigMap: {}
+    # MY_VARIABLE:
+    #   name: <name-configmap>
+    #   key: key
+
+  # -- Load all variables from files
+  envFromFiles: []
+    # - secretRef:
+    #     name: <name-secret>
+    # - configMapRef:
+    #     name: <name-configmap>
+
+  # -- Additional volumes on the output connector Deployment definition
+  volumes: []
+    # - name: foo
+    #   secret:
+    #     secretName: mysecret
+    #     optional: false
+
+  # -- Additional volumeMounts on the output connector Deployment definition
+  volumeMounts: []
+    # - name: foo
+    #   mountPath: "/etc/foo"
+    #   readOnly: true
 
 # -- Injectors
 # </br> Ref: https://github.com/OpenBAS-Platform/injectors
 injectors: []
-  # - name: injector-name
-  #   enabled: true
-  #   replicas: 1
-  #   # -- Image registry
-  #   image: {}
-  #     # repository:
-  #     # pullPolicy:
-  #     # tag:
-  #   # -- Environment variables to configure application
-  #   env: {}
-  #     # foo: bar
-  #     # my_env: my_value
-  #   # -- Deployment annotations
-  #   deploymentAnnotations: {}
-  #   # -- Pod annotations
-  #   podAnnotations: {}
-  #   # -- Enable or disable ready-checker waiting server is ready
-  #   readyChecker: {}
-  #     # enabled: true
-  #     # repository: busybox
-  #     # pullPolicy: IfNotPresent
-  #     # tag: latest
-  #     # retries: 30
-  #     # timeout: 5
-  #   # -- Lifecycle configuration
-  #   lifecycle: {}
-  #     # preStop:
-  #     #   exec:
-  #     #     command: ["sh", "-c", "sleep 10"]
-  #   # -- Configure Pod termination grace period
-  #   terminationGracePeriodSeconds: 30
-  #   # -- Secrets from variables
-  #   envFromSecrets: {}
-  #     # my_env:
-  #     #  name: release-name-credentials
-  #     #  key: secret_key
-  #   # -- The resources limits and requested
-  #   resources: {}
-  #     # limits:
-  #     #   memory: 256Mi
-  #     #   cpu: "250m"
-  #     # requests:
-  #     #   memory: 56Mi
-  #     #   cpu: "50m"
-  #   # -- Node labels for pod assignment
-  #   nodeSelector: {}
-  #     # project: "openbas"
-  #   # -- Tolerations for pod assignment
-  #   tolerations: []
-  #     # - key: "project"
-  #     #   operator: "Equal"
-  #     #   value: "openbas"
-  #     #   effect: "NoSchedule"
-  #   # -- Affinity for pod assignment
-  #   affinity: {}
-  #   # -- Control how Pods are spread across your cluster
-  #   topologySpreadConstraints: []
-  #     # - maxSkew: 1
-  #     #   topologyKey: zone
-  #     #   whenUnsatisfiable: DoNotSchedule
+# - name: injector-name
+#   enabled: true
+#   replicas: 1
+#   # -- Image registry
+#   image: {}
+#     # repository:
+#     # pullPolicy:
+#     # tag:
+#   # -- Deployment annotations
+#   deploymentAnnotations: {}
+#   # -- Pod annotations
+#   podAnnotations: {}
+#   # -- Enable or disable ready-checker waiting server is ready
+#   readyChecker: {}
+#     # enabled: true
+#     # repository: busybox
+#     # pullPolicy: IfNotPresent
+#     # tag: latest
+#     # retries: 30
+#     # timeout: 5
+#   # -- Lifecycle configuration
+#   lifecycle: {}
+#     # preStop:
+#     #   exec:
+#     #     command: ["sh", "-c", "sleep 10"]
+#   # -- Configure Pod termination grace period
+#   terminationGracePeriodSeconds: 30
+#   # -- Environment variables to configure application
+#   env: {}
+#     # my_env: my_value
+#   # -- Variables from secrets
+#   envFromSecrets: {}
+#     # MY_VARIABLE:
+#     #  name: <name-secret>
+#     #  key: secret_key
+#   # -- Variables from configMap
+#   envFromConfigMap: {}
+#     # MY_VARIABLE:
+#     #  name: <name-configmap>
+#     #  key: key
+#   # -- Load all variables from files
+#   envFromFiles: []
+#     # - secretRef:
+#     #     name: <name-secret>
+#     # - configMapRef:
+#     #     name: <name-configmap>
+#   # -- Additional volumes on the output connector Deployment definition
+#   volumes: []
+#     # - name: foo
+#     #   secret:
+#     #     secretName: mysecret
+#     #     optional: false
+#   # -- Additional volumeMounts on the output connector Deployment definition
+#   volumeMounts: []
+#     # - name: foo
+#     #   mountPath: "/etc/foo"
+#     #   readOnly: true
+#   # -- The resources limits and requested
+#   resources: {}
+#     # limits:
+#     #   memory: 256Mi
+#     #   cpu: "250m"
+#     # requests:
+#     #   memory: 56Mi
+#     #   cpu: "50m"
+#   # -- Node labels for pod assignment
+#   nodeSelector: {}
+#     # project: "openbas"
+#   # -- Tolerations for pod assignment
+#   tolerations: []
+#     # - key: "project"
+#     #   operator: "Equal"
+#     #   value: "openbas"
+#     #   effect: "NoSchedule"
+#   # -- Affinity for pod assignment
+#   affinity: {}
+#   # -- Control how Pods are spread across your cluster
+#   topologySpreadConstraints: []
+#     # - maxSkew: 1
+#     #   topologyKey: zone
+#     #   whenUnsatisfiable: DoNotSchedule
 
 # -- OpenBAS caldera-server deployment configuration
 caldera:
