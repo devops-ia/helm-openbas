@@ -1,3 +1,4 @@
+{{- $collectorsGlobal := .Values.collectorsGlobal }}
 {{- range .Values.collectors }}
 {{- $collectorName := .name }}
 
@@ -47,26 +48,33 @@ spec:
       {{ if and .readyChecker (hasKey .readyChecker "enabled") }}
       {{- if .readyChecker.enabled }}
       initContainers:
-      - name: ready-checker-server
-        {{- if $.Values.global.imageRegistry }}
-        image: "{{ $.Values.global.imageRegistry }}/{{ .readyChecker.image | default "busybox" }}:{{ .readyChecker.tag | default "latest" }}"
-        {{- else }}
-        image: {{ .readyChecker.repository | default "busybox" }}:{{ .readyChecker.tag | default "latest" }}
-        imagePullPolicy: {{ .readyChecker.pullPolicy | default "IfNotPresent" }}
+        - name: ready-checker-server
+          {{- if $.Values.global.imageRegistry }}
+          image: "{{ $.Values.global.imageRegistry }}/{{ .readyChecker.image | default "busybox" }}:{{ .readyChecker.tag | default "latest" }}"
+          {{- else }}
+          image: {{ .readyChecker.repository | default "busybox" }}:{{ .readyChecker.tag | default "latest" }}
+          imagePullPolicy: {{ .readyChecker.pullPolicy | default "IfNotPresent" }}
+          {{- end }}
+          command:
+            - 'sh'
+            - '-c'
+            - >
+              RETRY=0;
+              until [ $RETRY -eq {{ .readyChecker.retries }} ];
+              do
+                if nc -zv {{ $.Values.fullnameOverride | default (include "openbas.fullname" $) }}-server {{ $.Values.service.port }}; then
+                  echo "Service {{ $.Values.fullnameOverride | default (include "openbas.fullname" $) }}-server:{{ $.Values.service.port }} is ready";
+                  exit 0;
+                fi;
+                echo "[$RETRY/{{ .readyChecker.retries }}] waiting service {{ $.Values.fullnameOverride | default (include "openbas.fullname" $) }}-server:{{ $.Values.service.port }} is ready";
+                sleep {{ .readyChecker.timeout }};
+                RETRY=$(($RETRY + 1));
+                if [ $RETRY -eq {{ .readyChecker.retries }} ]; then
+                  echo "Service {{ $.Values.fullnameOverride | default (include "openbas.fullname" $) }}-server:{{ $.Values.service.port }} did not become ready after {{ .readyChecker.retries }} retries";
+                  exit 1;
+                fi;
+              done
         {{- end }}
-        command:
-          - 'sh'
-          - '-c'
-          - >
-            RETRY=0;
-            until [ $RETRY -eq {{ .readyChecker.retries }} ];
-            do
-              nc -zv {{ $.Values.fullnameOverride | default (include "openbas.fullname" $) }}-server {{ $.Values.service.port }} && break;
-              echo "[$RETRY/{{ .readyChecker.retries }}] waiting service {{ $.Values.fullnameOverride | default (include "openbas.fullname" $) }}-server:{{ $.Values.service.port }} is ready";
-              sleep {{ .readyChecker.timeout }};
-              RETRY=$(($RETRY + 1));
-            done
-      {{- end }}
       {{- end }}
       containers:
         - name: {{ $collectorName }}-collector
@@ -78,52 +86,123 @@ spec:
             {{- with .lifecycle }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
+          envFrom:
+            {{- if .envFromFiles }}
+            {{- tpl (toYaml .envFromFiles) . | nindent 12 }}
+            {{- end }}
+            {{- if $collectorsGlobal.envFromFiles }}
+            {{- tpl (toYaml $collectorsGlobal.envFromFiles) . | nindent 12 }}
+            {{- end }}
           env:
-          # Variables from secrets have precedence
-          {{- $envList := dict -}}
-          {{- if .envFromSecrets }}
-          {{- range $key, $value := .envFromSecrets }}
-          - name: {{ $key | upper }}
-            valueFrom:
-              secretKeyRef:
-                name: {{ $value.name }}
-                key: {{ $value.key | default $key }}
-          {{- $_ := set $envList $key true }}
-          {{- end }}
-          {{- end }}
-          # Add variables in plain text if they were not already added from secrets
-          {{- if .env }}
-          {{- range $key, $value := .env }}
-          {{- if not (hasKey $envList $key) }}
-          - name: {{ $key | upper }}
-            value: {{ $value | quote }}
-          {{- $_ := set $envList $key true }}
-          {{- end }}
-          {{- end }}
-          {{- end }}
-          # Special handling for OPENBAS_URL which is constructed from other values
-          {{- if not (hasKey $envList "OPENBAS_URL") }}
-          {{- if eq $.Values.env.APP__BASE_PATH "/" }}
-          - name: OPENBAS_URL
-            value: "http://{{ include "openbas.fullname" $ }}-server:{{ $.Values.service.port }}"
-          {{- else }}
-          - name: OPENBAS_URL
-            value: "http://{{ include "openbas.fullname" $ }}-server:{{ $.Values.service.port }}{{ $.Values.env.APP__BASE_PATH }}"
-          {{- end }}
-          {{- end }}
-          # Special handling for OPENBAS_TOKEN which is constructed from other values
-          {{- if and (not (hasKey $envList "OPENBAS_TOKEN")) (or ($.Values.secrets.OPENBAS_ADMIN_TOKEN) ($.Values.env.OPENBAS_ADMIN_TOKEN)) }}
-          {{- if $.Values.secrets.OPENBAS_ADMIN_TOKEN }}
-          - name: OPENBAS_TOKEN
-            value: {{ $.Values.secrets.OPENBAS_ADMIN_TOKEN }}
-          {{- else if $.Values.env.OPENBAS_ADMIN_TOKEN }}
-          - name: OPENBAS_TOKEN
-            value: {{ $.Values.env.OPENBAS_ADMIN_TOKEN }}
-          {{- end }}
-          {{- end }}
+            # Variables from secrets have precedence
+            # Collector specific env from secrets
+            {{- $envList := dict -}}
+            {{- if .envFromSecrets }}
+            {{- range $key, $value := .envFromSecrets }}
+            - name: {{ $key | upper }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $value.name }}
+                  key: {{ $value.key | default $key }}
+            {{- $_ := set $envList $key true }}
+            {{- end }}
+            {{- end }}
+            # Variables from configmap have precedence
+            {{- if .envFromConfigMap }}
+            {{- range $key, $value := .envFromConfigMap }}
+            {{- if not (hasKey $envList $key) }}
+            - name: {{ $key | upper }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $value.name }}
+                  key: {{ $value.key | default $key }}
+            {{- $_ := set $envList $key true }}
+            {{- end }}
+            {{- end }}
+            {{- end }}
+            # Add variables in plain text if they were not already added from secrets
+            {{- if .env }}
+            {{- range $key, $value := .env }}
+            {{- if not (hasKey $envList $key) }}
+            - name: {{ $key | upper }}
+              value: {{ $value | quote }}
+            {{- $_ := set $envList $key true }}
+            {{- end }}
+            {{- end }}
+            {{- end }}
+            # Special handling for OPENBAS_URL which is constructed from other values
+            {{- if not (hasKey $envList "OPENBAS_URL") }}
+            {{- if eq $.Values.env.APP__BASE_PATH "/" }}
+            - name: OPENBAS_URL
+              value: "http://{{ include "openbas.fullname" $ }}-server:{{ $.Values.service.port }}"
+            {{- else }}
+            - name: OPENBAS_URL
+              value: "http://{{ include "openbas.fullname" $ }}-server:{{ $.Values.service.port }}{{ $.Values.env.APP__BASE_PATH }}"
+            {{- end }}
+            {{- end }}
+            # Special handling for OPENBAS_TOKEN which is constructed from other values
+            {{- if and (not (hasKey $envList "OPENBAS_TOKEN")) (or ($.Values.secrets.OPENBAS_ADMIN_TOKEN) ($.Values.env.OPENBAS_ADMIN_TOKEN)) }}
+            {{- if $.Values.secrets.OPENBAS_ADMIN_TOKEN }}
+            - name: OPENBAS_TOKEN
+              value: {{ $.Values.secrets.OPENBAS_ADMIN_TOKEN }}
+            {{- else if $.Values.env.OPENBAS_ADMIN_TOKEN }}
+            - name: OPENBAS_TOKEN
+              value: {{ $.Values.env.OPENBAS_ADMIN_TOKEN }}
+            {{- end }}
+            {{- end }}
+            # Collectors global env from secrets
+            {{- if $collectorsGlobal.envFromSecrets }}
+            {{- range $key, $value := $collectorsGlobal.envFromSecrets }}
+            {{- if not (hasKey $envList $key) }}
+            - name: {{ $key | upper }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $value.name }}
+                  key: {{ $value.key | default $key }}
+            {{- $_ := set $envList $key true }}
+            {{- end }}
+            {{- end }}
+            {{- end }}
+            # Collectors global env from configmap
+            {{- if $collectorsGlobal.envFromConfigMap }}
+            {{- range $key, $value := $collectorsGlobal.envFromConfigMap }}
+            {{- if not (hasKey $envList $key) }}
+            - name: {{ $key | upper }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $value.name }}
+                  key: {{ $value.key | default $key }}
+            {{- $_ := set $envList $key true }}
+            {{- end }}
+            {{- end }}
+            {{- end }}
+            # Collectors global env
+            {{- if $collectorsGlobal.env }}
+            {{- range $key, $value := $collectorsGlobal.env }}
+            {{- if not (hasKey $envList $key) }}
+            - name: {{ $key | upper }}
+              value: {{ $value | quote }}
+            {{- $_ := set $envList $key true }}
+            {{- end }}
+            {{- end }}
+            {{- end }}
+          volumeMounts:
+            {{- with .volumeMounts }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- with $collectorsGlobal.volumeMounts }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
           resources:
             {{- toYaml .resources | nindent 12 }}
       terminationGracePeriodSeconds: {{ .terminationGracePeriodSeconds | default 30 }}
+      volumes:
+      {{- with .volumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $collectorsGlobal.volumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

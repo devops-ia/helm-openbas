@@ -78,6 +78,7 @@ helm show values openbas/openbas
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | affinity | object | `{}` | Affinity for pod assignment </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity |
+| args | list | `[]` | Configure args </br> Ref: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/ |
 | autoscaling | object | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | Autoscaling with CPU or memory utilization percentage </br> Ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/ |
 | caldera | object | `{"affinity":{},"autoscaling":{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80},"config":{},"enabled":true,"env":{},"envFromSecrets":{},"image":{"pullPolicy":"IfNotPresent","repository":"openbas/caldera-server","tag":"5.0.0"},"ingress":{"annotations":{},"className":"","enabled":false,"hosts":[{"host":"chart-example.local","paths":[{"path":"/","pathType":"ImplementationSpecific"}]}],"tls":[]},"lifecycle":{},"networkPolicy":{"egress":[],"enabled":false,"ingress":[],"policyTypes":[]},"nodeSelector":{},"podAnnotations":{},"podDisruptionBudget":{"enabled":false,"maxUnavailable":1,"minAvailable":null},"podLabels":{},"podSecurityContext":{},"replicaCount":1,"resources":{},"securityContext":{},"service":{"port":8888,"targetPort":8888,"type":"ClusterIP"},"terminationGracePeriodSeconds":30,"tolerations":[],"topologySpreadConstraints":[],"volumeMounts":[],"volumes":[]}` | OpenBAS caldera-server deployment configuration |
 | caldera.affinity | object | `{}` | Affinity for pod assignment </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity |
@@ -112,10 +113,20 @@ helm show values openbas/openbas
 | caldera.topologySpreadConstraints | list | `[]` | Control how Pods are spread across your cluster </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/#example-multiple-topologyspreadconstraints |
 | caldera.volumeMounts | list | `[]` | Additional volumeMounts on the output Deployment definition |
 | caldera.volumes | list | `[]` | Additional volumes on the output Deployment definition |
-| collectorGlobalEnv | object | `{}` | Collector Global environment |
 | collectors | list | `[]` | Collectors </br> Ref: https://github.com/OpenBAS-Platform/collectors |
+| collectorsGlobal | object | `{"env":{},"envFromConfigMap":{},"envFromFiles":[],"envFromSecrets":{},"volumeMounts":[],"volumes":[]}` | Collector global configuration |
+| collectorsGlobal.env | object | `{}` | Additional environment variables on the output connector definition |
+| collectorsGlobal.envFromConfigMap | object | `{}` | Variables from configMap |
+| collectorsGlobal.envFromFiles | list | `[]` | Load all variables from files |
+| collectorsGlobal.envFromSecrets | object | `{}` | Variables from secrets |
+| collectorsGlobal.volumeMounts | list | `[]` | Additional volumeMounts on the output connector Deployment definition |
+| collectorsGlobal.volumes | list | `[]` | Additional volumes on the output connector Deployment definition |
+| command | list | `[]` | Configure command </br> Ref: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/ |
+| configMaps | list | `[]` | ConfigMap values to create configuration files Generate ConfigMap with following name: <release-name>-<name> </br> Ref: https://kubernetes.io/docs/concepts/configuration/configmap/ |
 | env | object | `{"INJECTOR_CALDERA_API_KEY":"ChangeMe","INJECTOR_CALDERA_PUBLIC_URL":"http://release-name-caldera:8888","INJECTOR_CALDERA_URL":"http://release-name-caldera:8888","MINIO_ENDPOINT":"release-name-minio:9000","OPENBAS_ADMIN_EMAIL":"admin@openbas.io","OPENBAS_ADMIN_PASSWORD":"ChangeMe","OPENBAS_ADMIN_TOKEN":"ChangeMe","OPENBAS_AUTH-LOCAL-ENABLE":true,"OPENBAS_BASE-URL":"http://localhost:8080","OPENBAS_RABBITMQ_HOSTNAME":"release-name-rabbitmq","OPENBAS_RABBITMQ_MANAGEMENT-PORT":15672,"OPENBAS_RABBITMQ_PASS":"ChangeMe","OPENBAS_RABBITMQ_PORT":5672,"OPENBAS_RABBITMQ_USER":"user","SERVER_ADDRESS":"0.0.0.0","SERVER_PORT":8080,"SPRING_DATASOURCE_PASSWORD":"ChangeMe","SPRING_DATASOURCE_URL":"jdbc:postgresql://release-name-postgresql:5432/openbas","SPRING_DATASOURCE_USERNAME":"user"}` | Environment variables to configure application </br> Ref: https://docs.openbas.io/latest/deployment/configuration/#platform |
-| envFromSecrets | object | `{}` | Secrets from variables |
+| envFromConfigMap | object | `{}` | Variables from configMap |
+| envFromFiles | list | `[]` | Load all variables from files </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#configure-all-key-value-pairs-in-a-configmap-as-container-environment-variables |
+| envFromSecrets | object | `{}` | Variables from secrets |
 | fullnameOverride | string | `""` | String to fully override openbas.fullname template |
 | global | object | `{"imagePullSecrets":[],"imageRegistry":""}` | Global section contains configuration options that are applied to all services |
 | global.imagePullSecrets | list | `[]` | Specifies the secrets to use for pulling images from private registries Leave empty if no secrets are required E.g. imagePullSecrets:   - name: myRegistryKeySecretName |
@@ -126,8 +137,15 @@ helm show values openbas/openbas
 | image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion |
 | imagePullSecrets | list | `[]` | Global Docker registry secret names as an array |
 | ingress | object | `{"annotations":{},"className":"","enabled":false,"hosts":[{"host":"chart-example.local","paths":[{"path":"/","pathType":"ImplementationSpecific"}]}],"tls":[]}` | Ingress configuration to expose app </br> Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/ |
-| injectorGlobalEnv | object | `{}` | Injector Global environment |
+| initContainers | list | `[]` | Configure additional containers </br> Ref: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/ |
 | injectors | list | `[]` | Injectors </br> Ref: https://github.com/OpenBAS-Platform/injectors |
+| injectorsGlobal | object | `{"env":{},"envFromConfigMap":{},"envFromFiles":[],"envFromSecrets":{},"volumeMounts":[],"volumes":[]}` | Injector global configuration |
+| injectorsGlobal.env | object | `{}` | Additional environment variables on the output connector definition |
+| injectorsGlobal.envFromConfigMap | object | `{}` | Variables from configMap |
+| injectorsGlobal.envFromFiles | list | `[]` | Load all variables from files |
+| injectorsGlobal.envFromSecrets | object | `{}` | Variables from secrets |
+| injectorsGlobal.volumeMounts | list | `[]` | Additional volumeMounts on the output connector Deployment definition |
+| injectorsGlobal.volumes | list | `[]` | Additional volumes on the output connector Deployment definition |
 | lifecycle | object | `{}` | Configure lifecycle hooks </br> Ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/ </br> Ref: https://learnk8s.io/graceful-shutdown |
 | livenessProbe | object | `{"enabled":true,"failureThreshold":3,"initialDelaySeconds":180,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":5}` | Configure liveness checker </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-startup-probes |
 | livenessProbeCustom | object | `{}` | Custom livenessProbe |
@@ -158,7 +176,7 @@ helm show values openbas/openbas
 | readyChecker.timeout | int | `5` | Timeout for each check |
 | replicaCount | int | `1` | Number of replicas for the service |
 | resources | object | `{}` | The resources limits and requested </br> Ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ |
-| secrets | object | `{}` | Secrets values to create credentials and reference by envFromSecrets Generate Secret with following name: `<release-name>-credentials`` |
+| secrets | object | `{}` | Secrets values to create credentials and reference by envFromSecrets Generate Secret with following name: `<release-name>-credentials` </br> Ref: https://kubernetes.io/docs/concepts/configuration/secret/ |
 | securityContext | object | `{}` | Defines privilege and access control settings for a Container </br> Ref: https://kubernetes.io/docs/concepts/security/pod-security-standards/ </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/ |
 | service | object | `{"port":80,"targetPort":8080,"type":"ClusterIP"}` | Kubernetes service to expose Pod </br> Ref: https://kubernetes.io/docs/concepts/services-networking/service/ |
 | service.port | int | `80` | Kubernetes Service port |
@@ -166,7 +184,7 @@ helm show values openbas/openbas
 | service.type | string | `"ClusterIP"` | Kubernetes Service type. Allowed values: NodePort, LoadBalancer or ClusterIP |
 | serviceAccount | object | `{"annotations":{},"automountServiceAccountToken":false,"create":true,"name":""}` | Enable creation of ServiceAccount |
 | serviceAccount.annotations | object | `{}` | Annotations to add to the service account |
-| serviceAccount.automountServiceAccountToken | bool | `false` | Specifies if you don't want the kubelet to automatically mount a ServiceAccount's API credentials |
+| serviceAccount.automountServiceAccountToken | bool | `false` | Specifies if you don't want the kubelet to automatically mount a ServiceAccount API credentials |
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created |
 | serviceAccount.name | string | `""` | Name of the service account to use. If not set and create is true, a name is generated using the fullname template |
 | startupProbe | object | `{"enabled":true,"failureThreshold":30,"initialDelaySeconds":180,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":5}` | Configure startupProbe checker </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-startup-probes |
