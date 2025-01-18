@@ -2,6 +2,45 @@ apiVersion: v1
 entries:
   openbas:
   - apiVersion: v2
+    appVersion: 1.11.1
+    created: "2025-01-18T10:41:02.284952807Z"
+    dependencies:
+    - condition: minio.enabled
+      name: minio
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 14.10.3
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 16.3.5
+    - condition: rabbitmq.enabled
+      name: rabbitmq
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 15.2.1
+    description: A Helm chart to deploy Open Breach and Attack Simulation platform
+    digest: 82938541d06f3920ca13cdbce7d01de673403ce3ab14f83893362afd5038915d
+    home: https://www.filigran.io/en/solutions/products/openbas/
+    keywords:
+    - openbas
+    - cybersecurity
+    - purple-team
+    - attack-simulation
+    - breach-simulator
+    - threat
+    - analysis
+    maintainers:
+    - email: hello@ialejandro.rocks
+      name: ialejandro
+      url: https://ialejandro.rocks
+    name: openbas
+    sources:
+    - https://github.com/devops-ia/helm-openbas
+    - https://github.com/OpenBAS-Platform/openbas
+    type: application
+    urls:
+    - https://github.com/devops-ia/helm-openbas/releases/download/v1.6.12/openbas-1.6.12.tgz
+    version: 1.6.12
+  - apiVersion: v2
     appVersion: 1.11.0
     created: "2025-01-16T08:12:32.406547742Z"
     dependencies:
@@ -2026,4 +2065,4 @@ entries:
     urls:
     - https://github.com/devops-ia/helm-openbas/releases/download/v1.0.0/openbas-1.0.0.tgz
     version: 1.0.0
-generated: "2025-01-16T08:12:32.406766189Z"
+generated: "2025-01-18T10:41:02.28513122Z"
