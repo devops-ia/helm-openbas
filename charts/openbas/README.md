@@ -16,9 +16,9 @@ A Helm chart to deploy Open Breach and Attack Simulation platform
 
 | Repository | Name | Version |
 |------------|------|---------|
-| oci://registry-1.docker.io/bitnamicharts | minio | 15.0.3 |
-| oci://registry-1.docker.io/bitnamicharts | postgresql | 16.4.9 |
-| oci://registry-1.docker.io/bitnamicharts | rabbitmq | 15.3.1 |
+| oci://registry-1.docker.io/bitnamicharts | minio | 15.0.4 |
+| oci://registry-1.docker.io/bitnamicharts | postgresql | 16.4.14 |
+| oci://registry-1.docker.io/bitnamicharts | rabbitmq | 15.3.2 |
 
 ## Add repository
 
