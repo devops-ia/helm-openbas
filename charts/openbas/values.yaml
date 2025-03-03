@@ -75,23 +75,23 @@ env:
 
 # -- Variables from configMap
 envFromConfigMap: {}
-  # MY_VARIABLE:
-  #  name: <name-configmap>
-  #  key: key
+# MY_VARIABLE:
+#  name: <name-configmap>
+#  key: key
 
 # -- Variables from secrets
 envFromSecrets: {}
-  # MY_VARIABLE:
-  #  name: <name-secret>
-  #  key: secret_key
+# MY_VARIABLE:
+#  name: <name-secret>
+#  key: secret_key
 
 # -- Load all variables from files
 # </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#configure-all-key-value-pairs-in-a-configmap-as-container-environment-variables
 envFromFiles: []
-  # - secretRef:
-  #     name: <name-secret>
-  # - configMapRef:
-  #     name: <name-configmap>
+# - secretRef:
+#     name: <name-secret>
+# - configMapRef:
+#     name: <name-configmap>
 
 # -- Secrets values to create credentials and reference by envFromSecrets
 # Generate Secret with following name: `<release-name>-credentials`
@@ -102,30 +102,30 @@ secrets: {}
 # Generate ConfigMap with following name: <release-name>-<name>
 # </br> Ref: https://kubernetes.io/docs/concepts/configuration/configmap/
 configMaps: []
-  # - name: configmap-name
-  #   data:
-  #     my.key: |-
-  #       my-content
-  #     my_var: my-value
+# - name: configmap-name
+#   data:
+#     my.key: |-
+#       my-content
+#     my_var: my-value
 
 # -- Configure additional containers
 # </br> Ref: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
 initContainers: []
-  # - name: my-container
-  #   image: busybox
-  #   command: ['sh', '-c', 'echo "Hello, World!"']
+# - name: my-container
+#   image: busybox
+#   command: ['sh', '-c', 'echo "Hello, World!"']
 
 # -- Configure args
 # </br> Ref: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/
 args: []
-  # - -c
-  # - echo "Hello, World!"
+# - -c
+# - echo "Hello, World!"
 
 # -- Configure command
 # </br> Ref: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/
 command: []
-  # - echo
-  # - "Hello, World!"
+# - echo
+# - "Hello, World!"
 
 # -- Kubernetes service to expose Pod
 # </br> Ref: https://kubernetes.io/docs/concepts/services-networking/service/
@@ -151,38 +151,38 @@ networkPolicy:
   enabled: false
   # -- Policy types
   policyTypes: []
-    # - Ingress
-    # - Egress
+  # - Ingress
+  # - Egress
   ingress: []
-    # - from:
-    #   - ipBlock:
-    #       cidr: 172.17.0.0/16
-    #       except:
-    #       - 172.17.1.0/24
-    #   - namespaceSelector:
-    #       matchLabels:
-    #         project: myproject
-    #   - podSelector:
-    #       matchLabels:
-    #         role: frontend
-    #   ports:
-    #   - protocol: TCP
-    #     port: 6379
+  # - from:
+  #   - ipBlock:
+  #       cidr: 172.17.0.0/16
+  #       except:
+  #       - 172.17.1.0/24
+  #   - namespaceSelector:
+  #       matchLabels:
+  #         project: myproject
+  #   - podSelector:
+  #       matchLabels:
+  #         role: frontend
+  #   ports:
+  #   - protocol: TCP
+  #     port: 6379
   egress: []
-    # - to:
-    #   - ipBlock:
-    #       cidr: 10.0.0.0/24
-    #   ports:
-    #   - protocol: TCP
-    #     port: 5978
+  # - to:
+  #   - ipBlock:
+  #       cidr: 10.0.0.0/24
+  #   ports:
+  #   - protocol: TCP
+  #     port: 5978
 
 # -- Configure lifecycle hooks
 # </br> Ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
 # </br> Ref: https://learnk8s.io/graceful-shutdown
 lifecycle: {}
-  # preStop:
-  #   exec:
-  #     command: ["sh", "-c", "sleep 10"]
+# preStop:
+#   exec:
+#     command: ["sh", "-c", "sleep 10"]
 
 # -- Configure Pod termination grace period
 # </br> Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination
@@ -200,14 +200,14 @@ livenessProbe:
 
 # -- Custom livenessProbe
 livenessProbeCustom: {}
-  # httpGet:
-  #   path: /dashboard
-  #   port: 4000
-  # failureThreshold: 3
-  # initialDelaySeconds: 200
-  # periodSeconds: 30
-  # successThreshold: 1
-  # timeoutSeconds: 5
+# httpGet:
+#   path: /dashboard
+#   port: 4000
+# failureThreshold: 3
+# initialDelaySeconds: 200
+# periodSeconds: 30
+# successThreshold: 1
+# timeoutSeconds: 5
 
 # -- Configure readinessProbe checker
 # </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-startup-probes
@@ -221,14 +221,14 @@ readinessProbe:
 
 # -- Custom readinessProbe
 readinessProbeCustom: {}
-  # httpGet:
-  #   path: /dashboard
-  #   port: 4000
-  # failureThreshold: 3
-  # initialDelaySeconds: 200
-  # periodSeconds: 30
-  # successThreshold: 1
-  # timeoutSeconds: 5
+# httpGet:
+#   path: /dashboard
+#   port: 4000
+# failureThreshold: 3
+# initialDelaySeconds: 200
+# periodSeconds: 30
+# successThreshold: 1
+# timeoutSeconds: 5
 
 # -- Configure startupProbe checker
 # </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-startup-probes
@@ -242,14 +242,14 @@ startupProbe:
 
 # -- Custom startupProbe
 startupProbeCustom: {}
-  # httpGet:
-  #   path: /dashboard
-  #   port: 4000
-  # failureThreshold: 3
-  # initialDelaySeconds: 200
-  # periodSeconds: 30
-  # successThreshold: 1
-  # timeoutSeconds: 5
+# httpGet:
+#   path: /dashboard
+#   port: 4000
+# failureThreshold: 3
+# initialDelaySeconds: 200
+# periodSeconds: 30
+# successThreshold: 1
+# timeoutSeconds: 5
 
 # -- Enable or disable ready-checker
 readyChecker:
@@ -284,18 +284,18 @@ podLabels: {}
 # </br> Ref: https://kubernetes.io/docs/concepts/security/pod-security-standards/
 # </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
 podSecurityContext: {}
-  # fsGroup: 2000
+# fsGroup: 2000
 
 # -- Defines privilege and access control settings for a Container
 # </br> Ref: https://kubernetes.io/docs/concepts/security/pod-security-standards/
 # </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
 securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+# capabilities:
+#   drop:
+#   - ALL
+# readOnlyRootFilesystem: true
+# runAsNonRoot: true
+# runAsUser: 1000
 
 # -- Ingress configuration to expose app
 # </br> Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
@@ -303,8 +303,8 @@ ingress:
   enabled: false
   className: ""
   annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
+  # kubernetes.io/ingress.class: nginx
+  # kubernetes.io/tls-acme: "true"
   hosts:
     - host: chart-example.local
       paths:
@@ -318,24 +318,23 @@ ingress:
 # -- The resources limits and requested
 # </br> Ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'
-  # limits:
-  #   cpu: "1500m"
-  #   memory: 2048Mi
-  # requests:
-  #   cpu: 1
-  #   memory: 256Mi
+# We usually recommend not to specify default resources and to leave this as a conscious
+# choice for the user. This also increases chances charts run on environments with little
+# resources, such as Minikube. If you do want to specify resources, uncomment the following
+# lines, adjust them as necessary, and remove the curly braces after 'resources:'
+# limits:
+#   cpu: "1500m"
+#   memory: 2048Mi
+# requests:
+#   cpu: 1
+#   memory: 256Mi
 
 # -- Pod Disruption Budget
 # </br> Ref: https://kubernetes.io/docs/reference/kubernetes-api/policy-resources/pod-disruption-budget-v1/
 podDisruptionBudget:
   enabled: false
   maxUnavailable: 1
-  minAvailable:
-
+  minAvailable: null
 # -- Autoscaling with CPU or memory utilization percentage
 # </br> Ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
 autoscaling:
@@ -373,48 +372,48 @@ affinity: {}
 # -- Control how Pods are spread across your cluster
 # </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/#example-multiple-topologyspreadconstraints
 topologySpreadConstraints: []
-  # - maxSkew: 1
-  #   topologyKey: zone
-  #   whenUnsatisfiable: DoNotSchedule
+# - maxSkew: 1
+#   topologyKey: zone
+#   whenUnsatisfiable: DoNotSchedule
 
 # -- Collector global configuration
 collectorsGlobal:
 
   # -- Additional environment variables on the output connector definition
   env: {}
-    # MY_VARIABLE: my_value
+  # MY_VARIABLE: my_value
 
   # -- Variables from secrets
   envFromSecrets: {}
-    # MY_VARIABLE:
-    #   name: <name-secret>
-    #   key: secret_key
+  # MY_VARIABLE:
+  #   name: <name-secret>
+  #   key: secret_key
 
   # -- Variables from configMap
   envFromConfigMap: {}
-    # MY_VARIABLE:
-    #   name: <name-configmap>
-    #   key: key
+  # MY_VARIABLE:
+  #   name: <name-configmap>
+  #   key: key
 
   # -- Load all variables from files
   envFromFiles: []
-    # - secretRef:
-    #     name: <name-secret>
-    # - configMapRef:
-    #     name: <name-configmap>
+  # - secretRef:
+  #     name: <name-secret>
+  # - configMapRef:
+  #     name: <name-configmap>
 
   # -- Additional volumes on the output connector Deployment definition
   volumes: []
-    # - name: foo
-    #   secret:
-    #     secretName: mysecret
-    #     optional: false
+  # - name: foo
+  #   secret:
+  #     secretName: mysecret
+  #     optional: false
 
   # -- Additional volumeMounts on the output connector Deployment definition
   volumeMounts: []
-    # - name: foo
-    #   mountPath: "/etc/foo"
-    #   readOnly: true
+  # - name: foo
+  #   mountPath: "/etc/foo"
+  #   readOnly: true
 
 # -- Collectors
 # </br> Ref: https://github.com/OpenBAS-Platform/collectors
@@ -506,39 +505,39 @@ injectorsGlobal:
 
   # -- Additional environment variables on the output connector definition
   env: {}
-    # MY_VARIABLE: my_value
+  # MY_VARIABLE: my_value
 
   # -- Variables from secrets
   envFromSecrets: {}
-    # MY_VARIABLE:
-    #   name: <name-secret>
-    #   key: secret_key
+  # MY_VARIABLE:
+  #   name: <name-secret>
+  #   key: secret_key
 
   # -- Variables from configMap
   envFromConfigMap: {}
-    # MY_VARIABLE:
-    #   name: <name-configmap>
-    #   key: key
+  # MY_VARIABLE:
+  #   name: <name-configmap>
+  #   key: key
 
   # -- Load all variables from files
   envFromFiles: []
-    # - secretRef:
-    #     name: <name-secret>
-    # - configMapRef:
-    #     name: <name-configmap>
+  # - secretRef:
+  #     name: <name-secret>
+  # - configMapRef:
+  #     name: <name-configmap>
 
   # -- Additional volumes on the output connector Deployment definition
   volumes: []
-    # - name: foo
-    #   secret:
-    #     secretName: mysecret
-    #     optional: false
+  # - name: foo
+  #   secret:
+  #     secretName: mysecret
+  #     optional: false
 
   # -- Additional volumeMounts on the output connector Deployment definition
   volumeMounts: []
-    # - name: foo
-    #   mountPath: "/etc/foo"
-    #   readOnly: true
+  # - name: foo
+  #   mountPath: "/etc/foo"
+  #   readOnly: true
 
 # -- Injectors
 # </br> Ref: https://github.com/OpenBAS-Platform/injectors
@@ -640,7 +639,7 @@ caldera:
     # -- Pull policy for the image
     pullPolicy: IfNotPresent
     # -- Overrides the image tag whose default is the chart appVersion
-    tag: 5.0.0
+    tag: 5.1.0
 
   # -- Ingress configuration to expose app
   # </br> Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
@@ -648,8 +647,8 @@ caldera:
     enabled: false
     className: ""
     annotations: {}
-      # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
     hosts:
       - host: chart-example.local
         paths:
@@ -676,9 +675,9 @@ caldera:
   # </br> Ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
   # </br> Ref: https://learnk8s.io/graceful-shutdown
   lifecycle: {}
-    # preStop:
-    #   exec:
-    #     command: ["sh", "-c", "sleep 10"]
+  # preStop:
+  #   exec:
+  #     command: ["sh", "-c", "sleep 10"]
 
   # -- Configure Pod termination grace period
   # </br> Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination
@@ -691,97 +690,97 @@ caldera:
     enabled: false
     # -- Policy types
     policyTypes: []
-      # - Ingress
-      # - Egress
+    # - Ingress
+    # - Egress
     ingress: []
-      # - from:
-      #   - ipBlock:
-      #       cidr: 172.17.0.0/16
-      #       except:
-      #       - 172.17.1.0/24
-      #   - namespaceSelector:
-      #       matchLabels:
-      #         project: myproject
-      #   - podSelector:
-      #       matchLabels:
-      #         role: frontend
-      #   ports:
-      #   - protocol: TCP
-      #     port: 6379
+    # - from:
+    #   - ipBlock:
+    #       cidr: 172.17.0.0/16
+    #       except:
+    #       - 172.17.1.0/24
+    #   - namespaceSelector:
+    #       matchLabels:
+    #         project: myproject
+    #   - podSelector:
+    #       matchLabels:
+    #         role: frontend
+    #   ports:
+    #   - protocol: TCP
+    #     port: 6379
     egress: []
-      # - to:
-      #   - ipBlock:
-      #       cidr: 10.0.0.0/24
-      #   ports:
-      #   - protocol: TCP
-      #     port: 5978
+    # - to:
+    #   - ipBlock:
+    #       cidr: 10.0.0.0/24
+    #   ports:
+    #   - protocol: TCP
+    #     port: 5978
 
   # -- Environment variables to configure application
   # </br> Ref: https://docs.openbas.io/latest/deployment/configuration/#platform
   env: {}
-    # CALDERA_URL: "http://localhost:8080"
+  # CALDERA_URL: "http://localhost:8080"
 
   # -- Secrets from variables
   envFromSecrets: {}
-    # MY_VARIABLE:
-    #  name: release-name-credentials
-    #  key: secret_key
+  # MY_VARIABLE:
+  #  name: release-name-credentials
+  #  key: secret_key
 
   # -- Caldera configuration
   # </br> Ref: https://github.com/OpenBAS-Platform/docker/blob/master/caldera.yml
   config: {}
-    # users:
-    #   red:
-    #     red: ChageMeByUUIDv4                                                      # Change this
-    #   blue:
-    #     blue: ChageMeByUUIDv4                                                     # Change this
-    # api_key_red: ChageMeByUUIDv4                                                  # Change this
-    # api_key_blue: ChageMeByUUIDv4                                                 # Change this
-    # api_key: ChageMeByUUIDv4                                                      # Change this
-    # crypt_salt: ChageMeByUUIDv4                                                   # Change this
-    # encryption_key: ChageMeByUUIDv4                                               # Change this
-    # app.contact.http: http://caldera.myopenbas.myorganization.com:8888            # Change this
-    # app.contact.tcp: 0.0.0.0:7010
-    # app.contact.udp: 0.0.0.0:7011
-    # app.contact.websocket: 0.0.0.0:7012
-    # app.contact.dns.domain: localhost
-    # app.contact.dns.socket: 0.0.0.0:53
-    # app.contact.gist: API_KEY                                                     # Optional
-    # app.contact.html: /weather                                                    # Optional
-    # app.contact.slack.api_key: SLACK_TOKEN                                        # Optional
-    # app.contact.slack.bot_id: SLACK_BOT_ID                                        # Optional
-    # app.contact.slack.channel_id: SLACK_CHANNEL_ID                                # Optional
-    # app.contact.tunnel.ssh.host_key_file: REPLACE_WITH_KEY_FILE_PATH              # Optional
-    # app.contact.tunnel.ssh.host_key_passphrase: REPLACE_WITH_KEY_FILE_PASSPHRASE  # Optional
-    # app.contact.tunnel.ssh.socket: 0.0.0.0:8022
-    # app.contact.tunnel.ssh.user_name: sandcat
-    # app.contact.tunnel.ssh.user_password: ChageMeByUUIDv4                         # Change this
-    # objects.planners.default: atomic
-    # requirements:
-    #   go:
-    #     command: go version
-    #     type: installed_program
-    #     version: 1.11
-    #   python:
-    #     attr: version
-    #     module: sys
-    #     type: python_module
-    #     version: 3.8.0
-    # host: 0.0.0.0
-    # port: 8888
-    # ability_refresh: 60
-    # plugins:
-    #   - access
-    #   - atomic
-    #   - compass
-    #   - debrief
-    #   - fieldmanual
-    #   - gameboard
-    #   - manx
-    #   - response
-    #   - sandcat
-    #   - stockpile
-    #   - training
+  # users:
+  #   red:
+  #     red: ChageMeByUUIDv4                                                      # Change this
+  #   blue:
+  #     blue: ChageMeByUUIDv4                                                     # Change this
+  # api_key_red: ChageMeByUUIDv4                                                  # Change this
+  # api_key_blue: ChageMeByUUIDv4                                                 # Change this
+  # api_key: ChageMeByUUIDv4                                                      # Change this
+  # crypt_salt: ChageMeByUUIDv4                                                   # Change this
+  # encryption_key: ChageMeByUUIDv4                                               # Change this
+  # app.contact.http: http://caldera.myopenbas.myorganization.com:8888            # Change this
+  # app.contact.tcp: 0.0.0.0:7010
+  # app.contact.udp: 0.0.0.0:7011
+  # app.contact.websocket: 0.0.0.0:7012
+  # app.contact.dns.domain: localhost
+  # app.contact.dns.socket: 0.0.0.0:53
+  # app.contact.gist: API_KEY                                                     # Optional
+  # app.contact.html: /weather                                                    # Optional
+  # app.contact.slack.api_key: SLACK_TOKEN                                        # Optional
+  # app.contact.slack.bot_id: SLACK_BOT_ID                                        # Optional
+  # app.contact.slack.channel_id: SLACK_CHANNEL_ID                                # Optional
+  # app.contact.tunnel.ssh.host_key_file: REPLACE_WITH_KEY_FILE_PATH              # Optional
+  # app.contact.tunnel.ssh.host_key_passphrase: REPLACE_WITH_KEY_FILE_PASSPHRASE  # Optional
+  # app.contact.tunnel.ssh.socket: 0.0.0.0:8022
+  # app.contact.tunnel.ssh.user_name: sandcat
+  # app.contact.tunnel.ssh.user_password: ChageMeByUUIDv4                         # Change this
+  # objects.planners.default: atomic
+  # requirements:
+  #   go:
+  #     command: go version
+  #     type: installed_program
+  #     version: 1.11
+  #   python:
+  #     attr: version
+  #     module: sys
+  #     type: python_module
+  #     version: 3.8.0
+  # host: 0.0.0.0
+  # port: 8888
+  # ability_refresh: 60
+  # plugins:
+  #   - access
+  #   - atomic
+  #   - compass
+  #   - debrief
+  #   - fieldmanual
+  #   - gameboard
+  #   - manx
+  #   - response
+  #   - sandcat
+  #   - stockpile
+  #   - training
 
   # -- Configure annotations on Pods
   podAnnotations: {}
@@ -793,40 +792,39 @@ caldera:
   # </br> Ref: https://kubernetes.io/docs/concepts/security/pod-security-standards/
   # </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
   podSecurityContext: {}
-    # fsGroup: 2000
+  # fsGroup: 2000
 
   # -- Defines privilege and access control settings for a Container
   # </br> Ref: https://kubernetes.io/docs/concepts/security/pod-security-standards/
   # </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
   securityContext: {}
-    # capabilities:
-    #   drop:
-    #   - ALL
-    # readOnlyRootFilesystem: true
-    # runAsNonRoot: true
-    # runAsUser: 1000
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
 
   # -- The resources limits and requested
   # </br> Ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
   resources: {}
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'
-    # limits:
-    #   cpu: "250m"
-    #   memory: 256Mi
-    # requests:
-    #   cpu: "100m"
-    #   memory: 56Mi
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'
+  # limits:
+  #   cpu: "250m"
+  #   memory: 256Mi
+  # requests:
+  #   cpu: "100m"
+  #   memory: 56Mi
 
   # -- Pod Disruption Budget
   # </br> Ref: https://kubernetes.io/docs/reference/kubernetes-api/policy-resources/pod-disruption-budget-v1/
   podDisruptionBudget:
     enabled: false
     maxUnavailable: 1
-    minAvailable:
-
+    minAvailable: null
   # -- Autoscaling with CPU or memory utilization percentage
   # </br> Ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
   autoscaling:
@@ -838,16 +836,16 @@ caldera:
 
   # -- Additional volumes on the output Deployment definition
   volumes: []
-    # - name: foo
-    #   secret:
-    #     secretName: mysecret
-    #     optional: false
+  # - name: foo
+  #   secret:
+  #     secretName: mysecret
+  #     optional: false
 
   # -- Additional volumeMounts on the output Deployment definition
   volumeMounts: []
-    # - name: foo
-    #   mountPath: "/etc/foo"
-    #   readOnly: true
+  # - name: foo
+  #   mountPath: "/etc/foo"
+  #   readOnly: true
 
   # -- Node labels for pod assignment
   # </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
@@ -864,9 +862,9 @@ caldera:
   # -- Control how Pods are spread across your cluster
   # </br> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/#example-multiple-topologyspreadconstraints
   topologySpreadConstraints: []
-    # - maxSkew: 1
-    #   topologyKey: zone
-    #   whenUnsatisfiable: DoNotSchedule
+  # - maxSkew: 1
+  #   topologyKey: zone
+  #   whenUnsatisfiable: DoNotSchedule
 
 # -- MinIO subchart deployment
 # </br> Ref: https://github.com/bitnami/charts/blob/main/bitnami/minio/values.yaml
@@ -893,7 +891,7 @@ minio:
 # -- PostgreSQL subchart deployment
 # </br> Ref: https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml
 postgresql:
-    # -- Enable or disable PostgreSQL subchart
+  # -- Enable or disable PostgreSQL subchart
   enabled: true
 
   # Number of PostgreSQL replicas to deploy
