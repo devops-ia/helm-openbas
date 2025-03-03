@@ -25,6 +25,9 @@ env:
 
 testConnection: true
 
+startupProbe:
+  enabled: false
+
 lifecycle:
   preStop:
     exec:
