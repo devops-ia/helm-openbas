@@ -26,10 +26,10 @@ dependencies:
     repository: oci://registry-1.docker.io/bitnamicharts
     condition: minio.enabled
   - name: postgresql
-    version: 16.5.5
+    version: 16.6.0
     repository: oci://registry-1.docker.io/bitnamicharts
     condition: postgresql.enabled
   - name: rabbitmq
-    version: 15.4.0
+    version: 15.4.1
     repository: oci://registry-1.docker.io/bitnamicharts
     condition: rabbitmq.enabled
