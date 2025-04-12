@@ -32,6 +32,9 @@ spec:
       labels:
         openbas.collector: {{ $collectorName }}
         {{- include "openbas.selectorLabels" $ | nindent 8 }}
+        {{- with .podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       {{- if .imagePullSecrets }}
       imagePullSecrets:
@@ -224,6 +227,13 @@ spec:
               {{- include "openbas.selectorLabels" $ | nindent 14 }}
           {{- toYaml $constraint | nindent 10 }}
         {{- end }}
+      {{- end }}
+      {{- with .dnsConfig }}
+      dnsConfig:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .dnsPolicy }}
+      dnsPolicy: {{ . }}
       {{- end }}
 
 {{- end }}

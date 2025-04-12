@@ -334,7 +334,8 @@ resources: {}
 podDisruptionBudget:
   enabled: false
   maxUnavailable: 1
-  minAvailable: null
+  #minAvailable: 
+
 # -- Autoscaling with CPU or memory utilization percentage
 # </br> Ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
 autoscaling:
@@ -375,6 +376,27 @@ topologySpreadConstraints: []
 # - maxSkew: 1
 #   topologyKey: zone
 #   whenUnsatisfiable: DoNotSchedule
+
+# -- Configure DNS
+# </br> Ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
+dnsConfig: {}
+  # nameservers:
+  #   - 1.2.3.4
+  #   - 5.6.7.8
+  # searches:
+  #   - ns1.svc.cluster.local
+  #   - my.dns.search.suffix
+  # option:
+  #   - name: ndots
+  #     value: "2"
+  #   - name: edns0
+  #   - name: timeout
+  #     value: "3"
+
+# -- Configure DNS policy
+# Options: ClusterFirst, Default, ClusterFirstWithHostNet, None
+# </br> Ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
+dnsPolicy: ClusterFirst
 
 # -- Collector global configuration
 collectorsGlobal:
@@ -430,6 +452,8 @@ collectors: []
 #   deploymentAnnotations: {}
 #   # -- Pod annotations
 #   podAnnotations: {}
+#   # -- Configure labels on Pods
+#   podLabels: {}
 #   # -- Enable or disable ready-checker waiting server is ready
 #   readyChecker: {}
 #     # enabled: true
@@ -499,6 +523,22 @@ collectors: []
 #     # - maxSkew: 1
 #     #   topologyKey: zone
 #     #   whenUnsatisfiable: DoNotSchedule
+#   # -- Configure DNS
+#   dnsConfig: {}
+#     # nameservers:
+#     #   - 1.2.3.4
+#     #   - 5.6.7.8
+#     # searches:
+#     #   - ns1.svc.cluster.local
+#     #   - my.dns.search.suffix
+#     # option:
+#     #   - name: ndots
+#     #     value: "2"
+#     #   - name: edns0
+#     #   - name: timeout
+#     #     value: "3"
+#   # -- Configure DNS policy
+#   dnsPolicy: ClusterFirst
 
 # -- Injector global configuration
 injectorsGlobal:
@@ -554,6 +594,8 @@ injectors: []
 #   deploymentAnnotations: {}
 #   # -- Pod annotations
 #   podAnnotations: {}
+#   # -- Configure labels on Pods
+#   podLabels: {}
 #   # -- Enable or disable ready-checker waiting server is ready
 #   readyChecker: {}
 #     # enabled: true
@@ -623,6 +665,22 @@ injectors: []
 #     # - maxSkew: 1
 #     #   topologyKey: zone
 #     #   whenUnsatisfiable: DoNotSchedule
+#   # -- Configure DNS
+#   dnsConfig: {}
+#     # nameservers:
+#     #   - 1.2.3.4
+#     #   - 5.6.7.8
+#     # searches:
+#     #   - ns1.svc.cluster.local
+#     #   - my.dns.search.suffix
+#     # option:
+#     #   - name: ndots
+#     #     value: "2"
+#     #   - name: edns0
+#     #   - name: timeout
+#     #     value: "3"
+#   # -- Configure DNS policy
+#   dnsPolicy: ClusterFirst
 
 # -- OpenBAS caldera-server deployment configuration
 caldera:
@@ -824,7 +882,8 @@ caldera:
   podDisruptionBudget:
     enabled: false
     maxUnavailable: 1
-    minAvailable: null
+    #minAvailable:
+
   # -- Autoscaling with CPU or memory utilization percentage
   # </br> Ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
   autoscaling:
@@ -865,6 +924,27 @@ caldera:
   # - maxSkew: 1
   #   topologyKey: zone
   #   whenUnsatisfiable: DoNotSchedule
+
+  # -- Configure DNS
+  # </br> Ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
+  dnsConfig: {}
+    # nameservers:
+    #   - 1.2.3.4
+    #   - 5.6.7.8
+    # searches:
+    #   - ns1.svc.cluster.local
+    #   - my.dns.search.suffix
+    # option:
+    #   - name: ndots
+    #     value: "2"
+    #   - name: edns0
+    #   - name: timeout
+    #     value: "3"
+
+  # -- Configure DNS policy
+  # Options: ClusterFirst, Default, ClusterFirstWithHostNet, None
+  # </br> Ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
+  dnsPolicy: ClusterFirst
 
 # -- MinIO subchart deployment
 # </br> Ref: https://github.com/bitnami/charts/blob/main/bitnami/minio/values.yaml

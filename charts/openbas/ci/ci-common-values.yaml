@@ -76,6 +76,13 @@ topologySpreadConstraints:
     topologyKey: kubernetes.io/os
     whenUnsatisfiable: DoNotSchedule
 
+dnsConfig:
+  nameservers:
+    - 1.1.1.1
+  searches: []
+
+dnsPolicy: ClusterFirst
+
 caldera:
   enabled: true
 
@@ -149,6 +156,13 @@ caldera:
       topologyKey: kubernetes.io/os
       whenUnsatisfiable: DoNotSchedule
 
+  dnsConfig:
+    nameservers:
+      - 1.1.1.1
+    searches: []
+
+  dnsPolicy: ClusterFirst
+
 collectorsGlobal:
   env:
     MY_VARIABLE_ENV: my_value
@@ -166,6 +180,8 @@ collectors:
   deploymentAnnotations:
     ci: "true"
   podAnnotations:
+    ci: "true"
+  podLabels:
     ci: "true"
   readyChecker:
     enabled: true
@@ -193,6 +209,11 @@ collectors:
     - maxSkew: 1
       topologyKey: kubernetes.io/os
       whenUnsatisfiable: DoNotSchedule
+  dnsConfig:
+    nameservers:
+      - 1.1.1.1
+    searches: []
+  dnsPolicy: ClusterFirst
 
 injectorsGlobal:
   env:
@@ -211,6 +232,8 @@ injectors:
   deploymentAnnotations:
     ci: "true"
   podAnnotations:
+    ci: "true"
+  podLabels:
     ci: "true"
   readyChecker:
     enabled: true
@@ -236,6 +259,11 @@ injectors:
     - maxSkew: 1
       topologyKey: kubernetes.io/os
       whenUnsatisfiable: DoNotSchedule
+  dnsConfig:
+    nameservers:
+      - 1.1.1.1
+    searches: []
+  dnsPolicy: ClusterFirst
 
 minio:
   fullnameOverride: openbas-ci-minio
