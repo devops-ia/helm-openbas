@@ -334,7 +334,7 @@ resources: {}
 podDisruptionBudget:
   enabled: false
   maxUnavailable: 1
-  #minAvailable: 
+  # minAvailable: 0
 
 # -- Autoscaling with CPU or memory utilization percentage
 # </br> Ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
@@ -882,7 +882,7 @@ caldera:
   podDisruptionBudget:
     enabled: false
     maxUnavailable: 1
-    #minAvailable:
+    # minAvailable: 0
 
   # -- Autoscaling with CPU or memory utilization percentage
   # </br> Ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
