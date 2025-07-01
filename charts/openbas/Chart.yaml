@@ -23,7 +23,7 @@ keywords:
   - analysis
 dependencies:
   - name: minio
-    version: 16.0.10
+    version: 17.0.9
     repository: oci://registry-1.docker.io/bitnamicharts
     condition: minio.enabled
   - name: postgresql
