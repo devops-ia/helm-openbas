@@ -380,18 +380,18 @@ topologySpreadConstraints: []
 # -- Configure DNS
 # </br> Ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
 dnsConfig: {}
-  # nameservers:
-  #   - 1.2.3.4
-  #   - 5.6.7.8
-  # searches:
-  #   - ns1.svc.cluster.local
-  #   - my.dns.search.suffix
-  # option:
-  #   - name: ndots
-  #     value: "2"
-  #   - name: edns0
-  #   - name: timeout
-  #     value: "3"
+# nameservers:
+#   - 1.2.3.4
+#   - 5.6.7.8
+# searches:
+#   - ns1.svc.cluster.local
+#   - my.dns.search.suffix
+# option:
+#   - name: ndots
+#     value: "2"
+#   - name: edns0
+#   - name: timeout
+#     value: "3"
 
 # -- Configure DNS policy
 # Options: ClusterFirst, Default, ClusterFirstWithHostNet, None
@@ -928,18 +928,18 @@ caldera:
   # -- Configure DNS
   # </br> Ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
   dnsConfig: {}
-    # nameservers:
-    #   - 1.2.3.4
-    #   - 5.6.7.8
-    # searches:
-    #   - ns1.svc.cluster.local
-    #   - my.dns.search.suffix
-    # option:
-    #   - name: ndots
-    #     value: "2"
-    #   - name: edns0
-    #   - name: timeout
-    #     value: "3"
+  # nameservers:
+  #   - 1.2.3.4
+  #   - 5.6.7.8
+  # searches:
+  #   - ns1.svc.cluster.local
+  #   - my.dns.search.suffix
+  # option:
+  #   - name: ndots
+  #     value: "2"
+  #   - name: edns0
+  #   - name: timeout
+  #     value: "3"
 
   # -- Configure DNS policy
   # Options: ClusterFirst, Default, ClusterFirstWithHostNet, None
