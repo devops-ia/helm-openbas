@@ -1163,7 +1163,7 @@ caldera:
   dnsPolicy: ClusterFirst
 
 # -- OpenSearch subchart deployment
-# </br> Ref: https://github.com/opensearch-nodepool/helm-charts/blob/main/charts/opensearch/values.yaml
+# </br> Ref: https://github.com/opensearch-project/helm-charts/blob/main/charts/opensearch/values.yaml
 opensearch:
   # -- Enable or disable OpenSearch subchart
   enabled: true
