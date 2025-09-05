@@ -1,3 +1,4 @@
+{{ if .Values.caldera.config }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -7,3 +8,4 @@ metadata:
 data:
   local.yml: |
     {{- .Values.caldera.config | toYaml | nindent 4 }}
+{{ end }}
