@@ -1,3 +1,13 @@
+{{- $appAdminToken := "" -}}
+{{- range .Values.secrets -}}
+  {{- if and (hasKey .data "OPENBAS_ADMIN_TOKEN") (not $appAdminToken) -}}
+    {{- $appAdminToken = index .data "OPENBAS_ADMIN_TOKEN" -}}
+  {{- end -}}
+{{- end -}}
+{{- if and (hasKey .Values.env "OPENBAS_ADMIN_TOKEN") (not $appAdminToken) -}}
+  {{- $appAdminToken = .Values.env.OPENBAS_ADMIN_TOKEN -}}
+{{- end -}}
+
 {{- $injectorsGlobal := .Values.injectorsGlobal }}
 {{- range .Values.injectors }}
 {{- $injectorName := .name }}
@@ -7,7 +17,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ $injectorName }}-injector-{{ include "openbas.fullname" $ }}
+  name: {{ include "openbas.fullname" $ }}-{{ $injectorName }}-injector
   {{- with .deploymentAnnotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -18,6 +28,10 @@ metadata:
 spec:
   {{- if not .autoscaling }}
   replicas: {{ .replicas }}
+  {{- end }}
+  {{- with .strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
   {{- end }}
   selector:
     matchLabels:
@@ -48,7 +62,7 @@ spec:
       {{- end }}
       securityContext:
         {{- toYaml .podSecurityContext | nindent 8 }}
-      {{ if and .readyChecker (hasKey .readyChecker "enabled") }}
+      {{- if and .readyChecker (hasKey .readyChecker "enabled") }}
       {{- if .readyChecker.enabled }}
       initContainers:
         - name: ready-checker-server
@@ -77,7 +91,36 @@ spec:
                   exit 1;
                 fi;
               done
+        {{- range $service := .readyChecker.services }}
+        - name: ready-checker-{{ $service.name }}
+          {{- if $.Values.global.imageRegistry }}
+          image: "{{ $.Values.global.imageRegistry }}/{{ $.Values.readyChecker.repository }}:{{ $.Values.readyChecker.tag }}"
+          {{- else }}
+          image: {{ $.Values.readyChecker.repository }}:{{ $.Values.readyChecker.tag }}
+          {{- end }}
+          imagePullPolicy: {{ $.Values.readyChecker.pullPolicy }}
+          command:
+            - 'sh'
+            - '-c'
+            - |
+              RETRY=0;
+              until [ $RETRY -eq {{ $.readyChecker.retries }} ];
+              do
+                ADDRESS="{{ if $service.address }}{{ $service.address }}{{ else }}{{ $.Values.fullnameOverride | default $.Release.Name }}-{{ $service.name }}{{ end }}";
+                if nc -zv $ADDRESS {{ $service.port }}; then
+                  echo "Service {{ $service.name }} with address $ADDRESS:{{ $service.port }} is ready";
+                  exit 0;
+                fi;
+                echo "[$RETRY/{{ $.readyChecker.retries }}] waiting for service {{ $service.name }} with address $ADDRESS:{{ $service.port }} to become ready";
+                sleep {{ $.readyChecker.timeout }};
+                RETRY=$(($RETRY + 1));
+                if [ $RETRY -eq {{ $.readyChecker.retries }} ]; then
+                  echo "Service {{ $service.name }} with address $ADDRESS:{{ $service.port }} is not ready";
+                  exit 1;
+                fi;
+              done
         {{- end }}
+      {{- end }}
       {{- end }}
       containers:
         - name: {{ $injectorName }}-injector
@@ -143,17 +186,12 @@ spec:
               value: "http://{{ include "openbas.fullname" $ }}-server:{{ $.Values.service.port }}{{ $.Values.env.APP__BASE_PATH }}"
             {{- end }}
             {{- end }}
-            # Special handling for OPENBAS_TOKEN which is constructed from other values
-            {{- if and (not (hasKey $envList "OPENBAS_TOKEN")) (or ($.Values.secrets.OPENBAS_ADMIN_TOKEN) ($.Values.env.OPENBAS_ADMIN_TOKEN)) }}
-            {{- if $.Values.secrets.OPENBAS_ADMIN_TOKEN }}
+            # Special handling for OPENBAS_ADMIN_TOKEN which is constructed from other values
+            {{- if and (not (hasKey $envList "OPENBAS_ADMIN_TOKEN")) $appAdminToken }}
             - name: OPENBAS_TOKEN
-              value: {{ $.Values.secrets.OPENBAS_ADMIN_TOKEN }}
-            {{- else if $.Values.env.OPENBAS_ADMIN_TOKEN }}
-            - name: OPENBAS_TOKEN
-              value: {{ $.Values.env.OPENBAS_ADMIN_TOKEN }}
+              value: {{ $appAdminToken }}
             {{- end }}
-            {{- end }}
-            # Collectors global env from secrets
+            # Injectors global env from secrets
             {{- if $injectorsGlobal.envFromSecrets }}
             {{- range $key, $value := $injectorsGlobal.envFromSecrets }}
             {{- if not (hasKey $envList $key) }}
@@ -166,7 +204,7 @@ spec:
             {{- end }}
             {{- end }}
             {{- end }}
-            # Collectors global env from configmap
+            # Injectors global env from configmap
             {{- if $injectorsGlobal.envFromConfigMap }}
             {{- range $key, $value := $injectorsGlobal.envFromConfigMap }}
             {{- if not (hasKey $envList $key) }}
@@ -179,7 +217,7 @@ spec:
             {{- end }}
             {{- end }}
             {{- end }}
-            # Collectors global env
+            # Injectors global env
             {{- if $injectorsGlobal.env }}
             {{- range $key, $value := $injectorsGlobal.env }}
             {{- if not (hasKey $envList $key) }}
@@ -235,6 +273,5 @@ spec:
       {{- with .dnsPolicy }}
       dnsPolicy: {{ . }}
       {{- end }}
-
 {{- end }}
 {{- end }}
