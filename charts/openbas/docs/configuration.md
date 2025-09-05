@@ -12,9 +12,10 @@ You may also helm show values on this chart's dependencies for additional option
 
 Basic installation will deploy the following components:
 
-* OpenBAS server
-* OpenBAS caldera
 * MinIO
+* OpenBAS caldera
+* OpenBAS server
+* OpenSearch
 * PostgreSQL
 * RabbitMQ
 

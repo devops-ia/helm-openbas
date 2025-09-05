@@ -51,6 +51,10 @@
       },
       "required": ["repository"]
     },
+    "strategy": {
+      "type": "object",
+      "description": "Configure strategy for the deployment"
+    },
     "nameOverride": {
       "type": "string",
       "description": "String to partially override openbas.fullname template"
@@ -257,10 +261,15 @@
       }
     },
     "secrets": {
-      "type": "object",
+      "type": "array",
       "description": "Secrets values to create credentials and reference by envFromSecrets",
-      "additionalProperties": {
-        "type": "string"
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "data": { "type": "object", "additionalProperties": { "type": "string" } }
+        },
+        "required": ["name"]
       }
     },
     "configMaps": {
@@ -349,6 +358,16 @@
           "default": 8080,
           "description": "Pod expose port"
         },
+        "loadBalancer": {
+          "type": "object",
+          "description": "LoadBalancer specific configuration",
+          "properties": {
+            "ip": { "type": "string" },
+            "sourceRanges": { "type": "array", "items": { "type": "string" } },
+            "class": { "type": "string" },
+            "allocateNodePorts": { "type": "boolean" }
+          }
+        },
         "extraPorts": {
           "type": "array",
           "description": "Pod extra ports",
@@ -418,7 +437,7 @@
                 }
               }
             },
-            "required": ["host", "paths"]
+            "required": ["host"]
           }
         },
         "tls": {
@@ -689,48 +708,7 @@
         }
       }
     },
-    "redis": {
-      "type": "object",
-      "properties": {
-        "enabled": {
-          "type": "boolean",
-          "default": true
-        },
-        "architecture": {
-          "type": "string",
-          "enum": ["standalone", "replication"],
-          "default": "standalone"
-        },
-        "auth": {
-          "type": "object",
-          "properties": {
-            "enabled": {
-              "type": "boolean",
-              "default": false
-            }
-          }
-        },
-        "master": {
-          "type": "object",
-          "properties": {
-            "count": {
-              "type": "integer",
-              "minimum": 1,
-              "default": 1
-            },
-            "persistence": {
-              "type": "object",
-              "properties": {
-                "enabled": {
-                  "type": "boolean",
-                  "default": false
-                }
-              }
-            }
-          }
-        }
-      }
-    },
+
     "networkPolicy": {
       "type": "object",
       "description": "NetworkPolicy configuration",
@@ -1130,7 +1108,7 @@
       "properties": {
         "enabled": {
           "type": "boolean",
-          "default": true,
+          "default": false,
           "description": "Enable or disable ready-checker"
         },
         "repository": {
@@ -1603,74 +1581,7 @@
         }
       }
     },
-    "redis": {
-      "type": "object",
-      "description": "Redis subchart deployment",
-      "properties": {
-        "enabled": {
-          "type": "boolean",
-          "default": true,
-          "description": "Enable or disable Redis subchart"
-        },
-        "architecture": {
-          "type": "string",
-          "enum": ["standalone", "replication"],
-          "default": "standalone",
-          "description": "Redis architecture"
-        },
-        "auth": {
-          "type": "object",
-          "properties": {
-            "enabled": {
-              "type": "boolean",
-              "default": false,
-              "description": "Enable password authentication"
-            }
-          }
-        },
-        "master": {
-          "type": "object",
-          "properties": {
-            "count": {
-              "type": "integer",
-              "minimum": 1,
-              "default": 1,
-              "description": "Number of Redis master instances"
-            },
-            "persistence": {
-              "type": "object",
-              "properties": {
-                "enabled": {
-                  "type": "boolean",
-                  "default": false,
-                  "description": "Enable persistence on Redis master nodes using PVC"
-                }
-              }
-            }
-          }
-        },
-        "replica": {
-          "type": "object",
-          "properties": {
-            "replicaCount": {
-              "type": "integer",
-              "default": 1,
-              "description": "Number of Redis replicas"
-            },
-            "persistence": {
-              "type": "object",
-              "properties": {
-                "enabled": {
-                  "type": "boolean",
-                  "default": false,
-                  "description": "Enable persistence on Redis replica nodes using PVC"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
+
     "collectorsGlobal": {
       "type": "object",
       "description": "Collector global configuration",
@@ -2571,74 +2482,6 @@
               "type": "boolean",
               "default": false,
               "description": "Enable RabbitMQ data persistence using PVC"
-            }
-          }
-        }
-      }
-    },
-    "redis": {
-      "type": "object",
-      "description": "Redis subchart deployment",
-      "properties": {
-        "enabled": {
-          "type": "boolean",
-          "default": true,
-          "description": "Enable or disable Redis subchart"
-        },
-        "architecture": {
-          "type": "string",
-          "enum": ["standalone", "replication"],
-          "default": "standalone",
-          "description": "Redis architecture"
-        },
-        "auth": {
-          "type": "object",
-          "properties": {
-            "enabled": {
-              "type": "boolean",
-              "default": false,
-              "description": "Enable password authentication"
-            }
-          }
-        },
-        "master": {
-          "type": "object",
-          "properties": {
-            "count": {
-              "type": "integer",
-              "minimum": 1,
-              "default": 1,
-              "description": "Number of Redis master instances"
-            },
-            "persistence": {
-              "type": "object",
-              "properties": {
-                "enabled": {
-                  "type": "boolean",
-                  "default": false,
-                  "description": "Enable persistence on Redis master nodes using PVC"
-                }
-              }
-            }
-          }
-        },
-        "replica": {
-          "type": "object",
-          "properties": {
-            "replicaCount": {
-              "type": "integer",
-              "default": 1,
-              "description": "Number of Redis replicas"
-            },
-            "persistence": {
-              "type": "object",
-              "properties": {
-                "enabled": {
-                  "type": "boolean",
-                  "default": false,
-                  "description": "Enable persistence on Redis replica nodes using PVC"
-                }
-              }
             }
           }
         }

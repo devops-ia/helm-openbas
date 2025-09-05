@@ -9,6 +9,12 @@ global:
   #   - name: myRegistryKeySecretName
   imagePullSecrets: []
 
+# -- String to fully override openbas.fullname template
+fullnameOverride: ""
+
+# -- String to partially override openbas.fullname template (will maintain the release name)
+nameOverride: ""
+
 # -- Number of replicas for the service
 replicaCount: 1
 
@@ -21,14 +27,18 @@ image:
   # -- Overrides the image tag whose default is the chart appVersion
   tag: ""
 
-# -- String to partially override openbas.fullname template (will maintain the release name)
-nameOverride: ""
-
-# -- String to fully override openbas.fullname template
-fullnameOverride: ""
-
-# -- Global Docker registry secret names as an array
+# -- Specifies the secrets to use for pulling images from private registries
+# Leave empty if no secrets are required
+# E.g.
+# imagePullSecrets:
+#   - name: myRegistryKeySecretName
 imagePullSecrets: []
+
+# -- Configure strategy for the deployment
+strategy: {}
+  # type: RollingUpdate
+  # rollingUpdate:
+  #   maxUnavailable: 1
 
 # -- Enable creation of ServiceAccount
 serviceAccount:
@@ -94,19 +104,24 @@ envFromFiles: []
 #     name: <name-configmap>
 
 # -- Secrets values to create credentials and reference by envFromSecrets
-# Generate Secret with following name: `<release-name>-credentials`
+# Generate Secret with following name: <release-name>-<name>
 # </br> Ref: https://kubernetes.io/docs/concepts/configuration/secret/
-secrets: {}
+secrets: []
+  # - name: secret-name
+  #   data:
+  #     my.key: |-
+  #       my-content
+  #     my_var: my-value
 
 # -- ConfigMap values to create configuration files
 # Generate ConfigMap with following name: <release-name>-<name>
 # </br> Ref: https://kubernetes.io/docs/concepts/configuration/configmap/
 configMaps: []
-# - name: configmap-name
-#   data:
-#     my.key: |-
-#       my-content
-#     my_var: my-value
+  # - name: configmap-name
+  #   data:
+  #     my.key: |-
+  #       my-content
+  #     my_var: my-value
 
 # -- Configure additional containers
 # </br> Ref: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
@@ -130,19 +145,87 @@ command: []
 # -- Kubernetes service to expose Pod
 # </br> Ref: https://kubernetes.io/docs/concepts/services-networking/service/
 service:
-  # -- Kubernetes Service type. Allowed values: NodePort, LoadBalancer or ClusterIP
+  # -- Kubernetes Service type. Allowed values: NodePort, LoadBalancer, ClusterIP, ExternalName
   type: ClusterIP
   # -- Kubernetes Service port
   port: 80
-  # -- NodePort port (only when type is NodePort)
-  # nodePort: 32000
   # -- Pod expose port
   targetPort: 8080
+  # -- Protocol for the service port
+  protocol: TCP
+  # -- Name for the service port
+  portName: http
+  # -- Application protocol (HTTP, HTTPS, etc.)
+  appProtocol: HTTP
+  # -- NodePort port (only when type is NodePort or LoadBalancer)
+  # nodePort: 32000
+  # -- Specific cluster IP (use "None" for headless service)
+  # clusterIP: "10.96.0.1"
+  # -- List of cluster IPs for dual-stack
+  # clusterIPs:
+  #   - "10.96.0.1"
+  #   - "fd00::1"
+  # -- External IPs for the service
+  # externalIPs:
+  #   - "192.168.1.100"
+  # -- LoadBalancer specific configuration
+  loadBalancer: {}
+    # -- LoadBalancer IP (only for LoadBalancer type)
+    # ip: "192.168.1.100"
+    # -- LoadBalancer source ranges (CIDR blocks)
+    # sourceRanges:
+    #   - "10.0.0.0/8"
+    #   - "172.16.0.0/12"
+    # -- LoadBalancer class
+    # class: "nginx"
+    # -- Allocate NodePorts for LoadBalancer service
+    # allocateNodePorts: true
+  # -- External name for ExternalName type service
+  # externalName: "example.com"
+  # -- External traffic policy (Local or Cluster)
+  # externalTrafficPolicy: Local
+  # -- Internal traffic policy (Local or Cluster)
+  # internalTrafficPolicy: Local
+  # -- Health check node port (for LoadBalancer with externalTrafficPolicy: Local)
+  # healthCheckNodePort: 30000
+  # -- Publish not ready addresses
+  # publishNotReadyAddresses: false
+  # -- Session affinity (None or ClientIP)
+  # sessionAffinity: ClientIP
+  # -- Session affinity configuration
+  # sessionAffinityConfig:
+  #   clientIP:
+  #     timeoutSeconds: 10800
+  # -- IP families (IPv4, IPv6)
+  # ipFamilies:
+  #   - IPv4
+  #   - IPv6
+  # -- IP family policy (SingleStack, PreferDualStack, RequireDualStack)
+  # ipFamilyPolicy: SingleStack
+  # -- Traffic distribution (PreferClose)
+  # trafficDistribution: PreferClose
+  # -- Additional labels for the service
+  labels: {}
+  #  environment: production
+  #  team: platform
+  # -- Annotations for the service
+  annotations: {}
+  #   service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+  #   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "tcp"
+  #   nginx.ingress.kubernetes.io/service-upstream: "true"
   # -- Pod extra ports
-  # extraPorts:
-  # - name: metrics
-  #   port: 9080
-  #   targetPort: 9080
+  extraPorts: []
+  #  - name: admin
+  #    port: 9090
+  #    targetPort: 9090
+  #    protocol: TCP
+  #    appProtocol: HTTP
+  #    nodePort: 32001  # Only for NodePort/LoadBalancer
+  #  - name: grpc
+  #    port: 9000
+  #    targetPort: 9000
+  #    protocol: TCP
+  #    appProtocol: GRPC
 
 # -- NetworkPolicy configuration
 # </br> Ref: https://kubernetes.io/docs/concepts/services-networking/network-policies/
@@ -151,30 +234,30 @@ networkPolicy:
   enabled: false
   # -- Policy types
   policyTypes: []
-  # - Ingress
-  # - Egress
+    # - Ingress
+    # - Egress
   ingress: []
-  # - from:
-  #   - ipBlock:
-  #       cidr: 172.17.0.0/16
-  #       except:
-  #       - 172.17.1.0/24
-  #   - namespaceSelector:
-  #       matchLabels:
-  #         project: myproject
-  #   - podSelector:
-  #       matchLabels:
-  #         role: frontend
-  #   ports:
-  #   - protocol: TCP
-  #     port: 6379
+    # - from:
+    #   - ipBlock:
+    #       cidr: 172.17.0.0/16
+    #       except:
+    #       - 172.17.1.0/24
+    #   - namespaceSelector:
+    #       matchLabels:
+    #         nodepool: mynodepool
+    #   - podSelector:
+    #       matchLabels:
+    #         role: frontend
+    #   ports:
+    #   - protocol: TCP
+    #     port: 6379
   egress: []
-  # - to:
-  #   - ipBlock:
-  #       cidr: 10.0.0.0/24
-  #   ports:
-  #   - protocol: TCP
-  #     port: 5978
+    # - to:
+    #   - ipBlock:
+    #       cidr: 10.0.0.0/24
+    #   ports:
+    #   - protocol: TCP
+    #     port: 5978
 
 # -- Configure lifecycle hooks
 # </br> Ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
@@ -201,8 +284,8 @@ livenessProbe:
 # -- Custom livenessProbe
 livenessProbeCustom: {}
 # httpGet:
-#   path: /dashboard
-#   port: 4000
+#   path: /api/health
+#   port: 8080
 # failureThreshold: 3
 # initialDelaySeconds: 200
 # periodSeconds: 30
@@ -222,8 +305,8 @@ readinessProbe:
 # -- Custom readinessProbe
 readinessProbeCustom: {}
 # httpGet:
-#   path: /dashboard
-#   port: 4000
+#   path: /api/health
+#   port: 8080
 # failureThreshold: 3
 # initialDelaySeconds: 200
 # periodSeconds: 30
@@ -243,8 +326,8 @@ startupProbe:
 # -- Custom startupProbe
 startupProbeCustom: {}
 # httpGet:
-#   path: /dashboard
-#   port: 4000
+#   path: /api/health
+#   port: 8080
 # failureThreshold: 3
 # initialDelaySeconds: 200
 # periodSeconds: 30
@@ -254,7 +337,7 @@ startupProbeCustom: {}
 # -- Enable or disable ready-checker
 readyChecker:
   # -- Enable or disable ready-checker
-  enabled: true
+  enabled: false
   # -- Repository of the image
   repository: busybox
   # -- Pull policy for the image
@@ -267,6 +350,14 @@ readyChecker:
   timeout: 5
   # -- List services
   services:
+  # - name: service_name
+  #   port: service_port
+  #   address: service_address  # (Optional) This parameter is optional. If
+  #   not specified, the address for the check will be automatically
+  #   determined assuming the service was installed using a subchart. It is
+  #   useful to specify it when the service is provisioned differently (e.g.,
+  #   an S3 bucket created in the Cloud or an Elasticsearch instance outside
+  #   the Kubernetes cluster). The address can be an IP address or a DNS name.
   - name: minio
     port: 9000
   - name: postgresql
@@ -318,16 +409,12 @@ ingress:
 # -- The resources limits and requested
 # </br> Ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 resources: {}
-# We usually recommend not to specify default resources and to leave this as a conscious
-# choice for the user. This also increases chances charts run on environments with little
-# resources, such as Minikube. If you do want to specify resources, uncomment the following
-# lines, adjust them as necessary, and remove the curly braces after 'resources:'
-# limits:
-#   cpu: "1500m"
-#   memory: 2048Mi
-# requests:
-#   cpu: 1
-#   memory: 256Mi
+  # limits:
+  #   cpu: "1500m"
+  #   memory: 2048Mi
+  # requests:
+  #   cpu: 1
+  #   memory: 256Mi
 
 # -- Pod Disruption Budget
 # </br> Ref: https://kubernetes.io/docs/reference/kubernetes-api/policy-resources/pod-disruption-budget-v1/
@@ -440,66 +527,57 @@ collectorsGlobal:
 # -- Collectors
 # </br> Ref: https://github.com/OpenBAS-Platform/collectors
 collectors: []
-# - name: collector-name
-#   enabled: true
-#   replicas: 1
-#   # -- Image registry
-#   image: {}
-#     # repository:
-#     # pullPolicy:
-#     # tag:
-#   # -- Deployment annotations
-#   deploymentAnnotations: {}
-#   # -- Pod annotations
-#   podAnnotations: {}
-#   # -- Configure labels on Pods
-#   podLabels: {}
-#   # -- Enable or disable ready-checker waiting server is ready
-#   readyChecker: {}
-#     # enabled: true
-#     # repository: busybox
+# Example collector configuration
+# - name: collector-name # Required: unique name
+#   enabled: true        # Enable the collector
+#   replicas: 1          # Number of pods
+#
+#   # Image configuration
+#   image:
+#     # repository: ""
 #     # pullPolicy: IfNotPresent
-#     # tag: latest
-#     # retries: 30
-#     # timeout: 5
-#   # -- Lifecycle configuration
-#   lifecycle: {}
-#     # preStop:
-#     #   exec:
-#     #     command: ["sh", "-c", "sleep 10"]
-#   # -- Configure Pod termination grace period
-#   terminationGracePeriodSeconds: 30
-#   # -- Environment variables to configure application
+#     # tag: ""
+#
+#   # ServiceAccount (create=false to use existing)
+#   serviceAccount: {}
+#     # create: true
+#     # name: ""
+#     # automountServiceAccountToken: false
+#
+#   # Basic deployment metadata
+#   deploymentAnnotations: {}
+#   podAnnotations: {}
+#   podLabels: {}
+#
+#   # Environment and configuration
 #   env: {}
-#     # my_env: my_value
-#   # -- Variables from secrets
+#     # MY_ENV: my_value
 #   envFromSecrets: {}
-#     # MY_VARIABLE:
-#     #  name: <name-secret>
-#     #  key: secret_key
-#   # -- Variables from configMap
+#     # MY_SECRET_VAR:
+#     #   name: <secret-name>
+#     #   key: secret_key
 #   envFromConfigMap: {}
-#     # MY_VARIABLE:
-#     #  name: <name-configmap>
-#     #  key: key
-#   # -- Load all variables from files
+#     # MY_CONFIG_VAR:
+#     #   name: <configmap-name>
+#     #   key: key
 #   envFromFiles: []
 #     # - secretRef:
 #     #     name: <name-secret>
 #     # - configMapRef:
 #     #     name: <name-configmap>
-#   # -- Additional volumes on the output connector Deployment definition
+#
+#   # Volumes and mounts
 #   volumes: []
 #     # - name: foo
 #     #   secret:
 #     #     secretName: mysecret
 #     #     optional: false
-#   # -- Additional volumeMounts on the output connector Deployment definition
 #   volumeMounts: []
 #     # - name: foo
 #     #   mountPath: "/etc/foo"
 #     #   readOnly: true
-#   # -- The resources limits and requested
+#
+#   # Resources and scheduling
 #   resources: {}
 #     # limits:
 #     #   memory: 256Mi
@@ -507,38 +585,59 @@ collectors: []
 #     # requests:
 #     #   memory: 56Mi
 #     #   cpu: "50m"
-#   # -- Node labels for pod assignment
 #   nodeSelector: {}
-#     # project: "openbas"
-#   # -- Tolerations for pod assignment
 #   tolerations: []
-#     # - key: "project"
+#     # - key: "nodepool"
 #     #   operator: "Equal"
 #     #   value: "openbas"
 #     #   effect: "NoSchedule"
-#   # -- Affinity for pod assignment
 #   affinity: {}
-#   # -- Control how Pods are spread across your cluster
 #   topologySpreadConstraints: []
 #     # - maxSkew: 1
 #     #   topologyKey: zone
 #     #   whenUnsatisfiable: DoNotSchedule
-#   # -- Configure DNS
+#
+#   # DNS and network policy related
 #   dnsConfig: {}
 #     # nameservers:
 #     #   - 1.2.3.4
-#     #   - 5.6.7.8
 #     # searches:
 #     #   - ns1.svc.cluster.local
-#     #   - my.dns.search.suffix
 #     # option:
 #     #   - name: ndots
 #     #     value: "2"
-#     #   - name: edns0
-#     #   - name: timeout
-#     #     value: "3"
-#   # -- Configure DNS policy
 #   dnsPolicy: ClusterFirst
+#
+#   # Lifecycle / termination
+#   lifecycle: {}
+#     # preStop:
+#     #   exec:
+#     #     command: ["sh", "-c", "sleep 10"]
+#   terminationGracePeriodSeconds: 30
+#
+#   # Optional ready checker to wait for external services
+#   readyChecker: {}
+#     # enabled: true
+#     # repository: busybox
+#     # pullPolicy: IfNotPresent
+#     # tag: latest
+#     # retries: 30
+#     # timeout: 5
+#     # services:
+#     # - name: service_name
+#     #   port: service_port
+#     #   address: service_address  # (Optional) This parameter is optional. If
+#     #   not specified, the address for the check will be automatically
+#     #   determined assuming the service was installed using a subchart. It is
+#     #   useful to specify it when the service is provisioned differently (e.g.,
+#     #   an S3 bucket created in the Cloud or an Elasticsearch instance outside
+#     #   the Kubernetes cluster). The address can be an IP address or a DNS name.
+#
+#   # Deployment strategy (rolling update, etc.)
+#   strategy: {}
+#     # type: RollingUpdate
+#     # rollingUpdate:
+#     #   maxUnavailable: 1
 
 # -- Injector global configuration
 injectorsGlobal:
@@ -582,66 +681,57 @@ injectorsGlobal:
 # -- Injectors
 # </br> Ref: https://github.com/OpenBAS-Platform/injectors
 injectors: []
-# - name: injector-name
-#   enabled: true
-#   replicas: 1
-#   # -- Image registry
-#   image: {}
-#     # repository:
-#     # pullPolicy:
-#     # tag:
-#   # -- Deployment annotations
-#   deploymentAnnotations: {}
-#   # -- Pod annotations
-#   podAnnotations: {}
-#   # -- Configure labels on Pods
-#   podLabels: {}
-#   # -- Enable or disable ready-checker waiting server is ready
-#   readyChecker: {}
-#     # enabled: true
-#     # repository: busybox
+# Example injector configuration
+# - name: injector-name # Required: unique name
+#   enabled: true       # Enable the injector
+#   replicas: 1         # Number of pods
+#
+#   # Image configuration
+#   image:
+#     # repository: ""
 #     # pullPolicy: IfNotPresent
-#     # tag: latest
-#     # retries: 30
-#     # timeout: 5
-#   # -- Lifecycle configuration
-#   lifecycle: {}
-#     # preStop:
-#     #   exec:
-#     #     command: ["sh", "-c", "sleep 10"]
-#   # -- Configure Pod termination grace period
-#   terminationGracePeriodSeconds: 30
-#   # -- Environment variables to configure application
+#     # tag: ""
+#
+#   # ServiceAccount (create=false to use existing)
+#   serviceAccount: {}
+#     # create: true
+#     # name: ""
+#     # automountServiceAccountToken: false
+#
+#   # Basic deployment metadata
+#   deploymentAnnotations: {}
+#   podAnnotations: {}
+#   podLabels: {}
+#
+#   # Environment and configuration
 #   env: {}
-#     # my_env: my_value
-#   # -- Variables from secrets
+#     # MY_ENV: my_value
 #   envFromSecrets: {}
-#     # MY_VARIABLE:
-#     #  name: <name-secret>
-#     #  key: secret_key
-#   # -- Variables from configMap
+#     # MY_SECRET_VAR:
+#     #   name: <secret-name>
+#     #   key: secret_key
 #   envFromConfigMap: {}
-#     # MY_VARIABLE:
-#     #  name: <name-configmap>
-#     #  key: key
-#   # -- Load all variables from files
+#     # MY_CONFIG_VAR:
+#     #   name: <configmap-name>
+#     #   key: key
 #   envFromFiles: []
 #     # - secretRef:
 #     #     name: <name-secret>
 #     # - configMapRef:
 #     #     name: <name-configmap>
-#   # -- Additional volumes on the output connector Deployment definition
+#
+#   # Volumes and mounts
 #   volumes: []
 #     # - name: foo
 #     #   secret:
 #     #     secretName: mysecret
 #     #     optional: false
-#   # -- Additional volumeMounts on the output connector Deployment definition
 #   volumeMounts: []
 #     # - name: foo
 #     #   mountPath: "/etc/foo"
 #     #   readOnly: true
-#   # -- The resources limits and requested
+#
+#   # Resources and scheduling
 #   resources: {}
 #     # limits:
 #     #   memory: 256Mi
@@ -649,38 +739,59 @@ injectors: []
 #     # requests:
 #     #   memory: 56Mi
 #     #   cpu: "50m"
-#   # -- Node labels for pod assignment
 #   nodeSelector: {}
-#     # project: "openbas"
-#   # -- Tolerations for pod assignment
 #   tolerations: []
-#     # - key: "project"
+#     # - key: "nodepool"
 #     #   operator: "Equal"
 #     #   value: "openbas"
 #     #   effect: "NoSchedule"
-#   # -- Affinity for pod assignment
 #   affinity: {}
-#   # -- Control how Pods are spread across your cluster
 #   topologySpreadConstraints: []
 #     # - maxSkew: 1
 #     #   topologyKey: zone
 #     #   whenUnsatisfiable: DoNotSchedule
-#   # -- Configure DNS
+#
+#   # DNS and network policy related
 #   dnsConfig: {}
 #     # nameservers:
 #     #   - 1.2.3.4
-#     #   - 5.6.7.8
 #     # searches:
 #     #   - ns1.svc.cluster.local
-#     #   - my.dns.search.suffix
 #     # option:
 #     #   - name: ndots
 #     #     value: "2"
-#     #   - name: edns0
-#     #   - name: timeout
-#     #     value: "3"
-#   # -- Configure DNS policy
 #   dnsPolicy: ClusterFirst
+#
+#   # Lifecycle / termination
+#   lifecycle: {}
+#     # preStop:
+#     #   exec:
+#     #     command: ["sh", "-c", "sleep 10"]
+#   terminationGracePeriodSeconds: 30
+#
+#   # Optional ready checker to wait for external services
+#   readyChecker: {}
+#     # enabled: true
+#     # repository: busybox
+#     # pullPolicy: IfNotPresent
+#     # tag: latest
+#     # retries: 30
+#     # timeout: 5
+#     # services:
+#     # - name: service_name
+#     #   port: service_port
+#     #   address: service_address  # (Optional) This parameter is optional. If
+#     #   not specified, the address for the check will be automatically
+#     #   determined assuming the service was installed using a subchart. It is
+#     #   useful to specify it when the service is provisioned differently (e.g.,
+#     #   an S3 bucket created in the Cloud or an Elasticsearch instance outside
+#     #   the Kubernetes cluster). The address can be an IP address or a DNS name.
+#
+#   # Deployment strategy (rolling update, etc.)
+#   strategy: {}
+#     # type: RollingUpdate
+#     # rollingUpdate:
+#     #   maxUnavailable: 1
 
 # -- OpenBAS caldera-server deployment configuration
 caldera:
@@ -699,79 +810,60 @@ caldera:
     # -- Overrides the image tag whose default is the chart appVersion
     tag: 5.1.0
 
-  # -- Ingress configuration to expose app
-  # </br> Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
-  ingress:
-    enabled: false
-    className: ""
-    annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-    hosts:
-      - host: chart-example.local
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
-    tls: []
-    #  - secretName: chart-example-tls
-    #    hosts:
-    #      - chart-example.local
+  # -- Specifies the secrets to use for pulling images from private registries
+  # Leave empty if no secrets are required
+  # E.g.
+  # imagePullSecrets:
+  #   - name: myRegistryKeySecretName
+  imagePullSecrets: []
 
-  # -- Kubernetes service to expose Pod
-  # </br> Ref: https://kubernetes.io/docs/concepts/services-networking/service/
-  service:
-    # -- Kubernetes Service type. Allowed values: NodePort, LoadBalancer or ClusterIP
-    type: ClusterIP
-    # -- Kubernetes Service port
-    port: 8888
-    # -- NodePort port (only when type is NodePort)
-    # nodePort: 32000
-    # -- Pod expose port
-    targetPort: 8888
+  # -- Configure strategy for the deployment
+  strategy: {}
+    # type: RollingUpdate
+    # rollingUpdate:
+    #   maxUnavailable: 1
 
-  # -- Configure lifecycle hooks
-  # </br> Ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
-  # </br> Ref: https://learnk8s.io/graceful-shutdown
-  lifecycle: {}
-  # preStop:
-  #   exec:
-  #     command: ["sh", "-c", "sleep 10"]
+  # -- Configure annotations on Pods
+  podAnnotations: {}
 
-  # -- Configure Pod termination grace period
-  # </br> Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination
-  terminationGracePeriodSeconds: 30
+  # -- Configure labels on Pods
+  podLabels: {}
 
-  # -- NetworkPolicy configuration
-  # </br> Ref: https://kubernetes.io/docs/concepts/services-networking/network-policies/
-  networkPolicy:
-    # -- Enable or disable NetworkPolicy
-    enabled: false
-    # -- Policy types
-    policyTypes: []
-    # - Ingress
-    # - Egress
-    ingress: []
-    # - from:
-    #   - ipBlock:
-    #       cidr: 172.17.0.0/16
-    #       except:
-    #       - 172.17.1.0/24
-    #   - namespaceSelector:
-    #       matchLabels:
-    #         project: myproject
-    #   - podSelector:
-    #       matchLabels:
-    #         role: frontend
-    #   ports:
-    #   - protocol: TCP
-    #     port: 6379
-    egress: []
-    # - to:
-    #   - ipBlock:
-    #       cidr: 10.0.0.0/24
-    #   ports:
-    #   - protocol: TCP
-    #     port: 5978
+  # -- Defines privilege and access control settings for a Pod
+  # </br> Ref: https://kubernetes.io/docs/concepts/security/pod-security-standards/
+  # </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  podSecurityContext: {}
+    # fsGroup: 2000
+
+  # -- Defines privilege and access control settings for a Container
+  # </br> Ref: https://kubernetes.io/docs/concepts/security/pod-security-standards/
+  # </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  securityContext: {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+
+  # -- Configure additional containers
+  # </br> Ref: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
+  initContainers: []
+    # - name: my-container
+    #   image: busybox
+    #   command: ['sh', '-c', 'echo "Hello, World!"']
+
+  # -- Configure args
+  # </br> Ref: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/
+  args: []
+    # - -c
+    # - echo "Hello, World!"
+
+  # -- Configure command
+  # </br> Ref: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/
+  command: []
+    # - echo
+    # - "Hello, World!"
 
   # -- Environment variables to configure application
   # </br> Ref: https://docs.openbas.io/latest/deployment/configuration/#platform
@@ -840,28 +932,152 @@ caldera:
   #   - stockpile
   #   - training
 
-  # -- Configure annotations on Pods
-  podAnnotations: {}
+  # -- Configure lifecycle hooks
+  # </br> Ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
+  # </br> Ref: https://learnk8s.io/graceful-shutdown
+  lifecycle: {}
+  # preStop:
+  #   exec:
+  #     command: ["sh", "-c", "sleep 10"]
 
-  # -- Configure labels on Pods
-  podLabels: {}
+  # -- Configure Pod termination grace period
+  # </br> Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination
+  terminationGracePeriodSeconds: 30
 
-  # -- Defines privilege and access control settings for a Pod
-  # </br> Ref: https://kubernetes.io/docs/concepts/security/pod-security-standards/
-  # </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-  podSecurityContext: {}
-  # fsGroup: 2000
+  # -- Ingress configuration to expose app
+  # </br> Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
+  ingress:
+    enabled: false
+    className: ""
+    annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: chart-example.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
 
-  # -- Defines privilege and access control settings for a Container
-  # </br> Ref: https://kubernetes.io/docs/concepts/security/pod-security-standards/
-  # </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-  securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+  # -- Kubernetes service to expose Pod
+  # </br> Ref: https://kubernetes.io/docs/concepts/services-networking/service/
+  service:
+    # -- Kubernetes Service type. Allowed values: NodePort, LoadBalancer, ClusterIP, ExternalName
+    type: ClusterIP
+    # -- Kubernetes Service port
+    port: 8888
+    # -- Pod expose port
+    targetPort: 8888
+    # -- Protocol for the service port
+    protocol: TCP
+    # -- Name for the service port
+    portName: http
+    # -- Application protocol (HTTP, HTTPS, etc.)
+    appProtocol: HTTP
+    # -- NodePort port (only when type is NodePort or LoadBalancer)
+    # nodePort: 32000
+    # -- Specific cluster IP (use "None" for headless service)
+    # clusterIP: "10.96.0.1"
+    # -- List of cluster IPs for dual-stack
+    # clusterIPs:
+    #   - "10.96.0.1"
+    #   - "fd00::1"
+    # -- External IPs for the service
+    # externalIPs:
+    #   - "192.168.1.100"
+    # -- LoadBalancer specific configuration
+    loadBalancer: {}
+      # -- LoadBalancer IP (only for LoadBalancer type)
+      # ip: "192.168.1.100"
+      # -- LoadBalancer source ranges (CIDR blocks)
+      # sourceRanges:
+      #   - "10.0.0.0/8"
+      #   - "172.16.0.0/12"
+      # -- LoadBalancer class
+      # class: "nginx"
+      # -- Allocate NodePorts for LoadBalancer service
+      # allocateNodePorts: true
+    # -- External name for ExternalName type service
+    # externalName: "example.com"
+    # -- External traffic policy (Local or Cluster)
+    # externalTrafficPolicy: Local
+    # -- Internal traffic policy (Local or Cluster)
+    # internalTrafficPolicy: Local
+    # -- Health check node port (for LoadBalancer with externalTrafficPolicy: Local)
+    # healthCheckNodePort: 30000
+    # -- Publish not ready addresses
+    # publishNotReadyAddresses: false
+    # -- Session affinity (None or ClientIP)
+    # sessionAffinity: ClientIP
+    # -- Session affinity configuration
+    # sessionAffinityConfig:
+    #   clientIP:
+    #     timeoutSeconds: 10800
+    # -- IP families (IPv4, IPv6)
+    # ipFamilies:
+    #   - IPv4
+    #   - IPv6
+    # -- IP family policy (SingleStack, PreferDualStack, RequireDualStack)
+    # ipFamilyPolicy: SingleStack
+    # -- Traffic distribution (PreferClose)
+    # trafficDistribution: PreferClose
+    # -- Additional labels for the service
+    labels: {}
+    #  environment: production
+    #  team: platform
+    # -- Annotations for the service
+    annotations: {}
+    #   service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    #   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "tcp"
+    #   nginx.ingress.kubernetes.io/service-upstream: "true"
+    # -- Pod extra ports
+    extraPorts: []
+    #  - name: admin
+    #    port: 9090
+    #    targetPort: 9090
+    #    protocol: TCP
+    #    appProtocol: HTTP
+    #    nodePort: 32001  # Only for NodePort/LoadBalancer
+    #  - name: grpc
+    #    port: 9000
+    #    targetPort: 9000
+    #    protocol: TCP
+    #    appProtocol: GRPC
+
+  # -- NetworkPolicy configuration
+  # </br> Ref: https://kubernetes.io/docs/concepts/services-networking/network-policies/
+  networkPolicy:
+    # -- Enable or disable NetworkPolicy
+    enabled: false
+    # -- Policy types
+    policyTypes: []
+    # - Ingress
+    # - Egress
+    ingress: []
+    # - from:
+    #   - ipBlock:
+    #       cidr: 172.17.0.0/16
+    #       except:
+    #       - 172.17.1.0/24
+    #   - namespaceSelector:
+    #       matchLabels:
+    #         nodepool: mynodepool
+    #   - podSelector:
+    #       matchLabels:
+    #         role: frontend
+    #   ports:
+    #   - protocol: TCP
+    #     port: 6379
+    egress: []
+    # - to:
+    #   - ipBlock:
+    #       cidr: 10.0.0.0/24
+    #   ports:
+    #   - protocol: TCP
+    #     port: 5978
 
   # -- The resources limits and requested
   # </br> Ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
@@ -946,8 +1162,27 @@ caldera:
   # </br> Ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
   dnsPolicy: ClusterFirst
 
+# -- OpenSearch subchart deployment
+# </br> Ref: https://github.com/opensearch-nodepool/helm-charts/blob/main/charts/opensearch/values.yaml
+opensearch:
+  # -- Enable or disable OpenSearch subchart
+  enabled: true
+
+  # OpenSearch Java options
+  opensearchJavaOpts: "-Xmx512M -Xms512M"
+
+  # If discovery.type in the opensearch configuration is set to "single-node",
+  # this should be set to "true"
+  # If "true", replicas will be forced to 1
+  singleNode: true
+
+  # Enable persistence using Persistent Volume Claims
+  # </br> Ref: https://kubernetes.io/docs/user-guide/persistent-volumes/
+  persistence:
+    enabled: false
+
 # -- MinIO subchart deployment
-# </br> Ref: https://github.com/bitnami/charts/blob/main/bitnami/minio/values.yaml
+# </br> Ref: https://github.com/minio/minio/blob/main/helm/minio/values.yaml
 minio:
   # -- Enable or disable MinIO subchart
   enabled: true
@@ -955,18 +1190,22 @@ minio:
   # mode Minio server mode (`standalone` or `distributed`)
   # </br> Ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
   mode: standalone
-  # Minio authentication parameters
-  auth:
-    # Minio root username
-    rootUser: ChangeMe
-    # Password for Minio root user
-    rootPassword: ChangeMe
+
+  # Minio root username
+  rootUser: ChangeMe
+  # Password for Minio root user
+  rootPassword: ChangeMe
 
   # Enable persistence using Persistent Volume Claims
   # </br> Ref: https://kubernetes.io/docs/user-guide/persistent-volumes/
   persistence:
     # Enable MinIO data persistence using PVC. If false, use emptyDir
     enabled: false
+
+  # Resources
+  resources:
+    requests:
+      memory: 512Mi
 
 # -- PostgreSQL subchart deployment
 # </br> Ref: https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml
@@ -976,6 +1215,11 @@ postgresql:
 
   # Number of PostgreSQL replicas to deploy
   replicaCount: 1
+
+  # PostgreSQL image
+  image:
+    repository: bitnamilegacy/postgresql
+    tag: 17.6.0-debian-12-r4
 
   # PostgreSQL Authentication parameters
   auth:
@@ -1001,6 +1245,16 @@ postgresql:
 rabbitmq:
   # -- Enable or disable RabbitMQ subchart
   enabled: true
+
+  # RabbitMQ global settings
+  global:
+    security:
+      allowInsecureImages: true
+
+  # RabbitMQ image
+  image:
+    repository: bitnamilegacy/rabbitmq
+    tag: 4.1.2-debian-12-r1
 
   # Number of RabbitMQ replicas to deploy
   replicaCount: 1
