@@ -10,12 +10,21 @@ sources:
   minio:
     kind: helmchart
     spec:
-      url: https://charts.bitnami.com/bitnami
+      url: https://charts.min.io/
       name: minio
       versionFilter:
         kind: semver
         pattern: '*' # replace with CI/CD updatecli
     sourceid: minio
+  opensearch:
+    kind: helmchart
+    spec:
+      url: https://opensearch-project.github.io/helm-charts/
+      name: opensearch
+      versionFilter:
+        kind: semver
+        pattern: '*' # replace with CI/CD updatecli
+    sourceid: opensearch
   postgresql:
     kind: helmchart
     spec:
@@ -50,17 +59,10 @@ targets:
       file: charts/openbas/Chart.yaml
       key: $.dependencies[0].version
     sourceid: minio
-  postgresql:
+  opensearch:
     name: bump chart dependencies
     kind: yaml
     spec:
       file: charts/openbas/Chart.yaml
       key: $.dependencies[1].version
-    sourceid: postgresql
-  rabbitmq:
-    name: bump chart dependencies
-    kind: yaml
-    spec:
-      file: charts/openbas/Chart.yaml
-      key: $.dependencies[2].version
-    sourceid: rabbitmq
+    sourceid: opensearch
