@@ -36,9 +36,9 @@ imagePullSecrets: []
 
 # -- Configure strategy for the deployment
 strategy: {}
-  # type: RollingUpdate
-  # rollingUpdate:
-  #   maxUnavailable: 1
+# type: RollingUpdate
+# rollingUpdate:
+#   maxUnavailable: 1
 
 # -- Enable creation of ServiceAccount
 serviceAccount:
@@ -107,21 +107,21 @@ envFromFiles: []
 # Generate Secret with following name: <release-name>-<name>
 # </br> Ref: https://kubernetes.io/docs/concepts/configuration/secret/
 secrets: []
-  # - name: secret-name
-  #   data:
-  #     my.key: |-
-  #       my-content
-  #     my_var: my-value
+# - name: secret-name
+#   data:
+#     my.key: |-
+#       my-content
+#     my_var: my-value
 
 # -- ConfigMap values to create configuration files
 # Generate ConfigMap with following name: <release-name>-<name>
 # </br> Ref: https://kubernetes.io/docs/concepts/configuration/configmap/
 configMaps: []
-  # - name: configmap-name
-  #   data:
-  #     my.key: |-
-  #       my-content
-  #     my_var: my-value
+# - name: configmap-name
+#   data:
+#     my.key: |-
+#       my-content
+#     my_var: my-value
 
 # -- Configure additional containers
 # </br> Ref: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
@@ -170,16 +170,16 @@ service:
   #   - "192.168.1.100"
   # -- LoadBalancer specific configuration
   loadBalancer: {}
-    # -- LoadBalancer IP (only for LoadBalancer type)
-    # ip: "192.168.1.100"
-    # -- LoadBalancer source ranges (CIDR blocks)
-    # sourceRanges:
-    #   - "10.0.0.0/8"
-    #   - "172.16.0.0/12"
-    # -- LoadBalancer class
-    # class: "nginx"
-    # -- Allocate NodePorts for LoadBalancer service
-    # allocateNodePorts: true
+  # -- LoadBalancer IP (only for LoadBalancer type)
+  # ip: "192.168.1.100"
+  # -- LoadBalancer source ranges (CIDR blocks)
+  # sourceRanges:
+  #   - "10.0.0.0/8"
+  #   - "172.16.0.0/12"
+  # -- LoadBalancer class
+  # class: "nginx"
+  # -- Allocate NodePorts for LoadBalancer service
+  # allocateNodePorts: true
   # -- External name for ExternalName type service
   # externalName: "example.com"
   # -- External traffic policy (Local or Cluster)
@@ -234,30 +234,30 @@ networkPolicy:
   enabled: false
   # -- Policy types
   policyTypes: []
-    # - Ingress
-    # - Egress
+  # - Ingress
+  # - Egress
   ingress: []
-    # - from:
-    #   - ipBlock:
-    #       cidr: 172.17.0.0/16
-    #       except:
-    #       - 172.17.1.0/24
-    #   - namespaceSelector:
-    #       matchLabels:
-    #         nodepool: mynodepool
-    #   - podSelector:
-    #       matchLabels:
-    #         role: frontend
-    #   ports:
-    #   - protocol: TCP
-    #     port: 6379
+  # - from:
+  #   - ipBlock:
+  #       cidr: 172.17.0.0/16
+  #       except:
+  #       - 172.17.1.0/24
+  #   - namespaceSelector:
+  #       matchLabels:
+  #         nodepool: mynodepool
+  #   - podSelector:
+  #       matchLabels:
+  #         role: frontend
+  #   ports:
+  #   - protocol: TCP
+  #     port: 6379
   egress: []
-    # - to:
-    #   - ipBlock:
-    #       cidr: 10.0.0.0/24
-    #   ports:
-    #   - protocol: TCP
-    #     port: 5978
+  # - to:
+  #   - ipBlock:
+  #       cidr: 10.0.0.0/24
+  #   ports:
+  #   - protocol: TCP
+  #     port: 5978
 
 # -- Configure lifecycle hooks
 # </br> Ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
@@ -409,12 +409,12 @@ ingress:
 # -- The resources limits and requested
 # </br> Ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 resources: {}
-  # limits:
-  #   cpu: "1500m"
-  #   memory: 2048Mi
-  # requests:
-  #   cpu: 1
-  #   memory: 256Mi
+# limits:
+#   cpu: "1500m"
+#   memory: 2048Mi
+# requests:
+#   cpu: 1
+#   memory: 256Mi
 
 # -- Pod Disruption Budget
 # </br> Ref: https://kubernetes.io/docs/reference/kubernetes-api/policy-resources/pod-disruption-budget-v1/
@@ -819,9 +819,9 @@ caldera:
 
   # -- Configure strategy for the deployment
   strategy: {}
-    # type: RollingUpdate
-    # rollingUpdate:
-    #   maxUnavailable: 1
+  # type: RollingUpdate
+  # rollingUpdate:
+  #   maxUnavailable: 1
 
   # -- Configure annotations on Pods
   podAnnotations: {}
@@ -833,37 +833,37 @@ caldera:
   # </br> Ref: https://kubernetes.io/docs/concepts/security/pod-security-standards/
   # </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
   podSecurityContext: {}
-    # fsGroup: 2000
+  # fsGroup: 2000
 
   # -- Defines privilege and access control settings for a Container
   # </br> Ref: https://kubernetes.io/docs/concepts/security/pod-security-standards/
   # </br> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
   securityContext: {}
-    # capabilities:
-    #   drop:
-    #   - ALL
-    # readOnlyRootFilesystem: true
-    # runAsNonRoot: true
-    # runAsUser: 1000
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
 
   # -- Configure additional containers
   # </br> Ref: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
   initContainers: []
-    # - name: my-container
-    #   image: busybox
-    #   command: ['sh', '-c', 'echo "Hello, World!"']
+  # - name: my-container
+  #   image: busybox
+  #   command: ['sh', '-c', 'echo "Hello, World!"']
 
   # -- Configure args
   # </br> Ref: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/
   args: []
-    # - -c
-    # - echo "Hello, World!"
+  # - -c
+  # - echo "Hello, World!"
 
   # -- Configure command
   # </br> Ref: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/
   command: []
-    # - echo
-    # - "Hello, World!"
+  # - echo
+  # - "Hello, World!"
 
   # -- Environment variables to configure application
   # </br> Ref: https://docs.openbas.io/latest/deployment/configuration/#platform
@@ -990,16 +990,16 @@ caldera:
     #   - "192.168.1.100"
     # -- LoadBalancer specific configuration
     loadBalancer: {}
-      # -- LoadBalancer IP (only for LoadBalancer type)
-      # ip: "192.168.1.100"
-      # -- LoadBalancer source ranges (CIDR blocks)
-      # sourceRanges:
-      #   - "10.0.0.0/8"
-      #   - "172.16.0.0/12"
-      # -- LoadBalancer class
-      # class: "nginx"
-      # -- Allocate NodePorts for LoadBalancer service
-      # allocateNodePorts: true
+    # -- LoadBalancer IP (only for LoadBalancer type)
+    # ip: "192.168.1.100"
+    # -- LoadBalancer source ranges (CIDR blocks)
+    # sourceRanges:
+    #   - "10.0.0.0/8"
+    #   - "172.16.0.0/12"
+    # -- LoadBalancer class
+    # class: "nginx"
+    # -- Allocate NodePorts for LoadBalancer service
+    # allocateNodePorts: true
     # -- External name for ExternalName type service
     # externalName: "example.com"
     # -- External traffic policy (Local or Cluster)
