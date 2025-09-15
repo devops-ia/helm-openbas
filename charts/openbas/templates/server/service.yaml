@@ -97,11 +97,5 @@ spec:
       appProtocol: {{ $port.appProtocol }}
       {{- end }}
     {{- end }}
-    {{- if .Values.env.APP__TELEMETRY__METRICS__ENABLED }}
-    - name: metrics
-      port: {{ .Values.env.APP__TELEMETRY__METRICS__EXPORTER_PROMETHEUS | default 14269 }}
-      targetPort: {{ .Values.env.APP__TELEMETRY__METRICS__EXPORTER_PROMETHEUS | default 14269 }}
-      protocol: TCP
-    {{- end }}
   selector:
     {{- include "openbas.selectorServerLabels" . | nindent 4 }}

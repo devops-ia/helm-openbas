@@ -85,17 +85,5 @@ spec:
       {{- if .Values.caldera.service.appProtocol }}
       appProtocol: {{ .Values.caldera.service.appProtocol }}
       {{- end }}
-    {{- range $port := .Values.caldera.service.extraPorts }}
-    - name: {{ $port.name }}
-      port: {{ $port.port }}
-      targetPort: {{ $port.targetPort | default $port.port }}
-      protocol: {{ $port.protocol | default "TCP" }}
-      {{- if and (or (eq $.Values.caldera.service.type "NodePort") (eq $.Values.caldera.service.type "LoadBalancer")) $port.nodePort }}
-      nodePort: {{ $port.nodePort }}
-      {{- end }}
-      {{- if $port.appProtocol }}
-      appProtocol: {{ $port.appProtocol }}
-      {{- end }}
-    {{- end }}
   selector:
     {{- include "openbas.selectorCalderaLabels" . | nindent 4 }}
