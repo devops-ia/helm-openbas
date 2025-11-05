@@ -11,7 +11,7 @@ sources:
   - https://github.com/devops-ia/helm-openbas
   - https://github.com/OpenBAS-Platform/openbas
 version: 1.0.0
-appVersion: 2.0.1
+appVersion: 2.0.2
 home: https://www.filigran.io/en/solutions/products/openbas/
 keywords:
   - openbas
