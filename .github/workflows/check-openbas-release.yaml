@@ -1,4 +1,4 @@
-name: Check OpenBAS new releases
+name: Check OpenAEV new releases
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
     - cron: '0 0 * * *' # every day
 
 jobs:
-  check-and-update-openbas:
+  check-and-update-openaev:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -17,7 +17,7 @@ jobs:
       - name: Get current release
         id: current_release
         run: |
-          current_release=$(grep appVersion charts/openbas/Chart.yaml | awk '{ print $2 }')
+          current_release=$(grep appVersion charts/openaev/Chart.yaml | awk '{ print $2 }')
           echo "current_release=$current_release" >> $GITHUB_OUTPUT
 
       - name: Install updatecli
@@ -30,7 +30,7 @@ jobs:
       - name: Get latest release
         id: latest_release
         run: |
-          latest_release=$(grep appVersion charts/openbas/Chart.yaml | awk '{ print $2 }')
+          latest_release=$(grep appVersion charts/openaev/Chart.yaml | awk '{ print $2 }')
           echo "latest_release=$latest_release" >> $GITHUB_OUTPUT
 
       - name: Check if release changed
@@ -44,23 +44,23 @@ jobs:
         if: steps.check_changes.outputs.release_changed == 'true'
         uses: losisin/helm-docs-github-action@v1
         with:
-          chart-search-root: charts/openbas
+          chart-search-root: charts/openaev
 
       - name: Create PR with changes
         if: steps.check_changes.outputs.release_changed == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.PAT_GITHUB }}
-          commit-message: "fix: update OpenBAS version to ${{ steps.latest_release.outputs.latest_release }}"
+          commit-message: "fix: update OpenAEV version to ${{ steps.latest_release.outputs.latest_release }}"
           signoff: false
-          branch: fix/upgrade-openbas-appversion-${{ steps.latest_release.outputs.latest_release }}
+          branch: fix/upgrade-openaev-appversion-${{ steps.latest_release.outputs.latest_release }}
           delete-branch: true
-          title: '[openbas] new release: ${{ steps.latest_release.outputs.latest_release }}'
+          title: '[openaev] new release: ${{ steps.latest_release.outputs.latest_release }}'
           body: |
-            OpenBAS version:
+            OpenAEV version:
             - :information_source: Current: `${{ steps.current_release.outputs.current_release }}`
             - :up: Upgrade: `${{ steps.latest_release.outputs.latest_release }}`
 
-            Changelog: https://github.com/OpenBAS-Platform/openbas/releases/tag/${{ steps.latest_release.outputs.latest_release }}
+            Changelog: https://github.com/OpenAEV-Platform/openaev/releases/tag/${{ steps.latest_release.outputs.latest_release }}
           labels: |
             auto-pr-bump-version

@@ -2,7 +2,7 @@ sources:
   caldera:
     kind: dockerimage
     spec:
-      image: openbas/caldera-server
+      image: openaev/caldera-server
       architecture: linux/amd64
       versionFilter:
         kind: semver
@@ -49,20 +49,20 @@ targets:
     name: bump chart caldera tag
     kind: yaml
     spec:
-      file: charts/openbas/values.yaml
+      file: charts/openaev/values.yaml
       key: $.caldera.image.tag
     sourceid: caldera
   minio:
     name: bump chart dependencies
     kind: yaml
     spec:
-      file: charts/openbas/Chart.yaml
+      file: charts/openaev/Chart.yaml
       key: $.dependencies[0].version
     sourceid: minio
   opensearch:
     name: bump chart dependencies
     kind: yaml
     spec:
-      file: charts/openbas/Chart.yaml
+      file: charts/openaev/Chart.yaml
       key: $.dependencies[1].version
     sourceid: opensearch

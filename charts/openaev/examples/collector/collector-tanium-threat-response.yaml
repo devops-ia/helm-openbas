@@ -1,0 +1,16 @@
+# tanium-threat-response
+# ref: https://github.com/OpenAEV-Platform/collectors/tree/main/tanium-threat-response
+- name: tanium-threat-response
+  enabled: true
+  replicas: 1
+  image: {}
+  env:
+    OPENBAS_URL: http://localhost
+    OPENBAS_TOKEN: ChangeMe
+    COLLECTOR_ID: ChangeMe
+    COLLECTOR_NAME: "Tanium Threat Response"
+    COLLECTOR_LOG_LEVEL: error
+    TANIUM_URL: https://console.changeme.com
+    TANIUM_URL_CONSOLE: https://console.changeme.com
+    TANIUM_SSL_VERIFY: true
+    TANIUM_TOKEN: ChangeMe

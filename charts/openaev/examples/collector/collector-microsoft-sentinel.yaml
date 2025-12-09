@@ -1,0 +1,18 @@
+# microsoft-sentinel
+# ref: https://github.com/OpenAEV-Platform/collectors/tree/main/microsoft-sentinel
+- name: microsoft-sentinel
+  enabled: true
+  replicas: 1
+  image: {}
+  env:
+    OPENBAS_URL: http://localhost
+    OPENBAS_TOKEN: ChangeMe
+    COLLECTOR_ID: ChangeMe
+    COLLECTOR_NAME: "Microsoft Sentinel"
+    COLLECTOR_LOG_LEVEL: error
+    MICROSOFT_SENTINEL_TENANT_ID:
+    MICROSOFT_SENTINEL_CLIENT_ID:
+    MICROSOFT_SENTINEL_CLIENT_SECRET:
+    MICROSOFT_SENTINEL_SUBSCRIPTION_ID:
+    MICROSOFT_SENTINEL_WORKSPACE_ID:
+    MICROSOFT_SENTINEL_RESOURCE_GROUP:

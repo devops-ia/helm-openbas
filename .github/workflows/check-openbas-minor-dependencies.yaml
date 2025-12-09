@@ -1,4 +1,4 @@
-name: Check OpenBAS minor dependencies releases
+name: Check OpenAEV minor dependencies releases
 
 on:
   workflow_dispatch:
@@ -18,11 +18,11 @@ jobs:
         id: dependencies
         run: |
           # get name dependencies
-          dependencies=($(yq eval -o=json '.dependencies[] | .name' charts/openbas/Chart.yaml | xargs))
+          dependencies=($(yq eval -o=json '.dependencies[] | .name' charts/openaev/Chart.yaml | xargs))
 
           # replace version
           for dependency in "${dependencies[@]}"; do
-            version="~$(yq eval -r ".dependencies[] | select(.name == \"${dependency}\") | .version" charts/openbas/Chart.yaml | cut -d'.' -f1)"
+            version="~$(yq eval -r ".dependencies[] | select(.name == \"${dependency}\") | .version" charts/openaev/Chart.yaml | cut -d'.' -f1)"
             yq eval -i ".sources.${dependency}.spec.versionFilter.pattern = \"${version}\"" .github/updatecli/helm-dependencies.yaml
           done
 
@@ -45,7 +45,7 @@ jobs:
       - name: Update README.md Helm Chart
         uses: losisin/helm-docs-github-action@v1
         with:
-          chart-search-root: charts/openbas
+          chart-search-root: charts/openaev
 
       - name: Get current date
         id: date
@@ -56,13 +56,13 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         if: github.event_name == 'workflow_dispatch'
         with:
-          add-paths: charts/openbas
+          add-paths: charts/openaev
           token: ${{ secrets.PAT_GITHUB }}
           commit-message: "fix: update minor dependencies version"
           signoff: false
-          branch: fix/upgrade-openbas-minor-dependencies-${{ steps.date.outputs.date }}
+          branch: fix/upgrade-openaev-minor-dependencies-${{ steps.date.outputs.date }}
           delete-branch: true
-          title: '[openbas] upgrade minor dependencies (${{ steps.date.outputs.date }})'
+          title: '[openaev] upgrade minor dependencies (${{ steps.date.outputs.date }})'
           body-path: minor-output.log
           draft: true
           labels: |
@@ -72,13 +72,13 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         if: github.event_name == 'schedule'
         with:
-          add-paths: charts/openbas
+          add-paths: charts/openaev
           token: ${{ secrets.PAT_GITHUB }}
           commit-message: "fix: update minor dependencies version"
           signoff: false
-          branch: fix/upgrade-openbas-minor-dependencies-${{ steps.date.outputs.date }}
+          branch: fix/upgrade-openaev-minor-dependencies-${{ steps.date.outputs.date }}
           delete-branch: true
-          title: '[openbas] upgrade minor dependencies (${{ steps.date.outputs.date }})'
+          title: '[openaev] upgrade minor dependencies (${{ steps.date.outputs.date }})'
           body-path: minor-output.log
           labels: |
             auto-pr-bump-version

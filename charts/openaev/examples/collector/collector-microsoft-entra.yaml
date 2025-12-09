@@ -1,0 +1,16 @@
+# microsoft-entra
+# ref: https://github.com/OpenAEV-Platform/collectors/tree/main/microsoft-entra
+- name: microsoft-entra
+  enabled: true
+  replicas: 1
+  image: {}
+  env:
+    OPENBAS_URL: http://localhost
+    OPENBAS_TOKEN: ChangeMe
+    COLLECTOR_ID: ChangeMe
+    COLLECTOR_NAME: "Microsoft Entra"
+    COLLECTOR_LOG_LEVEL: error
+    MICROSOFT_ENTRA_TENANT_ID:
+    MICROSOFT_ENTRA_CLIENT_ID:
+    MICROSOFT_ENTRA_CLIENT_SECRET:
+    INCLUDE_EXTERNAL: "false"

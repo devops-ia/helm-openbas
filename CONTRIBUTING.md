@@ -1,18 +1,18 @@
-# How to contribute to OpenBAS Helm Chart
+# How to contribute to OpenAEV Helm Chart
 
-This document provides guidelines for contributing to the *OpenBAS Helm Chart* project.
+This document provides guidelines for contributing to the *OpenAEV Helm Chart* project.
 
 ## How can I contribute?
 
 ### Did you find a bug?
 
-* **Ensure the bug has not already been reported** by searching on GitHub under [Issues](https://github.com/devops-ia/helm-openbas/issues).
-* If you cannot find an open issue addressing the problem, [open a new one](https://github.com/devops-ia/helm-openbas/issues/new). Include a **title and clear description**, as much relevant information as possible, and a **code sample** or an **executable test case** demonstrating the unexpected behavior.
+* **Ensure the bug has not already been reported** by searching on GitHub under [Issues](https://github.com/devops-ia/helm-openaev/issues).
+* If you cannot find an open issue addressing the problem, [open a new one](https://github.com/devops-ia/helm-openaev/issues/new). Include a **title and clear description**, as much relevant information as possible, and a **code sample** or an **executable test case** demonstrating the unexpected behavior.
 * Use the relevant bug report templates to create the issue, if available.
 
 ### Do you intend to add a new feature or change an existing one?
 
-* Please discuss first ([open an issue](https://github.com/devops-ia/helm-openbas/issues)) before starting any significant pull request (e.g., implementing features, refactoring code) to avoid spending time on something that might not be merged.
+* Please discuss first ([open an issue](https://github.com/devops-ia/helm-openaev/issues)) before starting any significant pull request (e.g., implementing features, refactoring code) to avoid spending time on something that might not be merged.
 * Adhere to the project's coding conventions (indentation, accurate comments, etc.) and any other requirements (such as test coverage, documentation).
 
 ## Styleguides

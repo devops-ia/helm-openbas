@@ -1,0 +1,89 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "openaev.fullname" . }}-caldera
+  labels:
+    {{- include "openaev.calderaLabels" . | nindent 4 }}
+    {{- with .Values.caldera.service.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.caldera.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.caldera.service.type }}
+  {{- if and (eq .Values.caldera.service.type "ClusterIP") (eq .Values.caldera.service.clusterIP "None") }}
+  clusterIP: None
+  {{- else if .Values.caldera.service.clusterIP }}
+  clusterIP: {{ .Values.caldera.service.clusterIP }}
+  {{- end }}
+  {{- if .Values.caldera.service.clusterIPs }}
+  clusterIPs:
+    {{- toYaml .Values.caldera.service.clusterIPs | nindent 4 }}
+  {{- end }}
+  {{- if .Values.caldera.service.externalIPs }}
+  externalIPs:
+    {{- toYaml .Values.caldera.service.externalIPs | nindent 4 }}
+  {{- end }}
+  {{- if and (eq .Values.caldera.service.type "LoadBalancer") .Values.caldera.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.caldera.service.loadBalancerIP }}
+  {{- end }}
+  {{- if and (eq .Values.caldera.service.type "LoadBalancer") .Values.caldera.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+    {{- toYaml .Values.caldera.service.loadBalancerSourceRanges | nindent 4 }}
+  {{- end }}
+  {{- if and (eq .Values.caldera.service.type "LoadBalancer") .Values.caldera.service.loadBalancerClass }}
+  loadBalancerClass: {{ .Values.caldera.service.loadBalancerClass }}
+  {{- end }}
+  {{- if and (eq .Values.caldera.service.type "ExternalName") .Values.caldera.service.externalName }}
+  externalName: {{ .Values.caldera.service.externalName }}
+  {{- end }}
+  {{- if and (or (eq .Values.caldera.service.type "NodePort") (eq .Values.caldera.service.type "LoadBalancer")) .Values.caldera.service.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ .Values.caldera.service.externalTrafficPolicy }}
+  {{- end }}
+  {{- if .Values.caldera.service.internalTrafficPolicy }}
+  internalTrafficPolicy: {{ .Values.caldera.service.internalTrafficPolicy }}
+  {{- end }}
+  {{- if and (eq .Values.caldera.service.type "LoadBalancer") .Values.caldera.service.healthCheckNodePort }}
+  healthCheckNodePort: {{ .Values.caldera.service.healthCheckNodePort }}
+  {{- end }}
+  {{- if .Values.caldera.service.publishNotReadyAddresses }}
+  publishNotReadyAddresses: {{ .Values.caldera.service.publishNotReadyAddresses }}
+  {{- end }}
+  {{- if .Values.caldera.service.sessionAffinity }}
+  sessionAffinity: {{ .Values.caldera.service.sessionAffinity }}
+  {{- if and (eq .Values.caldera.service.sessionAffinity "ClientIP") .Values.caldera.service.sessionAffinityConfig }}
+  sessionAffinityConfig:
+    clientIP:
+      {{- if .Values.caldera.service.sessionAffinityConfig.clientIP.timeoutSeconds }}
+      timeoutSeconds: {{ .Values.caldera.service.sessionAffinityConfig.clientIP.timeoutSeconds }}
+      {{- end }}
+  {{- end }}
+  {{- end }}
+  {{- if .Values.caldera.service.ipFamilies }}
+  ipFamilies:
+    {{- toYaml .Values.caldera.service.ipFamilies | nindent 4 }}
+  {{- end }}
+  {{- if .Values.caldera.service.ipFamilyPolicy }}
+  ipFamilyPolicy: {{ .Values.caldera.service.ipFamilyPolicy }}
+  {{- end }}
+  {{- if and (eq .Values.caldera.service.type "LoadBalancer") (hasKey .Values.caldera.service "allocateLoadBalancerNodePorts") }}
+  allocateLoadBalancerNodePorts: {{ .Values.caldera.service.allocateLoadBalancerNodePorts }}
+  {{- end }}
+  {{- if .Values.caldera.service.trafficDistribution }}
+  trafficDistribution: {{ .Values.caldera.service.trafficDistribution }}
+  {{- end }}
+  ports:
+    - port: {{ .Values.caldera.service.port }}
+      targetPort: {{ .Values.caldera.service.targetPort | default .Values.caldera.service.port }}
+      protocol: {{ .Values.caldera.service.protocol | default "TCP" }}
+      name: {{ .Values.caldera.service.portName | default "http" }}
+      {{- if and (or (eq .Values.caldera.service.type "NodePort") (eq .Values.caldera.service.type "LoadBalancer")) .Values.caldera.service.nodePort }}
+      nodePort: {{ .Values.caldera.service.nodePort }}
+      {{- end }}
+      {{- if .Values.caldera.service.appProtocol }}
+      appProtocol: {{ .Values.caldera.service.appProtocol }}
+      {{- end }}
+  selector:
+    {{- include "openaev.selectorCalderaLabels" . | nindent 4 }}

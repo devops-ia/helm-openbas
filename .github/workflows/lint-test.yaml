@@ -1,4 +1,4 @@
-name: Lint and test PR OpenBAS
+name: Lint and test PR OpenAEV
 
 on:
   workflow_dispatch:

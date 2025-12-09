@@ -8,22 +8,22 @@ This document provides guidelines for testing the OpenCTI Helm chart. Follow the
 
 ```bash
 # Run helm lint to check for any syntax issues
-helm lint charts/openbas
+helm lint charts/openaev
 ```
 
 ### 2. Template Testing
 
 ```bash
 # Generate and verify the template output
-helm template openbas charts/openbas --debug
+helm template openaev charts/openaev --debug
 ```
 
 ### 3. Local installation testing
 
 ```bash
 # Install the chart in a test namespace
-kubectl create namespace openbas-test
-helm install openbas-test charts/openbas --namespace openbas-test
+kubectl create namespace openaev-test
+helm install openaev-test charts/openaev --namespace openaev-test
 ```
 
 ### 4. Verification steps
@@ -31,19 +31,19 @@ helm install openbas-test charts/openbas --namespace openbas-test
 1. Check all pods are running:
 
 ```bash
-kubectl get pods -n openbas-test
+kubectl get pods -n openaev-test
 ```
 
 2. Verify services are exposed:
 
 ```bash
-kubectl get svc -n openbas-test
+kubectl get svc -n openaev-test
 ```
 
 3. Check platform accessibility:
 
 ```bash
-kubectl port-forward svc/openbas-test 8080:8080 -n openbas-test
+kubectl port-forward svc/openaev-test 8080:8080 -n openaev-test
 ```
 
 4. Validate component health:
@@ -74,15 +74,15 @@ kubectl port-forward svc/openbas-test 8080:8080 -n openbas-test
 
 ```bash
 # Test upgrade from previous version
-helm upgrade openbas-test charts/openbas --namespace openbas-test
+helm upgrade openaev-test charts/openaev --namespace openaev-test
 ```
 
 ### 7. Clean-up
 
 ```bash
 # Remove test deployment
-helm uninstall openbas-test --namespace openbas-test
-kubectl delete namespace openbas-test
+helm uninstall openaev-test --namespace openaev-test
+kubectl delete namespace openaev-test
 ```
 
 ## Automated testing

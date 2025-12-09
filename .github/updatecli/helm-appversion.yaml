@@ -1,17 +1,17 @@
 sources:
-  openbas:
+  openaev:
     kind: dockerimage
     spec:
-      image: openbas/platform
+      image: openaev/platform
       architecture: linux/amd64
       versionFilter:
         kind: semver
 conditions: {}
 targets:
-  openbas:
+  openaev:
     name: bump chart appversion
     kind: yaml
     spec:
-      file: charts/openbas/Chart.yaml
+      file: charts/openaev/Chart.yaml
       key: $.appVersion
-    sourceid: openbas
+    sourceid: openaev

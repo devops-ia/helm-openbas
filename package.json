@@ -1,11 +1,11 @@
 {
-  "name": "helm-openbas",
+  "name": "helm-openaev",
   "version": "1.0.0",
   "release": {
     "branches": [
       "main"
     ],
-    "repositoryUrl": "https://github.com/devops-ia/helm-openbas.git",
+    "repositoryUrl": "https://github.com/devops-ia/helm-openaev.git",
     "plugins": [
       "@semantic-release/release-notes-generator",
       "@semantic-release/github"
