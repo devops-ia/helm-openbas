@@ -2,6 +2,50 @@ apiVersion: v1
 entries:
   openaev:
   - apiVersion: v2
+    appVersion: 2.0.6
+    created: "2025-12-12T09:03:04.733259574Z"
+    dependencies:
+    - condition: minio.enabled
+      name: minio
+      repository: https://charts.min.io/
+      version: 5.4.0
+    - condition: opensearch.enabled
+      name: opensearch
+      repository: https://opensearch-project.github.io/helm-charts/
+      version: 3.3.1
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 16.7.27
+    - condition: rabbitmq.enabled
+      name: rabbitmq
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 16.0.14
+    description: A Helm chart to deploy Open Breach and Attack Simulation platform
+    digest: 4cc8af723d95e099221535875a0cc4a13d8da3f6a6b50c1093e3f7dbd6684db9
+    home: https://www.filigran.io/en/solutions/products/openaev/
+    icon: https://raw.githubusercontent.com/OpenCTI-Platform/docs/da9fcbaea4c1f02f86eca1bb8099876858082e13/docs/assets/images/favicon.png
+    keywords:
+    - openaev
+    - cybersecurity
+    - purple-team
+    - attack-simulation
+    - breach-simulator
+    - threat
+    - analysis
+    maintainers:
+    - email: hello@ialejandro.rocks
+      name: ialejandro
+      url: https://ialejandro.rocks
+    name: openaev
+    sources:
+    - https://github.com/devops-ia/helm-openaev
+    - https://github.com/OpenAEV-Platform/openaev
+    type: application
+    urls:
+    - https://github.com/devops-ia/helm-openaev/releases/download/v1.8.16/openaev-1.8.16.tgz
+    version: 1.8.16
+  - apiVersion: v2
     appVersion: 2.0.5
     created: "2025-12-09T09:10:25.88863541Z"
     dependencies:
@@ -5625,4 +5669,4 @@ entries:
     urls:
     - https://github.com/devops-ia/helm-openbas/releases/download/v1.0.0/openbas-1.0.0.tgz
     version: 1.0.0
-generated: "2025-12-09T09:10:25.888877102Z"
+generated: "2025-12-12T09:03:04.733502741Z"
