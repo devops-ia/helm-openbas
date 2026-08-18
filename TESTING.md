@@ -51,7 +51,7 @@ kubectl port-forward svc/openaev-test 8080:8080 -n openaev-test
 - OpenCTI platform UI accessibility
 - ElasticSearch connection
 - RabbitMQ status
-- MinIO/S3 connectivity
+- RustFS/S3 connectivity
 - Redis cluster status
 
 ### 5. Functional testing

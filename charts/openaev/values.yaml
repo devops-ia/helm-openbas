@@ -70,8 +70,8 @@ env:
   INJECTOR_CALDERA_URL: http://release-name-caldera:8888
   INJECTOR_CALDERA_PUBLIC_URL: http://release-name-caldera:8888
   INJECTOR_CALDERA_API_KEY: ChangeMe
-  # MINIO
-  MINIO_ENDPOINT: release-name-minio:9000
+  # MINIO (RUSTFS)
+  MINIO_ENDPOINT: release-name-rustfs-svc:9000
   # POSTGRESQL
   SPRING_DATASOURCE_URL: jdbc:postgresql://release-name-postgresql:5432/openaev
   SPRING_DATASOURCE_USERNAME: user
@@ -358,7 +358,8 @@ readyChecker:
   #   useful to specify it when the service is provisioned differently (e.g.,
   #   an S3 bucket created in the Cloud or an Elasticsearch instance outside
   #   the Kubernetes cluster). The address can be an IP address or a DNS name.
-  - name: minio
+  - name: rustfs
+    address: release-name-rustfs-svc
     port: 9000
   - name: postgresql
     port: 5432
@@ -1244,26 +1245,41 @@ opensearch:
   persistence:
     enabled: false
 
-# -- MinIO subchart deployment
-# </br> Ref: https://github.com/minio/minio/blob/main/helm/minio/values.yaml
-minio:
-  # -- Enable or disable MinIO subchart
+# -- RustFS subchart deployment (S3-compatible object storage, standalone mode)
+# </br> Ref: https://github.com/rustfs/rustfs/tree/main/helm/rustfs
+rustfs:
+  # -- Enable or disable RustFS subchart
   enabled: true
 
-  # mode Minio server mode (`standalone` or `distributed`)
-  # </br> Ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
-  mode: standalone
+  # RustFS server mode: standalone (single pod, matches this chart's default
+  # footprint) or distributed (multi-pod, erasure-coded, RustFS's own default)
+  # </br> Ref: https://docs.rustfs.com/en/installation/cloud-native/helm-chart/installation
+  mode:
+    standalone:
+      enabled: true
+    distributed:
+      enabled: false
 
-  # Minio root username
-  rootUser: ChangeMe
-  # Password for Minio root user
-  rootPassword: ChangeMe
-
-  # Enable persistence using Persistent Volume Claims
-  # </br> Ref: https://kubernetes.io/docs/user-guide/persistent-volumes/
-  persistence:
-    # Enable MinIO data persistence using PVC. If false, use emptyDir
+  # Do not expose an Ingress for the object-storage backend
+  ingress:
     enabled: false
+
+  # RustFS access/secret key. Rendering fails unless these are non-default
+  # values, or secret.existingSecret / secret.allowInsecureDefaults is used.
+  secret:
+    rustfs:
+      access_key: ChangeMe
+      secret_key: ChangeMe
+
+  # NOTE: unlike MinIO, RustFS standalone mode has no emptyDir option — it
+  # always provisions PVCs (see storageclass.dataStorageSize/logStorageSize,
+  # default 256Mi each) via the chart's own defaults.
+  # storageclass.name defaults to "local-path" upstream, which doesn't exist
+  # on most clusters. Left empty here so the cluster's default StorageClass
+  # is used instead (matching MinIO's previous behavior) — override if your
+  # cluster needs an explicit StorageClass name.
+  storageclass:
+    name: ""
 
   # Resources
   resources:

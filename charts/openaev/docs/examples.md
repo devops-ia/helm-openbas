@@ -55,7 +55,8 @@ readyChecker:
   timeout: 5
   # -- List services
   services:
-  - name: minio
+  - name: rustfs
+    address: openaev-ci-rustfs-svc
     port: 9000
   - name: postgresql
     port: 5432
@@ -82,12 +83,12 @@ Output:
 ```yaml
 ...
       initContainers:
-      - name: ready-checker-minio
+      - name: ready-checker-rustfs
         image: busybox
         command:
           - 'sh'
           - '-c'
-          - 'RETRY=0; until [ $RETRY -eq 30 ]; do nc -zv openaev-ci-minio 9000 && break; echo "[$RETRY/30] waiting service openaev-ci-minio:9000 is ready"; sleep 5; RETRY=$(($RETRY + 1)); done'
+          - 'RETRY=0; until [ $RETRY -eq 30 ]; do nc -zv openaev-ci-rustfs-svc 9000 && break; echo "[$RETRY/30] waiting service openaev-ci-rustfs-svc:9000 is ready"; sleep 5; RETRY=$(($RETRY + 1)); done'
       - name: ready-checker-postgresql
         image: busybox
         command:

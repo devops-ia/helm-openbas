@@ -12,7 +12,7 @@ You may also helm show values on this chart's dependencies for additional option
 
 Basic installation will deploy the following components:
 
-* MinIO
+* RustFS
 * OpenAEV caldera
 * OpenAEV server
 * OpenSearch
@@ -76,57 +76,47 @@ env:
     ...
 ```
 
-### MinIO
+### RustFS
 
-Server block to configure MinIO:
+Server block to configure RustFS (note the `-svc` suffix RustFS always appends to its Service name, regardless of `fullnameOverride`):
 
 ```yaml
 env:
 ...
-  MINIO_ENDPOINT: <release-name>-minio:9000
+  MINIO_ENDPOINT: <release-name>-rustfs-svc:9000
 ```
 
 Basic config:
 
 ```yaml
-minio:
+rustfs:
   enabled: true
-  mode: standalone
-  auth:
-    rootUser: ChangeMe
-    rootPassword: ChangeMe
-
-  persistence:
-    enabled: false
+  mode:
+    standalone:
+      enabled: true
+    distributed:
+      enabled: false
+  secret:
+    rustfs:
+      access_key: ChangeMe
+      secret_key: ChangeMe
 ```
 
-Move `minio.auth.rootUser` and `minio.auth.rootPassword` to `secrets` block for `auth`:
-
-```yaml
-secrets:
-  root-user: MySecretPassword
-  root-password: MySecretErlangCookie
-```
-
-Configure `envFromSecrets` for server block:
+Configure `envFromSecrets` for server block, pointing at RustFS's auto-generated secret (`<release-name>-rustfs-secret`, keys `RUSTFS_ACCESS_KEY`/`RUSTFS_SECRET_KEY`):
 
 ```yaml
 envFromSecrets:
-  MINIO__ACCESS_KEY:
-    name: <release-name>-credentials
-    key: root-user
-  MINIO__SECRET_KEY:
-    name: <release-name>-credentials
-    key: root-password
+  MINIO_ACCESS-KEY:
+    name: <release-name>-rustfs-secret
+    key: RUSTFS_ACCESS_KEY
+  MINIO_ACCESS-SECRET:
+    name: <release-name>-rustfs-secret
+    key: RUSTFS_SECRET_KEY
 ```
 
-Configure Minio `minio.auth` with existing secret:
+Unlike MinIO, RustFS standalone mode always provisions PVCs (no emptyDir option) via `rustfs.storageclass`. This chart defaults `rustfs.storageclass.name: ""` so your cluster's default StorageClass is used.
 
-```yaml
-minio.auth.existingSecret: <release-name>-credentials
-```
-
-More info. [chart values](https://github.com/bitnami/charts/blob/main/bitnami/minio/values.yaml)
+More info. [chart values](https://github.com/rustfs/rustfs/tree/main/helm/rustfs)
 
 ### PostgreSQL
 
