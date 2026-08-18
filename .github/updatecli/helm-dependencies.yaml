@@ -7,15 +7,15 @@ sources:
       versionFilter:
         kind: semver
         pattern: '*'
-  minio:
+  rustfs:
     kind: helmchart
     spec:
-      url: https://charts.min.io/
-      name: minio
+      url: https://charts.rustfs.com
+      name: rustfs
       versionFilter:
         kind: semver
         pattern: '*' # replace with CI/CD updatecli
-    sourceid: minio
+    sourceid: rustfs
   opensearch:
     kind: helmchart
     spec:
@@ -52,13 +52,13 @@ targets:
       file: charts/openaev/values.yaml
       key: $.caldera.image.tag
     sourceid: caldera
-  minio:
+  rustfs:
     name: bump chart dependencies
     kind: yaml
     spec:
       file: charts/openaev/Chart.yaml
       key: $.dependencies[0].version
-    sourceid: minio
+    sourceid: rustfs
   opensearch:
     name: bump chart dependencies
     kind: yaml

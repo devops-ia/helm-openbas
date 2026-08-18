@@ -35,16 +35,11 @@ jobs:
 
       - name: Update dependencies
         run: |
-          updatecli apply --config .github/updatecli/helm-dependencies.yaml --commit=false 2>&1 | tee > $GITHUB_WORKSPACE/tmp-minor-output.log
-          awk '/TARGETS/{flag=1;next}/ACTIONS/{flag=0}flag' $GITHUB_WORKSPACE/tmp-minor-output.log > $GITHUB_WORKSPACE/clean-minor-output.log
-          chmod +x .github/hack/prepare_body_pr.sh
-          $GITHUB_WORKSPACE/.github/hack/prepare_body_pr.sh $GITHUB_WORKSPACE/clean-minor-output.log > $GITHUB_WORKSPACE/minor-output.log
-
-          # show PR body
-          cat minor-output.log
+          updatecli apply --config .github/updatecli/helm-dependencies.yaml --commit=false | tee > $GITHUB_WORKSPACE/minor-output.log
+          cat $GITHUB_WORKSPACE/minor-output.log
         shell: bash
         env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          UPDATECLI_GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Update README.md Helm Chart
         uses: losisin/helm-docs-github-action@3a4528e97c49a5e83de6b78c50c61c8ee5c9f944 # v2.0.0
@@ -55,6 +50,7 @@ jobs:
         id: date
         run: |
           echo "date=$(date -I)" >> $GITHUB_OUTPUT
+
 
       - name: Create PR with changes (dry-run)
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1

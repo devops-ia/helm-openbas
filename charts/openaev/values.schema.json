@@ -634,7 +634,7 @@
         }
       }
     },
-    "minio": {
+    "rustfs": {
       "type": "object",
       "properties": {
         "enabled": {
@@ -642,28 +642,41 @@
           "default": true
         },
         "mode": {
-          "type": "string",
-          "enum": ["standalone", "distributed"],
-          "default": "standalone"
-        },
-        "auth": {
           "type": "object",
           "properties": {
-            "rootUser": {
-              "type": "string"
+            "standalone": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": true
+                }
+              }
             },
-            "rootPassword": {
-              "type": "string"
+            "distributed": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": false
+                }
+              }
             }
-          },
-          "required": ["rootUser", "rootPassword"]
+          }
         },
-        "persistence": {
+        "secret": {
           "type": "object",
           "properties": {
-            "enabled": {
-              "type": "boolean",
-              "default": false
+            "rustfs": {
+              "type": "object",
+              "properties": {
+                "access_key": {
+                  "type": "string"
+                },
+                "secret_key": {
+                  "type": "string"
+                }
+              }
             }
           }
         }
@@ -1487,41 +1500,54 @@
         }
       }
     },
-    "minio": {
+    "rustfs": {
       "type": "object",
-      "description": "MinIO subchart deployment",
+      "description": "RustFS subchart deployment",
       "properties": {
         "enabled": {
           "type": "boolean",
           "default": true,
-          "description": "Enable or disable MinIO subchart"
+          "description": "Enable or disable RustFS subchart"
         },
         "mode": {
-          "type": "string",
-          "enum": ["standalone", "distributed"],
-          "default": "standalone",
-          "description": "MinIO server mode"
-        },
-        "auth": {
           "type": "object",
           "properties": {
-            "rootUser": {
-              "type": "string",
-              "description": "MinIO root username"
+            "standalone": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": true
+                }
+              }
             },
-            "rootPassword": {
-              "type": "string",
-              "description": "Password for MinIO root user"
+            "distributed": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": false
+                }
+              }
             }
-          }
+          },
+          "description": "RustFS server mode"
         },
-        "persistence": {
+        "secret": {
           "type": "object",
           "properties": {
-            "enabled": {
-              "type": "boolean",
-              "default": false,
-              "description": "Enable MinIO data persistence using PVC"
+            "rustfs": {
+              "type": "object",
+              "properties": {
+                "access_key": {
+                  "type": "string",
+                  "description": "RustFS access key"
+                },
+                "secret_key": {
+                  "type": "string",
+                  "description": "RustFS secret key"
+                }
+              }
             }
           }
         }
@@ -2337,41 +2363,54 @@
         }
       }
     },
-    "minio": {
+    "rustfs": {
       "type": "object",
-      "description": "MinIO subchart deployment",
+      "description": "RustFS subchart deployment",
       "properties": {
         "enabled": {
           "type": "boolean",
           "default": true,
-          "description": "Enable or disable MinIO subchart"
+          "description": "Enable or disable RustFS subchart"
         },
         "mode": {
-          "type": "string",
-          "enum": ["standalone", "distributed"],
-          "default": "standalone",
-          "description": "MinIO server mode"
-        },
-        "auth": {
           "type": "object",
           "properties": {
-            "rootUser": {
-              "type": "string",
-              "description": "MinIO root username"
+            "standalone": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": true
+                }
+              }
             },
-            "rootPassword": {
-              "type": "string",
-              "description": "Password for MinIO root user"
+            "distributed": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": false
+                }
+              }
             }
-          }
+          },
+          "description": "RustFS server mode"
         },
-        "persistence": {
+        "secret": {
           "type": "object",
           "properties": {
-            "enabled": {
-              "type": "boolean",
-              "default": false,
-              "description": "Enable MinIO data persistence using PVC"
+            "rustfs": {
+              "type": "object",
+              "properties": {
+                "access_key": {
+                  "type": "string",
+                  "description": "RustFS access key"
+                },
+                "secret_key": {
+                  "type": "string",
+                  "description": "RustFS secret key"
+                }
+              }
             }
           }
         }

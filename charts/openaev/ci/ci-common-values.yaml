@@ -18,7 +18,7 @@ env:
   ENGINE_URL: http://openaev-ci-opensearch:9200
 
   # STORAGE
-  MINIO_ENDPOINT: openaev-ci-minio
+  MINIO_ENDPOINT: openaev-ci-rustfs-svc
 
   # MESSAGE QUEUE
   OPENBAS_RABBITMQ_HOSTNAME: openaev-ci-rabbitmq
@@ -41,11 +41,11 @@ envFromSecrets:
     name: openaev-ci-credentials
     key: INJECTOR_CALDERA_API_KEY
   MINIO_ACCESS-KEY:
-    name: openaev-ci-minio
-    key: rootUser
+    name: openaev-ci-rustfs-secret
+    key: RUSTFS_ACCESS_KEY
   MINIO_ACCESS-SECRET:
-    name: openaev-ci-minio
-    key: rootPassword
+    name: openaev-ci-rustfs-secret
+    key: RUSTFS_SECRET_KEY
   OPENBAS_RABBITMQ_PASS:
     name: openaev-ci-rabbitmq
     key: rabbitmq-password
@@ -69,7 +69,8 @@ readyChecker:
   services:
   - name: opensearch
     port: 9200
-  - name: minio
+  - name: rustfs
+    address: openaev-ci-rustfs-svc
     port: 9000
   - name: postgresql
     port: 5432
@@ -443,12 +444,23 @@ opensearch:
     enabled: false
 
 ##
-# MINIO
-minio:
-  fullnameOverride: openaev-ci-minio
+# RUSTFS
+rustfs:
+  fullnameOverride: openaev-ci-rustfs
 
-  rootUser: minio
-  rootPassword: aADSdxaXdasd8782193hdamn
+  mode:
+    standalone:
+      enabled: true
+    distributed:
+      enabled: false
+
+  ingress:
+    enabled: false
+
+  secret:
+    rustfs:
+      access_key: minio
+      secret_key: uxLSbJGZzzhZxXUFgdAl
 
   resources:
     requests:
@@ -456,9 +468,6 @@ minio:
       cpu: 100m
     limits:
       memory: 512Mi
-
-  persistence:
-    enabled: false
 
 ##
 # POSTGRESQL
